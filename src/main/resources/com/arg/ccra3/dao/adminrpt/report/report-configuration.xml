@@ -1,0 +1,1417 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<reports>
+    <report name="member">
+        <statement-list>
+            <statement name="ai">
+                <select query="SELECT group_name_en AS name, groupid AS code, aicode AS aicode FROM spm_group g (nolock)"/>
+                <criterias query="WHERE ">
+					<fields>
+						<field name="memberID" required="false" query="g.groupid = {memberID}" by="" />
+                                                <field name="nonMemberID" required="false" query="g.groupid = (select distinct groupccraid from spm_user where groupid = {nonMemberID})" by="" />
+                                                <field name="AI" required="false" query="g.aiflag = 1" by="" />
+                                                <field name="NONAI" required="false" query="g.parentgroupid = 1 OR g.parentgroupid is null" by="" />
+            					<field name="monthlyplan" required="false" query="g.monthly_plan in ({monthlyplan}) AND g.disabled = 0 AND g.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						<field name="sortMemberType" required="false" query="{sortMemberType}" by="ASC" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+	<report name="dialy-duns">
+		<statement-list>
+			<statement name="master">
+				<select query="SELECT load_regis.groupid, load_regis.controlfilename, dbo.convert_date(load_regisdata.registereddate) receiveddate, dbo.convert_date(load_regisdata.postvalidatedfinishdate) AS postvaidationdate FROM load_registrationfile load_regis (nolock), load_registrationdata load_regisdata (nolock), spm_group (nolock) "/>
+				<criterias query="WHERE load_regis.registrationfileid = load_regisdata.registrationfileid AND load_regis.groupid = load_regisdata.groupid AND load_regisdata.datafiletype = 'F' AND load_regis.groupid = spm_group.groupid ">
+					<fields>
+						<field name="periodID" required="true" query="AND load_regis.period = '{periodID}'" by=""/>
+						<field name="memberID" required="false" query="AND load_regis.groupid = {memberID}" by=""/>
+						<field name="monthlyplan" required="false" query="AND spm_group.monthly_plan in ({monthlyplan}) AND spm_group.disabled = 0 AND spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+				<group-bys/>
+				<orders query="ORDER BY">
+					<fields>
+						<field name="sortPrimary" required="false" query="load_regisdata.{sortPrimary}" by="DESC" />
+						<field name="sortSecondary" required="false" query="load_regisdata.{sortSecondary}" by="DESC" />
+					</fields>
+				</orders>
+			</statement>
+			<statement name="detail">
+				<select query="SELECT load_log.groupid, load_regis.controlfilename, load_log.columndata as dunsno, spm_group.aicode AS contributorid, load_log.registrationid, load_log.seqload AS systemassingedcode, load_log.brc_no AS hkbrc, load_log.ci_no AS hkci, load_log.other_reg_no, load_log.place_of_reg, load_log.errordesc FROM load_validation_log AS load_log (nolock), load_registrationfile AS load_regis (nolock), spm_group (nolock) "/>
+				<criterias query="WHERE load_log.registrationid = load_regis.registrationfileid AND load_log.tabletype = 'U' AND load_log.groupid = spm_group.groupid ">
+					<fields>
+						<field name="periodID" required="true" query="AND load_log.period = {periodID}" by=""/>
+						<field name="memberID" required="false" query="AND load_log.groupid = {memberID}" by=""/>
+						<field name="monthlyplan" required="false" query="AND spm_group.monthly_plan in ({monthlyplan}) AND spm_group.disabled = 0 AND spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+				<group-bys/>
+				<orders query="ORDER BY load_log.columndata, load_log.registrationid, load_log.seqload">
+					<fields />
+				</orders>
+			</statement>
+		</statement-list>
+	</report>
+    <report name="validation-error">
+        <statement-list>
+            <statement name="master">
+                <!--<select query="SELECT load_regis.groupid, (select userid from spm_user (nolock) where spm_user.uid = load_regis.receivedby) as operator, load_regis.registrationfileid as dataloadid, dbo.convert_period(load_regis.period) as period, dbo.convert_date((select data.registereddate from load_registrationdata data (nolock) where load_regis.registrationfileid = data.registrationfileid and data.datafiletype = 'F')) as receiveddate, load_regis.controlfilename, dbo.convert_date(load_regis.processdate) as dataloaddate, (select statusdesc from base_loadstatus loader (nolock) where loader.loadstatusid = load_regis.processstatus) as status, sum(load_regisdata.totalofvalidaterecord) as totalrecord, spm_group.threshold as validationthreshold, load_regis.threshold as validateresult, (select count(distinct(load_val.seqload)) from load_validation_log load_val (nolock) where load_val.registrationid = load_regis.registrationfileid and load_val.groupid = load_regis.groupid and load_val.tabletype is not null and load_val.tabletype &lt;&gt; 'U') as errorrecord from load_registrationfile load_regis (nolock), load_registrationdata load_regisdata (nolock), spm_group (nolock) ">-->
+                <select query="SELECT load_regis.groupid, (select case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid from spm_user (nolock) where spm_user.uid = load_regis.receivedby) as operator, load_regis.registrationfileid as dataloadid, dbo.convert_period(load_regis.period) as period, dbo.convert_date((select data.registereddate from load_registrationdata data (nolock) where load_regis.registrationfileid = data.registrationfileid and data.datafiletype = 'F')) as receiveddate, load_regis.controlfilename, dbo.convert_date(load_regis.processdate) as dataloaddate, (select statusdesc from base_loadstatus loader (nolock) where loader.loadstatusid = load_regis.processstatus) as status, sum(load_regisdata.totalofvalidaterecord) as totalrecord, spm_group.threshold as validationthreshold, load_regis.threshold as validateresult, (select count(total) from (select count(load_val.seqload) total from load_validation_log load_val (nolock) where load_val.registrationid = load_regis.registrationfileid and load_val.groupid = load_regis.groupid and load_val.tabletype is not null and load_val.tabletype &lt;&gt; 'U' group by tabletype, seqload) as a) as errorrecord from load_registrationfile load_regis (nolock), load_registrationdata load_regisdata (nolock), spm_group (nolock) ">
+                    <fields />
+                </select>
+                <criterias query="where load_regis.registrationfileid = load_regisdata.registrationfileid and load_regis.groupid = load_regisdata.groupid and load_regis.groupid = spm_group.groupid ">
+                    <fields>
+                        <field name="periodID" required="true" query="and load_regis.period = '{periodID}'" by="" />
+                        <field name="memberID" required="false" query="and load_regis.groupid = {memberID}" by="" />
+                        <field name="registrationFileID" required="false" query="and load_regis.registrationfileid = {registrationFileID}" by="" />
+            						<field name="monthlyplan" required="false" query="AND spm_group.monthly_plan in ({monthlyplan}) AND spm_group.disabled = 0 AND spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query="group by load_regis.groupid, load_regis.receivedby, load_regis.registrationfileid, load_regis.period,load_regis.receiveddate, load_regis.controlfilename, load_regis.processdate, load_regis.threshold,load_regis.processstatus, spm_group.threshold ORDER BY load_regis.groupid">
+                    <fields />
+                </group-bys>
+                <orders query="">
+                    <fields />
+                </orders>
+            </statement>
+            <statement name="detail">
+                <select query="SELECT distinct load_regis.registrationfileid, load_val.brc_no as hkbrcno, load_val.ci_no as hkcino,load_val.other_reg_no,load_val.place_of_reg, load_val.customer_no,load_val.errorstatus, load_val.errordesc from load_registrationfile load_regis (nolock) left outer join load_validation_log load_val (nolock) on load_regis.registrationfileid = load_val.registrationid and load_regis.groupid = load_val.groupid inner join spm_group (nolock) on load_regis.groupid = spm_group.groupid ">
+                    <fields />
+                </select>
+                <criterias query="where load_val.tabletype is not null and load_val.tabletype &lt;&gt; 'U'">
+                    <fields>
+                        <field name="periodID" required="true" query="and load_regis.period = '{periodID}'" by="" />
+                        <field name="memberID" required="false" query="and load_regis.groupid = {memberID}" by="" />
+                        <field name="registrationFileID" required="false" query="and load_regis.registrationfileid = {registrationFileID}" by="" />
+						<field name="monthlyplan" required="false" query="AND spm_group.monthly_plan in ({monthlyplan}) AND spm_group.disabled = 0 AND spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys>
+                    <fields />
+                </group-bys>
+                <orders query="ORDER BY load_regis.registrationfileid, ">
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="file-reject">
+		<statement-list>
+			<statement name="master">
+				<select query="SELECT load_regis.groupid groupid, load_regis.registrationfileid as dataloadid, dbo.convert_period(load_regis.period) as period, dbo.convert_date((select load_data.registereddate from load_registrationdata as load_data (nolock) where load_regis.registrationfileid = load_data.registrationfileid and load_data.datafiletype = 'F')) as receiveddate, load_regis.controlfilename as controlfilename, dbo.convert_date(load_regis.processdate) as dataloaddate, load_regis.processstatus from load_registrationfile load_regis (nolock), spm_group (nolock) " />
+				<criterias query="where load_regis.groupid = spm_group.groupid ">
+					<fields>
+						<field name="periodID" required="true" query="and load_regis.period = '{periodID}'" by=""/>
+						<field name="memberID" required="false" query="and load_regis.groupid = {memberID}" by=""/>
+            <field name="registrationFileID" required="false" query="and load_regis.registrationfileid = {registrationFileID}" by=""/>
+						<field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+				<group-bys/>
+				<orders query="ORDER BY processstatus">
+					<fields>
+						<field name="sortPrimary" required="false" query="{sortPrimary}" by="DESC" />
+						<field name="sortSecondary" required="false" query="{sortSecondary}" by="DESC" />
+					</fields>
+				</orders>
+			</statement>
+            <statement name="detail">
+				<select query="SELECT distinct load_regis.registrationfileid, load_val.errorstatus errorcode, load_val.errordesc errorstatus, load_regis.period, load_regis.groupid FROM load_registrationfile load_regis (nolock) left outer join load_validation_log load_val (nolock) on load_regis.registrationfileid = load_val.registrationid inner join spm_group (nolock) on load_regis.groupid = spm_group.groupid ">
+					<fields>
+						<field name="periodID" required="true" query="" by=""/>
+					</fields>
+				</select>
+				<criterias query="where load_regis.processstatus &lt; 0 and load_val.tabletype &lt;&gt; 'U' ">
+					<fields>
+                        <field name="periodID" required="true" query="and load_regis.period = '{periodID}'" by=""/>
+						<field name="registrationFileID" required="false" query="and load_regis.registrationfileid ={registrationFileID}" by=""/>
+						<field name="memberID" required="false" query="and load_regis.groupid = {memberID}" by=""/>
+						<field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+				<group-bys/>
+				<orders query="ORDER BY">
+					<fields>
+						<field name="sortPrimary" required="false" query="{sortPrimary}" by="" />
+						<field name="sortSecondary" required="false" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+			</statement>
+		</statement-list>
+	</report>
+    <report name="input-file-summary">
+        <statement-list>
+            <statement name="report-data">
+                <!--<select query="SELECT load_regis.groupid, (select userid from spm_user (nolock) where spm_user.uid = load_regis.receivedby) as operator, load_regis.registrationfileid as dataloadid,dbo.convert_period(load_regis.period) as period, dbo.convert_date(dateadd(month,1, cast(load_regis.period + (select case when spm_group.submission_day &gt; 9 then cast(spm_group.submission_day as char(2)) when spm_group.submission_day &lt;= 9 then '0'+ cast(spm_group.submission_day as char(2)) end from spm_group spm_group (nolock) where load_regis.groupid = spm_group.groupid) as datetime))) scheduledate, dbo.convert_date((select data.registereddate from load_registrationdata data (nolock) where load_regis.registrationfileid = data.registrationfileid and data.datafiletype = 'F')) as receiveddate,dbo.convert_date(load_regis.processdate) as dataloaddate, load_regis.controlfilename,sum(load_regisdata.totalofvalidaterecord) as totalrecord,(select count(distinct(load_val.seqload)) from load_validation_log load_val (nolock) where load_val.registrationid = load_regis.registrationfileid and load_val.groupid = load_regis.groupid and load_val.tabletype is not null and load_val.tabletype &lt;&gt; 'U') as errorrecord,sum(load_regisdata.totalofapplyrecord) as applyrecord,(select spm_group.threshold from spm_group (nolock) where spm_group.groupid = load_regis.groupid) as validationthreshold,cast ((sum(load_regisdata.totalofapplyrecord) * 100) / sum(load_regisdata.totalofvalidaterecord) as numeric(9,2)) as percentapplyrecord from load_registrationfile load_regis (nolock),load_registrationdata load_regisdata (nolock), spm_group (nolock)">-->
+                <select query="SELECT load_regis.groupid, (select case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid from spm_user (nolock) where spm_user.uid = load_regis.receivedby) as operator, load_regis.registrationfileid as dataloadid,dbo.convert_period(load_regis.period) as period, dbo.convert_date(dateadd(month,1, cast(load_regis.period + (select case when spm_group.submission_day &gt; 9 then cast(spm_group.submission_day as char(2)) when spm_group.submission_day &lt;= 9 then '0'+ cast(spm_group.submission_day as char(2)) end from spm_group spm_group (nolock) where load_regis.groupid = spm_group.groupid) as datetime))) scheduledate, dbo.convert_date((select data.registereddate from load_registrationdata data (nolock) where load_regis.registrationfileid = data.registrationfileid and data.datafiletype = 'F')) as receiveddate,dbo.convert_date(load_regis.processdate) as dataloaddate, load_regis.controlfilename,sum(load_regisdata.totalofvalidaterecord) as totalrecord,(select count(log_error.valuecount) from (select count(1) as valuecount from load_validation_log logs where seqload is not null and load_regis.registrationfileid = logs.registrationid and  logs.errorstatus &lt;&gt; 'DLP-L00013' group by seqload,tabletype) as log_error ) as errorrecord ,sum(load_regisdata.totalofapplyrecord) as applyrecord,(select spm_group.threshold from spm_group (nolock) where spm_group.groupid = load_regis.groupid) as validationthreshold,cast ((sum(load_regisdata.totalofapplyrecord) * 100) / sum(load_regisdata.totalofvalidaterecord) as numeric(9,2)) as percentapplyrecord from load_registrationfile load_regis (nolock),load_registrationdata load_regisdata (nolock), spm_group (nolock)">
+                    <fields />
+                </select>
+                <criterias query="where load_regis.registrationfileid = load_regisdata.registrationfileid and load_regis.groupid = load_regisdata.groupid and load_regis.groupid = spm_group.groupid">
+                    <fields>
+                        <field name="periodID" required="true" query="and load_regis.period = '{periodID}'" by="" />
+                        <field name="memberID" required="false" query="and load_regis.groupid = {memberID}" by="" />
+                        <field name="registrationFileID" required="false" query="and load_regis.registrationfileid = {registrationFileID}" by="" />
+						            <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query="group by load_regis.receivedby, load_regis.registrationfileid, load_regis.period, load_regis.processdate, load_regis.controlfilename, load_regis.threshold, load_regis.groupid">
+                    <fields />
+                </group-bys>
+                <orders query="ORDER BY">
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="inquiry-analysis">
+        <statement-list>
+            <statement name="listusers">
+                <select query="select  spm_user.groupaiid as membercode, case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end  as userid , spm_user.uid as uid from spm_user (nolock), spm_group (nolock) ">
+                <!--<select query="select spm_user.groupaiid as membercode, case when spm_user.deleted = 0 then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end as userid from spm_user (nolock), spm_group (nolock) ">-->
+                    <fields>
+                    </fields>
+                </select>
+                <criterias query="where spm_user.groupaiid = spm_group.groupid and ((spm_user.disabled = 0 and spm_user.deleted = 0) or ((spm_user.disabled = 1 or spm_user.deleted = 1)">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and spm_user.updateddate &gt;= convert(datetime, '{startDateSQL}', 101)))" by="" />
+                        <field name="memberID" required="false" query="and groupaiid = {memberID}" by="" />
+                        <field name="endDateSQL" required="false" query="and spm_user.createdDate &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}', 101))" by="" />
+                        <field name="userID" required="false" query="and uid = {userID}" by="" />
+            			<field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1, 2">
+                    <fields/>
+                </orders>
+            </statement>
+            <statement name="users">
+                <select query="SELECT spm_group.groupid as &#034;Member Code&#034;, case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end  as &#034;User ID&#034;, spm_user.user_name_en as &#034;User Name&#034;, count(trans.transactionid) as &#034;Number of Inquiry&#034; , spm_user.uid as uid from spm_transaction trans (nolock),mal_productdeliver mal (nolock),spm_user (nolock),spm_group (nolock)">
+                    <fields />
+                </select>
+                <criterias query=" where trans.transactionid = mal.transactionid and  trans.uid = spm_user.uid and  spm_user.groupccraid = spm_group.groupid and   trans.objectid=47 and  (isnull(mal.hkbrc,'') &lt;&gt; '' or isnull(mal.hkci,'') &lt;&gt; '' or isnull(mal.other_reg_no,'') &lt;&gt; '' or isnull(mal.namesearch,'') &lt;&gt; '') ">
+                    <fields>
+                        <field name="startDateSQL" required="true" query=" and trans.createddate &gt;= convert(datetime, '{startDateSQL}', 101)" by="" />
+                        <field name="endDateSQL" required="true" query=" and trans.createddate &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}', 101))" by="" />
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="userID" required="false" query="and spm_user.uid = {userID}" by="" />
+                        <field name="aiflag" required="false" query="and spm_group.aiflag = {aiflag}" by="" />
+            						<field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query="group by spm_group.groupid, spm_user.uid,spm_user.user_name_en,spm_user.userid,spm_user.deleted ">
+                    <fields />
+                </group-bys>
+                <orders query="ORDER BY 1, 2">
+                    <fields/>
+                </orders>
+            </statement>
+            <statement name="report-data">
+                <select query="select  A.groupid as  &#034;Member Code&#034;,(select case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end from spm_user (nolock) where spm_user.uid = A.uid) as &#034;User ID&#034;, A.type as &#034;Access&#034;, sum(A.noofsearch) as &#034;No. Of Searches&#034; , 0 as &#034;Total Of Searches (%)&#034;, sum(isnull(A.basicreport,0))+sum(isnull(A.chinesereport,0))+sum(isnull(A.nomatchreport,0))+sum(isnull(A.regis_monitoring,0))+ sum(isnull(A.regis_enquiry,0)) as &#034;No. Of Report Ordered&#034;, 0 as &#034;Total Of Ordered (%)&#034;, 0 as &#034;Report Ordered (%)&#034;, sum(isnull(A.basicreport,0)) as &#034;Basic Report&#034;, sum(isnull(A.chinesereport,0)) as &#034;Chinese Report&#034;, sum(isnull(A.nomatchreport,0)) as &#034;No-match Report&#034;, sum(A.regis_monitoring) as  &#034;Monitoring Alert&#034;, sum(A.regis_enquiry) as &#034;Enquiry Alert&#034; , A.uid as uid from  (select spm_group.groupid , spm_group.monthly_plan , spm_group.disabled , spm_group.deleted , trans.uid , trans.transactionid , spm_group.aiflag , case 	when isnull(mal_prod.hkbrc,'') &lt;&gt; '' and mal_prod.requesttype = 'O' then 1  when isnull(mal_prod.hkci,'') &lt;&gt; '' and mal_prod.requesttype = 'O' then 2  when isnull(mal_prod.other_reg_no,'') &lt;&gt; '' and mal_prod.requesttype = 'O' then 3  when isnull(mal_prod.namesearch,'') &lt;&gt; '' then 4   when isnull(mal_prod.hkbrc,'') &lt;&gt; '' and mal_prod.requesttype = 'B' then 5   when isnull(mal_prod.hkci,'') &lt;&gt; '' and mal_prod.requesttype = 'B' then 6  when isnull(mal_prod.other_reg_no,'') &lt;&gt; '' and mal_prod.requesttype = 'B' then 7 end as type , case when trans.objectid = 47 then 1 end as noofsearch , case when isnull(mal_prod.objectid,0)=47 and isnull(mal_prod.expenseid,0)&lt;&gt;0 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as nomatchreport , case when isnull(mal_prod.objectid,0)=50 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as basicreport , case when isnull(mal_prod.objectid,0)=51 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as chinesereport , case when isnull(regis.product_type,0)=54 then 1 else 0 end as regis_monitoring , case when isnull(regis.product_type,0)=56 then 1 else 0 end as regis_enquiry from  spm_transaction trans (nolock)inner join mal_productdeliver mal_prod (nolock) on mal_prod.transactionid=trans.transactionid inner join spm_user (nolock) on spm_user.uid=trans.uid  inner join  spm_group (nolock) on spm_group.groupid=spm_user.groupaiid left outer join spm_expense ex(nolock)on ex.expenseid=mal_prod.expenseid left outer join (select transactionid,product_type from prod_register (nolock) group by transactionid ,product_type ) regis on mal_prod.transactionid = regis.transactionid left outer join (select mal1.transactionid,1 as flag from mal_productdeliver mal1 (nolock) where mal1.transactionid = (select top 1 a.transactionid from mal_productdeliver a (nolock) where (a.expenseid = mal1.expenseid) order by a.transactionid desc) or mal1.expenseid is null) tranid on tranid.transactionid=mal_prod.transactionid where trans.objectid=47 and  trans.createddate &gt;= convert(datetime, '{startDateSQL}', 101) and   trans.createddate &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}', 101))) A ">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="" by="" />
+                        <field name="endDateSQL" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query=" where A.type is not null ">
+                    <fields>
+                        <field name="memberID" required="false" query=" and A.groupid = {memberID}" by="" />
+                        <field name="userID" required="false" query=" and A.uid = {userID}" by="" />
+                        <field name="aiflag" required="false" query=" and A.aiflag = {aiflag}" by="" />
+            		    <field name="monthlyplan" required="false" query=" and A.monthly_plan in ({monthlyplan}) and A.disabled = 0 and A.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query = " group by A.groupid,A.uid,A.type ">
+                    <fields />
+                </group-bys>
+                <orders query="ORDER BY &#034;Member Code&#034;, &#034;User ID&#034;, A.type">
+                    <fields />
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="inquiry-analysis-ccra">
+        <statement-list>
+            <statement name="listusers">
+                <select query="select spm_user.groupccraid as membercode, case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid ,spm_user.uid as uid from spm_user (nolock), spm_group (nolock)">
+                    <fields>
+                    </fields>
+                </select>
+                <criterias query="where spm_user.groupaiid = spm_group.groupid and ((spm_user.disabled = 0 and spm_user.deleted = 0) or ((spm_user.disabled = 1 or spm_user.deleted = 1)">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and spm_user.updateddate &gt;= convert(datetime, '{startDateSQL}', 101)))" by="" />
+                        <field name="memberID" required="false" query="and groupccraid = {memberID}" by="" />
+                        <field name="endDateSQL" required="false" query="and spm_user.createdDate &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}', 101))" by="" />
+                        <field name="userID" required="false" query="and uid = {userID}" by="" />
+						<field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1, 2">
+                    <fields/>
+                </orders>
+            </statement>
+            <statement name="users">
+                <select query="SELECT spm_group.groupid as &#034;Member Code&#034;, case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end  as &#034;User ID&#034;, spm_user.user_name_en as &#034;User Name&#034;, count(trans.transactionid) as &#034;Number of Inquiry&#034; , spm_user.uid as uid from spm_transaction trans (nolock),mal_productdeliver mal (nolock),spm_user (nolock),spm_group (nolock) ">
+                    <fields />
+                </select>
+                <criterias query="where trans.transactionid = mal.transactionid and  trans.uid = spm_user.uid and   spm_user.groupccraid = spm_group.groupid and   trans.objectid=47 and spm_group.aiflag = 0  and  (isnull(mal.hkbrc,'') &lt;&gt; '' or isnull(mal.hkci,'') &lt;&gt; '' or isnull(mal.other_reg_no,'') &lt;&gt; '' or isnull(mal.namesearch,'') &lt;&gt; '')  ">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="  and trans.createddate &gt;= convert(datetime, '{startDateSQL}', 101)" by="" />
+                        <field name="endDateSQL" required="true" query="and trans.createddate &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}', 101))" by="" />
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="userID" required="false" query="and spm_user.uid = {userID}" by="" />
+						            <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query="group by spm_group.groupid, spm_user.uid,spm_user.user_name_en,spm_user.userid,spm_user.deleted ">
+                    <fields />
+                </group-bys>
+                <orders query="ORDER BY 1, 2">
+                    <fields/>
+                </orders>
+            </statement>
+            <statement name="report-data">
+                <select query="select  A.groupid as  &#034;Member Code&#034;,(select case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end from spm_user (nolock) where spm_user.uid = A.uid) as &#034;User ID&#034;, A.type as &#034;Access&#034;, sum(A.noofsearch) as &#034;No. Of Searches&#034;, 0 as &#034;Total Of Searches (%)&#034;, sum(isnull(A.basicreport,0))+sum(isnull(A.chinesereport,0))+sum(isnull(A.nomatchreport,0))+ sum(isnull(A.regis_monitoring,0))+ sum(isnull(A.regis_enquiry,0)) as &#034;No. Of Report Ordered&#034;, 0 as &#034;Total Of Ordered (%)&#034;, 0 as &#034;Report Ordered (%)&#034;, sum(isnull(A.basicreport,0)) as &#034;Basic Report&#034;, sum(isnull(A.chinesereport,0)) as &#034;Chinese Report&#034;, sum(isnull(A.nomatchreport,0)) as &#034;No-match Report&#034;, sum(A.regis_monitoring) as  &#034;Monitoring Alert&#034;, sum(A.regis_enquiry) as &#034;Enquiry Alert&#034; , A.uid as uid from  (select spm_group.groupid , spm_group.monthly_plan , spm_group.disabled , spm_group.deleted , trans.uid , trans.transactionid , spm_group.aiflag , case 	when isnull(mal_prod.hkbrc,'') &lt;&gt; '' and mal_prod.requesttype = 'O' then 1  when isnull(mal_prod.hkci,'') &lt;&gt; '' and mal_prod.requesttype = 'O' then 2  when isnull(mal_prod.other_reg_no,'') &lt;&gt; '' and mal_prod.requesttype = 'O' then 3  when isnull(mal_prod.namesearch,'') &lt;&gt; '' then 4   when isnull(mal_prod.hkbrc,'') &lt;&gt; '' and mal_prod.requesttype = 'B' then 5   when isnull(mal_prod.hkci,'') &lt;&gt; '' and mal_prod.requesttype = 'B' then 6  when isnull(mal_prod.other_reg_no,'') &lt;&gt; '' and mal_prod.requesttype = 'B' then 7 end as type , case when trans.objectid = 47 then 1 end as noofsearch , case when isnull(mal_prod.objectid,0)=47 and isnull(mal_prod.expenseid,0)&lt;&gt;0 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as nomatchreport , case when isnull(mal_prod.objectid,0)=50 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as basicreport , case when isnull(mal_prod.objectid,0)=51 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as chinesereport , case when isnull(regis.product_type,0)=54 then 1 else 0 end as regis_monitoring , case when isnull(regis.product_type,0)=56 then 1 else 0 end as regis_enquiry from  spm_transaction trans (nolock)inner join mal_productdeliver mal_prod (nolock) on mal_prod.transactionid=trans.transactionid inner join spm_user (nolock) on spm_user.uid=trans.uid  inner join  spm_group (nolock) on spm_group.groupid=spm_user.groupccraid left outer join spm_expense ex(nolock)on ex.expenseid=mal_prod.expenseid left outer join (select transactionid,product_type from prod_register (nolock) group by transactionid ,product_type ) regis on mal_prod.transactionid = regis.transactionid left outer join (select mal1.transactionid,1 as flag from mal_productdeliver mal1 (nolock) where mal1.transactionid = (select top 1 a.transactionid from mal_productdeliver a (nolock) where (a.expenseid = mal1.expenseid) order by a.transactionid desc) or mal1.expenseid is null) tranid on tranid.transactionid=mal_prod.transactionid where trans.objectid=47 and  trans.createddate &gt;= convert(datetime, '{startDateSQL}', 101) and   trans.createddate &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}', 101))) A ">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="" by="" />
+                        <field name="endDateSQL" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query=" where A.type is not null and A.aiflag = 0 ">
+                    <fields>
+                        <field name="memberID" required="false" query=" and A.groupid = {memberID}" by="" />
+                        <field name="userID" required="false" query=" and A.uid = {userID}" by="" />
+						            <field name="monthlyplan" required="false" query=" and A.monthly_plan in ({monthlyplan}) and A.disabled = 0 and A.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query = " group by A.groupid,A.uid,A.type ">
+                    <fields />
+                </group-bys>
+                <orders query="ORDER BY &#034;Member Code&#034;, &#034;User ID&#034;, A.type">
+                    <fields />
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="monthly-data-submission">
+        <statement-list>
+            <statement name="report-data">
+                <select query="select load_regis.groupid, load_regis.controlfilename, load_regis.period, dbo.convert_datetime(load_data.registereddate) as registereddate, dbo.convert_datetime(load_data.validateddate) as validateddate, dbo.convert_datetime(load_data.validatedfinishdate) as validatedfinishdate, dbo.convert_datetime(load_data.postvalidateddate) as postvalidateddate, dbo.convert_datetime(load_data.postvalidatedfinishdate) as postvalidatedfinishdate, dbo.convert_datetime(load_data.applydate) as applydate, dbo.convert_datetime(load_data.applyfinishdate) as applyfinishdate, (select base_loadstatus.statusdesc from base_loadstatus (nolock) where base_loadstatus.loadstatusid = load_regis.processstatus) as status from load_registrationfile as load_regis (nolock), load_registrationdata as load_data (nolock), spm_group (nolock)">
+                    <fields />
+                </select>
+                <criterias query="where load_regis.registrationfileid = load_data.registrationfileid and load_data.datafiletype = 'F' and load_regis.groupid = spm_group.groupid">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and load_data.registereddate &gt;= convert(datetime, '{startDateSQL}', 101)" by="" />
+                        <field name="endDateSQL" required="true" query="and load_data.registereddate &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}'))" by="" />
+                        <field name="memberID" required="false" query="and load_regis.groupid = {memberID}" by="" />
+						            <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys>
+                    <fields />
+                </group-bys>
+                <orders query="ORDER BY 1, ">
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="unload">
+        <statement-list>
+            <statement name="file">
+                <select query="SELECT prod_unload.groupid, spm_group.group_name_en membername, prod_unload.registrationfileid, prod_unload.controlfilename,  dbo.convert_period(prod_unload.period) as periodname, (select count(temp_unload.registrationfileid)  from prod_unload_status temp_unload (nolock)  where temp_unload.registrationfileid = prod_unload.registrationfileid  and temp_unload.cbuid is not null and temp_unload.channel = 'f') noofrecord,  dbo.convert_date(prod_unload.unload_date) as unload_date_name, prod_unload.requested_by, (select case  when u.deleted = 0 then u.userid else case when (len(u.userid)-(len(u.uid)+1) &lt;= 0) then u.userid  else  substring(u.userid, 1,len(u.userid)-(len(u.uid)+1)) end  end as userid from spm_user u (nolock) where u.uid = prod_unload.unload_by) as uid,  prod_unload.reason  from prod_unload_status prod_unload (nolock), spm_group (nolock)">
+                    <fields />
+                </select>
+                <criterias query="where prod_unload.groupid = spm_group.groupid and prod_unload.cbuid is null and prod_unload.channel = 'F'">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and prod_unload.unload_date &gt;= convert(datetime, '{startDateSQL}', 101)" by="" />
+                        <field name="endDateSQL"   required="true" query="and prod_unload.unload_date &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}', 101))" by="" />
+                        <field name="memberID" required="false" query="and prod_unload.groupid = {memberID}" by="" />
+						            <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY" >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+            <statement name="record">
+                <select query="SELECT prod_unload.groupid, spm_group.group_name_en as membername, dbo.convert_period(prod_unload.period) as periodname,  prod_unload.brc_no, prod_unload.controlfilename, prod_unload.ci_no, prod_unload.other_reg_no, prod_unload.place_of_reg,  prod_unload.customer_no, dbo.convert_date(prod_unload.unload_date) as unload_date_name, prod_unload.requested_by,  (select case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid from spm_user (nolock) where spm_user.uid = prod_unload.unload_by) as uid, prod_unload.reason  from prod_unload_status prod_unload (nolock), spm_group (nolock)">
+                    <fields />
+                </select>
+                <criterias query="where prod_unload.groupid = spm_group.groupid and prod_unload.cbuid is not null and prod_unload.channel = 'r'">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and prod_unload.unload_date &gt;= convert(datetime, '{startDateSQL}', 101)" by="" />
+                        <field name="endDateSQL"   required="true" query="and prod_unload.unload_date &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}', 101))" by="" />
+                        <field name="memberID" required="false" query="and prod_unload.groupid = {memberID}" by="" />
+						            <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY" >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="key-optional">
+        <statement-list>
+            <statement name="report-data">
+                <select query="SELECT load_regis.groupid, dbo.convert_date(load_regisdata.registereddate) as receiveddate, dbo.convert_period(load_regis.period) as period,  prod_demo.brc_no as hkbrc, prod_demo.ci_no as hkci,  prod_demo.other_reg_no as otherregno, prod_demo.place_of_reg as placeofreg, prod_demo.customer_no as customerno,  prod_credit.loc_branch_id as locationbranchid, prod_credit.acc_mnger_code as accountcode,  case when (prod_demo.place_of_reg is null and prod_demo.other_reg_no is not null) and prod_demo.phone_no is null then 'Place of Registration/Incorporation and Telephone'  when prod_demo.place_of_reg is null and prod_demo.other_reg_no is not null then 'Place of Registration/Incorporation'  when prod_demo.phone_no is null then 'Telephone' end as fieldsmissing  from load_registrationfile load_regis (nolock),  load_registrationdata load_regisdata (nolock),  history_demographic prod_demo (nolock), history_credit prod_credit (nolock), spm_group (nolock) ">
+                    <fields />
+                </select>
+                <criterias query="where prod_demo.registrationdataid = load_regisdata.registrationdataid and load_regisdata.registrationfileid = load_regis.registrationfileid and prod_demo.cbuid = prod_credit.cbuid and prod_demo.groupid = prod_credit.groupid and prod_demo.period = prod_credit.period and ((prod_demo.other_reg_no is not null and prod_demo.place_of_reg is null) or prod_demo.phone_no is null) and load_regis.groupid = spm_group.groupid ">
+                    <fields>
+                        <field name="periodID" required="true" query="and load_regisdata.period = '{periodID}'" by="" />
+                        <field name="memberID" required="false" query="and load_regis.groupid = {memberID}" by="" />
+						            <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY" >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}, prod_demo.brc_no, prod_demo.ci_no" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="effective-revocation-confirmation">
+        <statement-list>
+            <statement name="report-data">
+				<select query="SELECT distinct prod_demo.groupid, prod_demo.brc_no as hkbrc, prod_demo.ci_no as hkci, prod_demo.other_reg_no,  prod_demo.place_of_reg, prod_demo.customer_no,  (select history_credit.loc_branch_id from history_credit (nolock) where history_credit.cbuid = prod_demo.cbuid  and history_credit.groupid = prod_demo.groupid and history_credit.period = prod_demo.period) as locationbranchid,  (select history_credit.acc_mnger_code  from history_credit (nolock) where history_credit.cbuid = prod_demo.cbuid  and history_credit.groupid = prod_demo.groupid and history_credit.period = prod_demo.period) as accountcode, dbo.convert_date(prod_demo_flag.revoc_noticed_date) as revoc_noticed_date,  dbo.convert_date(prod_demo_flag.revoc_effect_date) as revoc_effect_date from (select distinct cbuid, groupid, period, revoc_noticed_date, revoc_effect_date from prod_demographic_flag (nolock)  where revoc_effect_date is not null union select a.cbuid, a.groupid, max(a.period) as period ,(select max(b.revoc_noticed_date) from history_demographic_flag b (nolock) where a.cbuid = b.cbuid and a.groupid = b.groupid and b.period = max(a.period)) as revoc_noticed_date ,(select max(b.revoc_effect_date) from history_demographic_flag b (nolock) where a.cbuid = b.cbuid and a.groupid = b.groupid and b.period = max(a.period)) as revoc_effect_date from history_demographic_flag a (nolock) where a.writeoffamount = -1 and a.recoveryamount = -1 and a.revoc_effect_date is not null group by a.cbuid, a.groupid, a.updateddate)as prod_demo_flag left outer join history_demographic prod_demo (nolock) on prod_demo_flag.cbuid = prod_demo.cbuid and prod_demo_flag.groupid = prod_demo.groupid and prod_demo_flag.period = prod_demo.period inner join spm_group (nolock) on prod_demo.groupid = spm_group.groupid ">
+                    <fields />
+                </select>
+ 				<criterias query="where prod_demo_flag.period &gt; substring(convert(varchar,dateadd(year,-5,getdate()),112),1,6) ">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and prod_demo_flag.revoc_effect_date &gt;= convert(datetime, '{startDateSQL}', 101)" by="" />
+                        <field name="endDateSQL" required="true" query="and prod_demo_flag.revoc_effect_date &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}', 101))" by="" />
+                        <field name="memberID" required="false" query="and prod_demo_flag.groupid = {memberID}" by="" />
+						<field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY" >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="false" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="system-access">
+        <statement-list>
+            <statement name="successful">
+                <select query="SELECT data.groupaiid as groupid, data.userid, data.user_name_en, data.pasttwoperiod,  data.pastoneperiod, data.currentperiod, data.pasttwoperiod+data.pastoneperiod+data.currentperiod as total,  cast((data.pasttwoperiod+data.pastoneperiod+data.currentperiod) / 3.00 as numeric(15,2)) as average  from ( select spm_user.groupaiid,  case when spm_user.deleted = 0 then spm_user.userid else  case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid,  spm_user.user_name_en,  (select count(spm_session.uid) from spm_session (nolock)  where spm_session.uid = spm_user.uid and spm_session.loginflag = 1  and spm_session.logindate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) as currentperiod,  (select count(spm_session.uid) from spm_session (nolock)  where spm_session.uid = spm_user.uid and spm_session.loginflag = 1  and spm_session.logindate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) as pastoneperiod,  (select count(spm_session.uid) from spm_session (nolock)  where spm_session.uid = spm_user.uid and spm_session.loginflag = 1  and spm_session.logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) as pasttwoperiod  from spm_user (nolock), spm_group (nolock),  (select distinct(uid) as s_uid from spm_session (nolock)  where logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,1,'{periodID}'+'01') and loginflag = 1 ) as session">
+                <!--<select query="SELECT data.groupaiid as groupid, data.userid, data.user_name_en, data.pasttwoperiod,  data.pastoneperiod, data.currentperiod, data.pasttwoperiod+data.pastoneperiod+data.currentperiod as total,  cast((data.pasttwoperiod+data.pastoneperiod+data.currentperiod) / 3.00 as numeric(15,2)) as average  from ( select spm_user.groupaiid,  case when spm_user.deleted = 0 then spm_user.userid else  substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end as userid,  spm_user.user_name_en,  (select count(spm_session.uid) from spm_session (nolock)  where spm_session.uid = spm_user.uid and spm_session.loginflag = 1  and spm_session.logindate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) as currentperiod,  (select count(spm_session.uid) from spm_session (nolock)  where spm_session.uid = spm_user.uid and spm_session.loginflag = 1  and spm_session.logindate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) as pastoneperiod,  (select count(spm_session.uid) from spm_session (nolock)  where spm_session.uid = spm_user.uid and spm_session.loginflag = 1  and spm_session.logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) as pasttwoperiod  from spm_user (nolock), spm_group (nolock),  (select distinct(uid) as s_uid from spm_session (nolock)  where logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,1,'{periodID}'+'01') and loginflag = 1 ) as session">-->
+                    <fields>
+                        <field name="periodID" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where spm_user.groupaiid = spm_group.groupid and spm_group.aiflag = 1 and spm_user.uid = session.s_uid and ((spm_user.disabled = 0 and spm_user.deleted = 0) or ((spm_user.disabled = 1 or spm_user.deleted = 1)">
+                    <fields>
+                        <field name="periodID" required="true" query="and spm_user.createddate &lt; dateadd(month,1,'{periodID}'+'01') ))" by="" />
+                        <field name="memberID" required="false" query="and spm_user.groupaiid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query=") data ORDER BY 1, 2" >
+                    <fields />
+                </orders>
+            </statement>
+            <statement name="unsuccessful">
+                <select query="Select spm_user.groupaiid, dbo.convert_datetime(spm_session.logindate) as dateandtime,case when spm_session.loginflag = 2 then 'Unexpect Exception' when spm_session.loginflag = 3 then 'Incorrect Userid' when spm_session.loginflag = 4 then 'Incorrect Password' when spm_session.loginflag = 5 then 'Cannot Register' when spm_session.loginflag = 6 then 'Cannot Record Transaction' when spm_session.loginflag = 7 then 'User Disabled' when spm_session.loginflag = 8 then 'User Overlimit Connection' when spm_session.loginflag = 9 then 'Encrypt Fail' when spm_session.loginflag = 10 then 'User Expired' when spm_session.loginflag = 11 then 'Not Permitted Time' when spm_session.loginflag = 12 then 'AI Expired' when spm_session.loginflag = 14 then 'Incorrect Password' when spm_session.loginflag = 15 then 'AI Overlimit Connection' end as reasonunsuccessful, case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid, spm_user.user_name_en from spm_session (nolock), spm_user (nolock), spm_group (nolock) ">
+                    <fields />
+                </select>
+                <criterias query="where spm_session.uid = spm_user.uid and spm_user.groupaiid = spm_group.groupid and spm_group.aiflag = 1 and ((spm_user.disabled = 0 and spm_user.deleted = 0) or ((spm_user.disabled = 1 or spm_user.deleted = 1)">
+                    <fields>
+                        <field name="periodID" required="true" query="and spm_user.createddate &lt; dateadd(month,1,'{periodID}'+'01'))) and spm_session.loginflag &lt;&gt; 1 and spm_session.logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,1,'{periodID}'+'01')" by="" />
+                        <field name="memberID" required="false" query="and spm_user.groupaiid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1," >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="system-access-ccra">
+        <statement-list>
+            <statement name="successful">
+                <select query="SELECT data.groupccraid as groupid, data.userid, data.user_name_en, data.pasttwoperiod,  data.pastoneperiod, data.currentperiod, data.pasttwoperiod+data.pastoneperiod+data.currentperiod as total,  cast((data.pasttwoperiod+data.pastoneperiod+data.currentperiod) / 3.00 as numeric(15,2)) as average  from ( select spm_user.groupccraid,  case when spm_user.deleted = 0 then spm_user.userid else  case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid,  spm_user.user_name_en,  (select count(spm_session.uid) from spm_session (nolock)  where spm_session.uid = spm_user.uid and spm_session.loginflag = 1  and spm_session.logindate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) as currentperiod,  (select count(spm_session.uid) from spm_session (nolock)  where spm_session.uid = spm_user.uid and spm_session.loginflag = 1  and spm_session.logindate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) as pastoneperiod,  (select count(spm_session.uid) from spm_session (nolock)  where spm_session.uid = spm_user.uid and spm_session.loginflag = 1  and spm_session.logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) as pasttwoperiod  from spm_user (nolock), spm_group (nolock),  (select distinct(uid) as s_uid from spm_session (nolock)  where logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,1,'{periodID}'+'01') and loginflag = 1 ) as session">
+                    <fields>
+                        <field name="periodID" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where spm_user.groupccraid = spm_group.groupid and (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null) and spm_user.uid = session.s_uid and ((spm_user.disabled = 0 and spm_user.deleted = 0) or ((spm_user.disabled = 1 or spm_user.deleted = 1)">
+                    <fields>
+                        <field name="periodID" required="true" query="and spm_user.createddate &lt; dateadd(month,1,'{periodID}'+'01') ))" by="" />
+                        <field name="memberID" required="false" query="and spm_user.groupccraid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query=") data ORDER BY 1, 2" >
+                    <fields />
+                </orders>
+            </statement>
+            <statement name="unsuccessful">
+                <select query="Select spm_user.groupccraid as groupaiid, dbo.convert_datetime(spm_session.logindate) as dateandtime,case when spm_session.loginflag = 2 then 'Unexpect Exception' when spm_session.loginflag = 3 then 'Incorrect Userid' when spm_session.loginflag = 4 then 'Incorrect Password' when spm_session.loginflag = 5 then 'Cannot Register' when spm_session.loginflag = 6 then 'Cannot Record Transaction' when spm_session.loginflag = 7 then 'User Disabled' when spm_session.loginflag = 8 then 'User Overlimit Connection' when spm_session.loginflag = 9 then 'Encrypt Fail' when spm_session.loginflag = 10 then 'User Expired' when spm_session.loginflag = 11 then 'Not Permitted Time' when spm_session.loginflag = 12 then 'AI Expired' when spm_session.loginflag = 14 then 'Incorrect Password' when spm_session.loginflag = 15 then 'AI Overlimit Connection' end as reasonunsuccessful, case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid, spm_user.user_name_en from spm_session (nolock), spm_user (nolock), spm_group (nolock) ">
+                    <fields />
+                </select>
+                <criterias query="where spm_session.uid = spm_user.uid and spm_user.groupccraid = spm_group.groupid and (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null) and ((spm_user.disabled = 0 and spm_user.deleted = 0) or ((spm_user.disabled = 1 or spm_user.deleted = 1)">
+                    <fields>
+                        <field name="periodID" required="true" query="and spm_user.createddate &lt; dateadd(month,1,'{periodID}'+'01') )) and spm_session.loginflag &lt;&gt; 1 and spm_session.logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,1,'{periodID}'+'01')" by="" />
+                        <field name="memberID" required="false" query="and spm_user.groupccraid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1," >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="usage-report">
+        <statement-list>
+            <statement name="summary">
+                <select query="select groupid as &#034;Member Code&#034;, productcode as &#034;Product Code&#034;, case when productcode = 47 then 'No-match Report' else (select spm_object.objectlabel from spm_object (nolock) where spm_object.objectid = productcode) end as &#034;Product Name&#034;, sum(isnull(total,0)) &#034;Usage&#034; from (select spm_group.groupid, spm_expense.productusage as productcode, case when spm_expense.productusage = 50 then 1 when spm_expense.productusage = 51 then 1 when spm_expense.productusage = 47 then 1 when spm_expense.productusage = 56 then 1 when spm_expense.productusage = 54 then 1 end  as total from spm_group (nolock) inner join (select expense.groupaiid, expense.requesttime, expense.productusage  from spm_expense expense (nolock)  where expense.disabled = 0  and expense.requesttime &gt;= '{startDateSQL}' and expense.requesttime &lt; dateadd(day, 1, '{endDateSQL}')  ) as spm_expense on spm_group.groupid = spm_expense.groupaiid">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="" by="" />
+                        <field name="endDateSQL" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where spm_group.groupid is not null">
+                    <fields>
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query=") data group by groupid, productcode">
+                    <fields />
+                </group-bys>
+                <orders query="order by &#034;Member Code&#034;, &#034;Product Code&#034;" >
+                    <fields />
+                </orders>
+            </statement>
+            <statement name="usage">
+				<select query="select expense.groupaiid, dbo.convert_datetime(expense.requesttime) as deliverydate, master_duns.hkbrc as hkbrc, master_duns.hkci as hkci, master_duns.other_reg as otherreg, master_duns.other_reg_place as placereg, expense.customer_no as customerno, expense.loc_branch_id as location, expense.acc_mnger_code as managercode, case when expense.productusage = 56 then (select base_reason.description_en from base_reason (nolock) where base_reason.id = register.reasoncode) else (select base_reason.description_en from base_reason (nolock) where base_reason.id = mal_product.reasoncode) end as reason, (select case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid from spm_user (nolock) where spm_user.uid = expense.uid) userid, expense.productusage as productcode, case when expense.productusage = 47 then 'No-match Report'+ case when isnull(mal_product.hkbrc,'') &lt;&gt; '' then ' [HKBRC = '+mal_product.hkbrc+']' when isnull(mal_product.hkci,'') &lt;&gt; '' then ' [HKCI = '+mal_product.hkci+']' when isnull(mal_product.other_reg_no,'') &lt;&gt; '' then ' [Other Registration = '+mal_product.other_reg_no+']' when isnull(mal_product.namesearch,'') &lt;&gt; '' then ' [Name = '+mal_product.namesearch+']' else ' [No Criteria Entered]' end else spm_object.objectlabel end as productname, expense.REPORT_REF_NO reportrefno, case when expense.productusage = 56 then register.airefcode1 else mal_product.airefcode1 end as airef1, case when expense.productusage = 56 then register.airefcode2 else mal_product.airefcode2 end as airef2, case when expense.productusage = 56 then register.airefcode3 else mal_product.airefcode3 end as airef3 from spm_expense expense (nolock) left outer join master_dunstable master_duns (nolock) on expense.cbuid = master_duns.cbuid inner join spm_object (nolock) on expense.productusage = spm_object.objectid left outer join mal_productdeliver mal_product (nolock) on expense.expenseid = mal_product.expenseid and mal_product.transactionid = (select max(a.transactionid) from mal_productdeliver a (nolock) where a.expenseid = expense.expenseid) left outer join (select trans.expenseid, regis.reasoncode, regis.airefcode1, regis.airefcode2, regis.airefcode3 from prod_register regis (nolock), prod_alert_trans trans (nolock) where trans.monitorid = regis.monitorid) as register on expense.expenseid = register.expenseid inner join spm_group (nolock) on spm_group.groupid = expense.groupaiid">
+                    <fields />
+                </select>
+                <criterias query="where expense.disabled = 0">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and expense.requesttime &gt;= '{startDateSQL}'" by="" />
+                        <field name="endDateSQL" required="true" query="and expense.requesttime &lt; dateadd(day, 1, '{endDateSQL}')" by="" />
+                        <field name="memberID" required="false" query="and expense.groupaiid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1," >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+            <statement name="discharge">
+                <select query="select spm_group.groupid, dbo.convert_datetime(expense.requesttime) as deliverydate, master_duns.hkbrc as hkbrc, master_duns.hkci as hkci, master_duns.other_reg as otherreg, master_duns.other_reg_place as placereg, expense.customer_no as customerno, expense.loc_branch_id as location, expense.acc_mnger_code as managercode, case when expense.productusage = 56 then (select base_reason.description_en from base_reason (nolock) where base_reason.id = register.reasoncode) else (select base_reason.description_en from base_reason (nolock) where base_reason.id = mal_product.reasoncode) end as reason, (select case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid from spm_user (nolock) where spm_user.uid = expense.uid) userid, expense.productusage as productcode, case when expense.productusage = 47 then 'No-match Report'+ case when isnull(mal_product.hkbrc,'') &lt;&gt; '' then ' [HKBRC = '+mal_product.hkbrc+']' when isnull(mal_product.hkci,'') &lt;&gt; '' then ' [HKCI = '+mal_product.hkci+']' when isnull(mal_product.other_reg_no,'') &lt;&gt; '' then ' [Other Registration = '+mal_product.other_reg_no+']' when isnull(mal_product.namesearch,'') &lt;&gt; '' then ' [Name = '+mal_product.namesearch+']' else ' [No Criteria Entered]' end else spm_object.objectlabel end as productname, expense.REPORT_REF_NO reportrefno, case when expense.productusage = 56 then register.airefcode1 else mal_product.airefcode1 end as airef1, case when expense.productusage = 56 then register.airefcode2 else mal_product.airefcode2 end as airef2, case when expense.productusage = 56 then register.airefcode3 else mal_product.airefcode3 end as airef3, dbo.convert_datetime(discharge.createddate) as dischargedate, case when discharge.flag = -1 then 'Discharged' else 'Undo Discharged' end as status from spm_expense expense (nolock) left outer join master_dunstable master_duns (nolock) on expense.cbuid = master_duns.cbuid inner join spm_object (nolock) on expense.productusage = spm_object.objectid left outer join mal_productdeliver mal_product (nolock) on expense.expenseid = mal_product.expenseid and mal_product.transactionid = (select max(a.transactionid) from mal_productdeliver a (nolock) where a.expenseid = expense.expenseid) left outer join (select trans.expenseid, regis.reasoncode, regis.airefcode1, regis.airefcode2, regis.airefcode3 from prod_register regis (nolock), prod_alert_trans trans (nolock) where trans.monitorid = regis.monitorid) as register on expense.expenseid = register.expenseid inner join spm_group (nolock) on spm_group.groupid = expense.groupaiid inner join spm_discharge_trans discharge (nolock) on expense.expenseid = discharge.expenseid">
+                    <fields />
+                </select>
+                <criterias query="where expense.disabled = 0 ">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and expense.requesttime &gt;= '{startDateSQL}'" by="" />
+                        <field name="endDateSQL" required="true" query="and expense.requesttime &lt; dateadd(day, 1, '{endDateSQL}')" by="" />
+                        <field name="memberID" required="false" query="and expense.groupaiid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1," >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="usage-report-ccra">
+        <statement-list>
+            <statement name="summary">
+                <select query="select groupid as &#034;Member Code&#034;, productcode as &#034;Product Code&#034;, case when productcode = 47 then 'No-match Report' else (select spm_object.objectlabel from spm_object (nolock) where spm_object.objectid = productcode) end as &#034;Product Name&#034;, sum(isnull(total,0)) &#034;Usage&#034; from (select spm_group.groupid, spm_expense.productusage as productcode, case when spm_expense.productusage = 50 then 1 when spm_expense.productusage = 51 then 1 when spm_expense.productusage = 47 then 1 when spm_expense.productusage = 56 then 1 when spm_expense.productusage = 54 then 1 end  as total from spm_group (nolock) inner join spm_user (nolock) on spm_group.groupid = spm_user.groupccraid inner join (select expense.uid, expense.requesttime, expense.productusage  from spm_expense expense (nolock)  where expense.disabled = 0  and expense.requesttime &gt;= '{startDateSQL}' and expense.requesttime &lt; dateadd(day, 1, '{endDateSQL}')  ) as spm_expense on spm_user.uid = spm_expense.uid">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="" by="" />
+                        <field name="endDateSQL" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null)">
+                    <fields>
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query=") data group by groupid, productcode">
+                    <fields />
+                </group-bys>
+                <orders query="order by &#034;Member Code&#034;, &#034;Product Code&#034;" >
+                    <fields />
+                </orders>
+            </statement>
+            <statement name="usage">
+				<select query="select spm_group.groupid as groupaiid, dbo.convert_datetime(expense.requesttime) as deliverydate, master_duns.hkbrc as hkbrc, master_duns.hkci as hkci, master_duns.other_reg as otherreg, master_duns.other_reg_place as placereg, expense.customer_no as customerno, expense.loc_branch_id as location, expense.acc_mnger_code as managercode, case when expense.productusage = 56 then (select base_reason.description_en from base_reason (nolock) where base_reason.id = register.reasoncode) else (select base_reason.description_en from base_reason where base_reason.id = mal_product.reasoncode) end as reason, (select case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid from spm_user (nolock) where spm_user.uid = expense.uid) userid, expense.productusage as productcode, case when expense.productusage = 47 then 'No-match Report'+ case when isnull(mal_product.hkbrc,'') &lt;&gt; '' then ' [HKBRC = '+mal_product.hkbrc+']' when isnull(mal_product.hkci,'') &lt;&gt; '' then ' [HKCI = '+mal_product.hkci+']' when isnull(mal_product.other_reg_no,'') &lt;&gt; '' then ' [Other Registration = '+mal_product.other_reg_no+']' when isnull(mal_product.namesearch,'') &lt;&gt; '' then ' [Name = '+mal_product.namesearch+']' else ' [No Criteria Entered]' end else spm_object.objectlabel end as productname, expense.REPORT_REF_NO reportrefno, case when expense.productusage = 56 then register.airefcode1 else mal_product.airefcode1 end as airef1, case when expense.productusage = 56 then register.airefcode2 else mal_product.airefcode2 end as airef2, case when expense.productusage = 56 then register.airefcode3 else mal_product.airefcode3 end as airef3 from spm_expense expense (nolock) left outer join master_dunstable master_duns (nolock) on expense.cbuid = master_duns.cbuid inner join spm_object (nolock) on expense.productusage = spm_object.objectid left outer join mal_productdeliver mal_product (nolock) on expense.expenseid = mal_product.expenseid and mal_product.transactionid = (select max(a.transactionid) from mal_productdeliver a (nolock) where a.expenseid = expense.expenseid) left outer join (select trans.expenseid, regis.reasoncode, regis.airefcode1, regis.airefcode2, regis.airefcode3 from prod_register regis (nolock), prod_alert_trans trans (nolock) where trans.monitorid = regis.monitorid) as register on expense.expenseid = register.expenseid inner join spm_user (nolock) on spm_user.uid = expense.uid inner join spm_group (nolock) on spm_group.groupid = spm_user.groupccraid">
+                    <fields />
+                </select>
+                <criterias query="where (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null) and expense.disabled = 0">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and expense.requesttime &gt;= '{startDateSQL}'" by="" />
+                        <field name="endDateSQL" required="true" query="and expense.requesttime &lt; dateadd(day, 1, '{endDateSQL}')" by="" />
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1," >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+            <statement name="discharge">
+                <select query="select spm_group.groupid, dbo.convert_datetime(expense.requesttime) as deliverydate, master_duns.hkbrc as hkbrc, master_duns.hkci as hkci, master_duns.other_reg as otherreg, master_duns.other_reg_place as placereg, expense.customer_no as customerno, expense.loc_branch_id as location, expense.acc_mnger_code as managercode, case when expense.productusage = 56 then (select base_reason.description_en from base_reason (nolock) where base_reason.id = register.reasoncode) else (select base_reason.description_en from base_reason (nolock) where base_reason.id = mal_product.reasoncode) end as reason, (select case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid from spm_user (nolock) where spm_user.uid = expense.uid) userid, expense.productusage as productcode, case when expense.productusage = 47 then 'No-match Report'+ case when isnull(mal_product.hkbrc,'') &lt;&gt; '' then ' [HKBRC = '+mal_product.hkbrc+']' when isnull(mal_product.hkci,'') &lt;&gt; '' then ' [HKCI = '+mal_product.hkci+']' when isnull(mal_product.other_reg_no,'') &lt;&gt; '' then ' [Other Registration = '+mal_product.other_reg_no+']' when isnull(mal_product.namesearch,'') &lt;&gt; '' then ' [Name = '+mal_product.namesearch+']' else ' [No Criteria Entered]' end else spm_object.objectlabel end as productname, expense.REPORT_REF_NO reportrefno, case when expense.productusage = 56 then register.airefcode1 else mal_product.airefcode1 end as airef1, case when expense.productusage = 56 then register.airefcode2 else mal_product.airefcode2 end as airef2, case when expense.productusage = 56 then register.airefcode3 else mal_product.airefcode3 end as airef3, dbo.convert_datetime(discharge.createddate) as dischargedate, case when discharge.flag = -1 then 'Discharged' else 'Undo Discharged' end as status from spm_expense expense (nolock) left outer join master_dunstable master_duns (nolock) on expense.cbuid = master_duns.cbuid inner join spm_object (nolock) on expense.productusage = spm_object.objectid left outer join mal_productdeliver mal_product (nolock) on expense.expenseid = mal_product.expenseid and mal_product.transactionid = (select max(a.transactionid) from mal_productdeliver a (nolock) where a.expenseid = expense.expenseid) left outer join (select trans.expenseid, regis.reasoncode, regis.airefcode1, regis.airefcode2, regis.airefcode3 from prod_register regis (nolock), prod_alert_trans trans (nolock) where trans.monitorid = regis.monitorid) as register on expense.expenseid = register.expenseid inner join spm_user (nolock) on spm_user.uid = expense.uid inner join spm_group (nolock) on spm_group.groupid = spm_user.groupccraid inner join spm_discharge_trans discharge (nolock) on expense.expenseid = discharge.expenseid">
+                    <fields />
+                </select>
+                <criterias query="where (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null) and expense.disabled = 0 ">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and expense.requesttime &gt;= '{startDateSQL}'" by="" />
+                        <field name="endDateSQL" required="true" query="and expense.requesttime &lt; dateadd(day, 1, '{endDateSQL}')" by="" />
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1," >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="report-order-without-consent">
+        <statement-list>
+            <statement name="summary">
+                <select query="select groupid as &#034;Member Code&#034;, productcode as &#034;Product Code&#034;, case when productcode = 47 then 'No-match Report' else (select spm_object.objectlabel from spm_object (nolock) where spm_object.objectid = productcode) end as &#034;Product Name&#034;, sum(isnull(total,0)) &#034;Total Reports Ordered&#034;, case when sum(isnull(total,0)) = 0 then 0 else cast((sum(isnull(withconsent,0)) * 100.00) / sum(isnull(total,0)) as decimal) end as &#034;% With Customer Consent&#034;, case when sum(isnull(total,0)) = 0 then 0 else cast((sum(isnull(withoutconsent,0)) * 100.00) / sum(isnull(total,0)) as decimal) end as &#034;% Without Customer Consent&#034; from (select spm_group.groupid, spm_group.aicode, spm_group.group_name_en, spm_expense.productusage as productcode, case when spm_expense.productusage = 50 then 1 when spm_expense.productusage = 51 then 1 when spm_expense.productusage = 47 then 1 when spm_expense.productusage = 54 then 1 when spm_expense.productusage = 56 then 1 end as total, case when spm_expense.submission_flag = 1 and (spm_expense.requesttime &lt; spm_expense.revoc_effect_date or spm_expense.revoc_effect_date is null) then 1 end as withconsent, case when spm_expense.submission_flag = 0 or spm_expense.requesttime &gt;= spm_expense.revoc_effect_date then 1 end as withoutconsent from spm_group (nolock) inner join (select expense.groupaiid, expense.requesttime, expense.productusage, expense.submission_flag, expense.revoc_effect_date  from spm_expense expense (nolock)  where expense.disabled = 0  and expense.requesttime &gt;= '{startDateSQL}' and expense.requesttime &lt; dateadd(day, 1, '{endDateSQL}')) as spm_expense on spm_group.groupid = spm_expense.groupaiid">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="" by="" />
+                        <field name="endDateSQL" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where spm_group.aiflag = 1">
+                    <fields>
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query=") data group by groupid, group_name_en, productcode">
+                    <fields />
+                </group-bys>
+                <orders query="order by &#034;Member Code&#034;, &#034;Product Code&#034;" >
+                    <fields />
+                </orders>
+            </statement>
+            <statement name="consent">
+                <select query="select spm_group.groupid, dbo.convert_datetime(expense.requesttime) as deliverydate, master_duns.hkbrc as hkbrc, master_duns.hkci as hkci, master_duns.other_reg as otherreg, master_duns.other_reg_place as placereg, expense.customer_no as customerno, expense.loc_branch_id as location, expense.acc_mnger_code as managercode, case when expense.productusage = 56 then (select base_reason.description_en from base_reason (nolock) where base_reason.id = register.reasoncode) else (select base_reason.description_en from base_reason (nolock) where base_reason.id = mal_product.reasoncode) end as reason, (select case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid from spm_user (nolock) where spm_user.uid = expense.uid) userid, expense.productusage as productcode, case when expense.productusage = 47 then 'No-match Report'+ case when isnull(mal_product.hkbrc,'') &lt;&gt; '' then ' [HKBRC = '+mal_product.hkbrc+']' when isnull(mal_product.hkci,'') &lt;&gt; '' then ' [HKCI = '+mal_product.hkci+']' when isnull(mal_product.other_reg_no,'') &lt;&gt; '' then ' [Other Registration = '+mal_product.other_reg_no+']' when isnull(mal_product.namesearch,'') &lt;&gt; '' then ' [Name = '+mal_product.namesearch+']' else ' [No Criteria Entered]' end else spm_object.objectlabel end as productname, expense.REPORT_REF_NO reportrefno, case when expense.productusage = 56 then register.airefcode1 else mal_product.airefcode1 end as airef1, case when expense.productusage = 56 then register.airefcode2 else mal_product.airefcode2 end as airef2, case when expense.productusage = 56 then register.airefcode3 else mal_product.airefcode3 end as airef3 from spm_expense expense (nolock) left outer join master_dunstable master_duns (nolock) on expense.cbuid = master_duns.cbuid left join spm_object (nolock) on expense.productusage = spm_object.objectid left outer join mal_productdeliver mal_product (nolock) on expense.expenseid = mal_product.expenseid and mal_product.transactionid = (select top 1 a.transactionid from mal_productdeliver a (nolock) where a.expenseid = expense.expenseid order by a.transactionid desc) left outer join (select trans.expenseid, regis.reasoncode, regis.airefcode1, regis.airefcode2, regis.airefcode3 from prod_register regis (nolock), prod_alert_trans trans (nolock) where trans.monitorid = regis.monitorid) as register on expense.expenseid = register.expenseid inner join spm_group (nolock) on expense.groupaiid = spm_group.groupid">
+                    <fields />
+                </select>
+                <criterias query="where spm_group.aiflag = 1 and expense.disabled = 0 and (expense.requesttime &gt;= expense.revoc_effect_date or expense.submission_flag = 0)" >
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and expense.requesttime &gt;= '{startDateSQL}'" by="" />
+                        <field name="endDateSQL" required="true" query="and expense.requesttime &lt; dateadd(day, 1, '{endDateSQL}')" by="" />
+                        <field name="memberID" required="false" query="and expense.groupaiid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1," >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						<field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="report-order-without-consent-ccra">
+        <statement-list>
+            <statement name="summary">
+                <select query="select groupid as &#034;Member Code&#034;, productcode as &#034;Product Code&#034;, case when productcode = 47 then 'No-match Report' else (select spm_object.objectlabel from spm_object (nolock) where spm_object.objectid = productcode) end as &#034;Product Name&#034;, sum(isnull(total,0)) &#034;Total Reports Ordered&#034;, case when sum(isnull(total,0)) = 0 then 0 else cast((sum(isnull(withconsent,0)) * 100.00) / sum(isnull(total,0)) as decimal) end as &#034;% With Customer Consent&#034;, case when sum(isnull(total,0)) = 0 then 0 else cast((sum(isnull(withoutconsent,0)) * 100.00) / sum(isnull(total,0)) as decimal) end as &#034;% Without Customer Consent&#034; from (select spm_group.groupid, spm_group.aicode, spm_group.group_name_en, spm_expense.productusage as productcode, case when spm_expense.productusage = 50 then 1 when spm_expense.productusage = 51 then 1 when spm_expense.productusage = 47 then 1 when spm_expense.productusage = 54 then 1 when spm_expense.productusage = 56 then 1 end as total, case when spm_expense.submission_flag = 1 and (spm_expense.requesttime &lt; spm_expense.revoc_effect_date or spm_expense.revoc_effect_date is null) then 1 end as withconsent, case when spm_expense.submission_flag = 0 or spm_expense.requesttime &gt;= spm_expense.revoc_effect_date then 1 end as withoutconsent from spm_group (nolock) inner join spm_user (nolock) on spm_user.groupccraid = spm_group.groupid inner join (select expense.uid, expense.requesttime, expense.productusage, expense.submission_flag, expense.revoc_effect_date  from spm_expense expense (nolock)  where expense.disabled = 0  and expense.requesttime &gt;= '{startDateSQL}' and expense.requesttime &lt; dateadd(day, 1, '{endDateSQL}')) as spm_expense on spm_user.uid = spm_expense.uid">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="" by="" />
+                        <field name="endDateSQL" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null)">
+                    <fields>
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query=") data group by groupid, group_name_en, productcode">
+                    <fields />
+                </group-bys>
+                <orders query="order by &#034;Member Code&#034;, &#034;Product Code&#034;" >
+                    <fields />
+                </orders>
+            </statement>
+            <statement name="consent">
+                <select query="select spm_group.groupid, dbo.convert_datetime(expense.requesttime) as deliverydate, master_duns.hkbrc as hkbrc, master_duns.hkci as hkci, master_duns.other_reg as otherreg, master_duns.other_reg_place as placereg, expense.customer_no as customerno, expense.loc_branch_id as location, expense.acc_mnger_code as managercode, case when expense.productusage = 56 then (select base_reason.description_en from base_reason (nolock) where base_reason.id = register.reasoncode) else (select base_reason.description_en from base_reason (nolock) where base_reason.id = mal_product.reasoncode) end as reason, (select case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid from spm_user (nolock) where spm_user.uid = expense.uid) userid, expense.productusage as productcode, case when expense.productusage = 47 then 'No-match Report'+ case when isnull(mal_product.hkbrc,'') &lt;&gt; '' then ' [HKBRC = '+mal_product.hkbrc+']' when isnull(mal_product.hkci,'') &lt;&gt; '' then ' [HKCI = '+mal_product.hkci+']' when isnull(mal_product.other_reg_no,'') &lt;&gt; '' then ' [Other Registration = '+mal_product.other_reg_no+']' when isnull(mal_product.namesearch,'') &lt;&gt; '' then ' [Name = '+mal_product.namesearch+']' else ' [No Criteria Entered]' end else spm_object.objectlabel end as productname, expense.REPORT_REF_NO reportrefno, case when expense.productusage = 56 then register.airefcode1 else mal_product.airefcode1 end as airef1, case when expense.productusage = 56 then register.airefcode2 else mal_product.airefcode2 end as airef2, case when expense.productusage = 56 then register.airefcode3 else mal_product.airefcode3 end as airef3 from spm_expense expense (nolock) left outer join master_dunstable master_duns (nolock) on expense.cbuid = master_duns.cbuid left join spm_object (nolock) on expense.productusage = spm_object.objectid left outer join mal_productdeliver mal_product (nolock) on expense.expenseid = mal_product.expenseid and mal_product.transactionid = (select top 1 a.transactionid from mal_productdeliver a (nolock) where a.expenseid = expense.expenseid order by a.transactionid desc) left outer join (select trans.expenseid, regis.reasoncode, regis.airefcode1, regis.airefcode2, regis.airefcode3 from prod_register regis (nolock), prod_alert_trans trans (nolock) where trans.monitorid = regis.monitorid) as register on expense.expenseid = register.expenseid inner join spm_user (nolock) on expense.uid = spm_user.uid inner join spm_group (nolock) on spm_user.groupccraid = spm_group.groupid ">
+                    <fields />
+                </select>
+                <criterias query="where (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null) and expense.disabled = 0 and (expense.requesttime &gt;= expense.revoc_effect_date or expense.submission_flag = 0)" >
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and expense.requesttime &gt;= '{startDateSQL}'" by="" />
+                        <field name="endDateSQL" required="true" query="and expense.requesttime &lt; dateadd(day, 1, '{endDateSQL}')" by="" />
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1," >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						<field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="member-inquiry">
+        <statement-list>
+            <statement name="summary">
+                <select query="select detail.groupid, detail.title, sum(detail.pasttwoperiod) as pasttwoperiod, sum(detail.pastoneperiod) as pastoneperiod, sum(detail.currentperiod) as currentperiod,  case when detail.title = 'Total Users'    then    sum(detail.currentperiod) else    sum(detail.currentperiod)+sum(detail.pastoneperiod)+sum(detail.pasttwoperiod) end as total,  case when detail.title = 'Total Users'    then null else      cast (	   (sum(detail.currentperiod)+sum(detail.pastoneperiod)+sum(detail.pasttwoperiod)) / 3.00 as numeric(15,2)) end as average from (select spm_group.groupid, 'Total Active Users' as title, (select count(spm_user.uid) from spm_user (nolock), (select distinct uid from spm_session (nolock) where spm_session.logindate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) spm_session where spm_user.groupaiid = spm_group.groupid and spm_user.uid = spm_session.uid) as currentperiod,	(select count(spm_user.uid) from spm_user (nolock),	(select distinct uid from spm_session (nolock) where spm_session.logindate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) spm_session where spm_user.groupaiid = spm_group.groupid and spm_user.uid = spm_session.uid) as pastoneperiod, (select count(spm_user.uid) from spm_user (nolock), (select distinct uid from spm_session (nolock) where spm_session.logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01'))	spm_session where spm_user.groupaiid = spm_group.groupid and spm_user.uid = spm_session.uid) as pasttwoperiod from spm_group (nolock) where spm_group.aiflag = 1 {0} union select spm_group.groupid, 'Inquiry Users' as title, (select count(spm_user.uid) from spm_user (nolock),	(select distinct uid from spm_expense (nolock) where spm_expense.productusage &lt;= 56 and spm_expense.requesttime between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) spm_expense where spm_user.groupaiid = spm_group.groupid and spm_user.uid =	spm_expense.uid) as currentperiod, (select count(spm_user.uid) from spm_user (nolock), (select distinct uid from spm_expense (nolock) where spm_expense.productusage &lt;= 56 and spm_expense.requesttime between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) spm_expense where spm_user.groupaiid = spm_group.groupid and spm_user.uid = spm_expense.uid)	 as pastoneperiod, (select count(spm_user.uid) from spm_user (nolock), (select distinct uid from spm_expense (nolock) where spm_expense.productusage &lt;= 56 and spm_expense.requesttime between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) spm_expense where spm_user.groupaiid = spm_group.groupid and spm_user.uid = spm_expense.uid) as pasttwoperiod from spm_group (nolock) where spm_group.aiflag = 1 {0} union select spm_group.groupid, 'Total Users' as title, (select count(spm_user.uid) from spm_user (nolock) where spm_user.groupaiid = spm_group.groupid and (spm_user.deleted = 0 or (spm_user.deleted = 1 and spm_user.updateddate &gt;= cast('{periodID}'+'01' as datetime))) and spm_user.createddate &lt; dateadd(month,1,'{periodID}'+'01')) as currentperiod , (select count(spm_user.uid) from spm_user (nolock) where spm_user.groupaiid = spm_group.groupid and (spm_user.deleted = 0 or (spm_user.deleted = 1 and spm_user.updateddate &gt;= dateadd(month,-1,'{periodID}'+'01'))) and spm_user.createddate &lt; cast('{periodID}'+'01' as datetime)) as pastoneperiod , (select count(spm_user.uid) from spm_user (nolock) where spm_user.groupaiid = spm_group.groupid and (spm_user.deleted = 0 or (spm_user.deleted = 1 and spm_user.updateddate &gt;= dateadd(month,-2,'{periodID}'+'01'))) and spm_user.createddate &lt; dateadd(month,-1,'{periodID}'+'01')) as pasttwoperiod from spm_group (nolock)">
+                    <fields>
+                        <field name="periodID" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where spm_group.aiflag = 1">
+                    <fields>
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by="" />
+                    </fields>
+                </criterias>
+                <group-bys query=") detail group by detail.groupid, detail.title">
+                    <fields />
+                </group-bys>
+                <orders query="order by detail.groupid, detail.title desc" >
+                    <fields />
+                </orders>
+            </statement>
+            <statement name="inquiry">
+                <select query="select data.groupid as groupaiid, data.userid, data.user_name_en, sum(isnull(data.nomatchreportP2,0))+sum(isnull(data.basicreportP2,0))+sum(isnull(data.chinesereportP2,0))+sum(isnull(data.regis_monitoringP2,0))+sum(isnull(data.regis_enquiryP2,0)) as pasttwoperiod, sum(isnull(data.nomatchreportP1,0))+sum(isnull(data.basicreportP1,0))+sum(isnull(data.chinesereportP1,0))+sum(isnull(data.regis_monitoringP1,0))+sum(isnull(data.regis_enquiryP1,0)) as pastoneperiod, sum(isnull(data.nomatchreport,0))+sum(isnull(data.basicreport,0))+sum(isnull(data.chinesereport,0))+sum(isnull(data.regis_monitoring,0))+sum(isnull(data.regis_enquiry,0)) as currentperiod, sum(isnull(data.nomatchreportP2,0))+sum(isnull(data.basicreportP2,0))+sum(isnull(data.chinesereportP2,0))+sum(isnull(data.regis_monitoringP2,0))+sum(isnull(data.regis_enquiryP2,0))+ sum(isnull(data.nomatchreportP1,0))+sum(isnull(data.basicreportP1,0))+sum(isnull(data.chinesereportP1,0))+sum(isnull(data.regis_monitoringP1,0))+sum(isnull(data.regis_enquiryP1,0))+ sum(isnull(data.nomatchreport,0))+sum(isnull(data.basicreport,0))+sum(isnull(data.chinesereport,0))+sum(isnull(data.regis_monitoring,0))+sum(isnull(data.regis_enquiry,0)) as total, cast ((sum(isnull(data.nomatchreportP2,0))+sum(isnull(data.basicreportP2,0))+sum(isnull(data.chinesereportP2,0))+sum(isnull(data.regis_monitoringP2,0))+sum(isnull(data.regis_enquiryP2,0))+ sum(isnull(data.nomatchreportP1,0))+sum(isnull(data.basicreportP1,0))+sum(isnull(data.chinesereportP1,0))+sum(isnull(data.regis_monitoringP1,0))+sum(isnull(data.regis_enquiryP1,0))+ sum(isnull(data.nomatchreport,0))+sum(isnull(data.basicreport,0))+sum(isnull(data.chinesereport,0))+sum(isnull(data.regis_monitoring,0))+sum(isnull(data.regis_enquiry,0)) ) / 3.00 as numeric(15,2)) average, data.uid from (select spm_group.groupid ,case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid ,spm_user.user_name_en, spm_group.monthly_plan , spm_group.disabled , spm_group.deleted , trans.uid , spm_group.aiflag , case 	when (trans.createddate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=47 and isnull(mal_prod.expenseid,0)&lt;&gt;0 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as nomatchreport , case 	when (trans.createddate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=50 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as basicreport , case 	when (trans.createddate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=51 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as chinesereport , case 	when (trans.createddate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) and isnull(regis.product_type,0)=54 then 1 else 0 end as regis_monitoring , case 	when (trans.createddate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) and isnull(regis.product_type,0)=56 then 1 else 0 end as regis_enquiry , case 	when (trans.createddate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) and isnull(mal_prod.objectid,0)=47 and isnull(mal_prod.expenseid,0)&lt;&gt;0 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as nomatchreportP1 , case 	when (trans.createddate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) and isnull(mal_prod.objectid,0)=50 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as basicreportP1 	, case 	when (trans.createddate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) and isnull(mal_prod.objectid,0)=51 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as chinesereportP1 , case 	when (trans.createddate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) and isnull(regis.product_type,0)=54 then 1 else 0 end as regis_monitoringP1 , case 	when (trans.createddate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) and isnull(regis.product_type,0)=56 then 1 else 0 end as regis_enquiryP1 , case 	when (trans.createddate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=47 and isnull(mal_prod.expenseid,0)&lt;&gt;0 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as nomatchreportP2 , case 	when (trans.createddate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=50 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as basicreportP2 , case 	when (trans.createddate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=51 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as chinesereportP2 , case 	when (trans.createddate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) and isnull(regis.product_type,0)=54 then 1 else 0 end as regis_monitoringP2 , case 	when (trans.createddate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) and isnull(regis.product_type,0)=56 then 1 else 0 end as regis_enquiryP2 from  spm_transaction trans (nolock) inner join mal_productdeliver mal_prod (nolock) on mal_prod.transactionid=trans.transactionid inner join spm_user (nolock) on spm_user.uid=trans.uid  inner join spm_group (nolock) on spm_group.groupid=spm_user.groupaiid left outer join spm_expense ex(nolock)on ex.expenseid=mal_prod.expenseid left outer join (select transactionid,product_type from prod_register (nolock)) regis on mal_prod.transactionid = regis.transactionid left outer join (select mal1.transactionid,1 as flag from mal_productdeliver mal1 (nolock) where mal1.transactionid = (select top 1 a.transactionid from mal_productdeliver a (nolock) where (a.expenseid = mal1.expenseid) order by a.transactionid desc) or mal1.expenseid is null) tranid on tranid.transactionid=mal_prod.transactionid where trans.objectid=47 and  trans.createddate  between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,1,'{periodID}'+'01')) data  ">
+                    <fields>
+                        <field name="periodID" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query=" where 1=1 and data.aiflag=1 ">
+                    <fields>
+                        <field name="periodID" required="true" query="" by="" />
+                        <field name="memberID" required="false" query="and data.groupid = {memberID} " by="" />
+                        <field name="monthlyplan" required="false" query="and data.monthly_plan in ({monthlyplan}) and data.disabled = 0 and data.deleted = 0" by="" />
+                    </fields>
+                </criterias>
+                <group-bys query=" group by data.groupid,data.uid, data.userid, data.user_name_en "/>
+                <orders query=" order by data.groupid, " >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+            <statement name="inactive">
+                <select query="select spm_user.groupaiid, case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid,  spm_user.user_name_en from spm_user (nolock) left outer join (select distinct uid from spm_session (nolock) where spm_session.logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,1,'{periodID}'+'01')) spm_session on spm_user.uid = spm_session.uid inner join spm_group (nolock) on spm_user.groupaiid = spm_group.groupid">
+                    <fields>
+                        <field name="periodID" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where spm_group.aiflag = 1 and spm_user.disabled = 0 and spm_user.deleted = 0 and spm_session.uid is null">
+                    <fields >
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="periodID" required="false" query="and spm_user.createdDate &lt; dateadd(month,1,'{periodID}'+'01')" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by="" />
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1, 2" >
+                    <fields>
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="member-inquiry-ccra">
+        <statement-list>
+            <statement name="summary">
+                <select query="select detail.groupid, detail.title, sum(detail.pasttwoperiod) as pasttwoperiod, sum(detail.pastoneperiod) as pastoneperiod, sum(detail.currentperiod) as currentperiod, case when detail.title = 'Total Users' then sum(detail.currentperiod) else sum(detail.currentperiod)+sum(detail.pastoneperiod)+sum(detail.pasttwoperiod) end as total, case when detail.title = 'Total Users' then null else cast ((sum(detail.currentperiod)+sum(detail.pastoneperiod)+sum(detail.pasttwoperiod)) / 3.00 as numeric(15,2)) end as average from (select spm_group.groupid, 'Total Active Users' as title, (select count(spm_user.uid) from spm_user (nolock), (select distinct uid from spm_session (nolock) where spm_session.logindate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) spm_session where spm_user.groupccraid = spm_group.groupid and spm_user.uid = spm_session.uid) as currentperiod, (select count(spm_user.uid) from spm_user (nolock), (select distinct uid from spm_session (nolock) where spm_session.logindate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) spm_session where spm_user.groupccraid = spm_group.groupid and spm_user.uid = spm_session.uid) as pastoneperiod, (select count(spm_user.uid) from spm_user (nolock), (select distinct uid from spm_session (nolock) where spm_session.logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) spm_session where spm_user.groupccraid = spm_group.groupid and spm_user.uid = spm_session.uid) as pasttwoperiod from spm_group (nolock) where (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null) {0} union select spm_group.groupid, 'Inquiry Users' as title, (select count(spm_user.uid) from spm_user (nolock), (select distinct uid from spm_expense (nolock) where spm_expense.productusage &lt;= 56 and spm_expense.requesttime between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) spm_expense where spm_user.groupccraid = spm_group.groupid and spm_user.uid = spm_expense.uid) as currentperiod, (select count(spm_user.uid) from spm_user (nolock), (select distinct uid from spm_expense (nolock) where spm_expense.productusage &lt;= 56 and spm_expense.requesttime between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) spm_expense where spm_user.groupccraid = spm_group.groupid and spm_user.uid = spm_expense.uid) as pastoneperiod, (select count(spm_user.uid) from spm_user (nolock), (select distinct uid from spm_expense (nolock) where spm_expense.productusage &lt;= 56 and spm_expense.requesttime between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) spm_expense where spm_user.groupccraid = spm_group.groupid and spm_user.uid = spm_expense.uid) as pasttwoperiod from spm_group (nolock) where (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null) {0} union select spm_group.groupid, 'Total Users' as title, (select count(spm_user.uid) from spm_user (nolock) where spm_user.groupccraid = spm_group.groupid and (spm_user.deleted = 0 or (spm_user.deleted = 1 and spm_user.updateddate &gt;= cast('{periodID}'+'01' as datetime))) and spm_user.createddate &lt; dateadd(month,1,'{periodID}'+'01')) as currentperiod , (select count(spm_user.uid) from spm_user (nolock) where spm_user.groupccraid = spm_group.groupid  and (spm_user.deleted = 0 or (spm_user.deleted = 1 and spm_user.updateddate &gt;= dateadd(month,-1,'{periodID}'+'01'))) and spm_user.createddate &lt; cast('{periodID}'+'01' as datetime)) as pastoneperiod ,(select count(spm_user.uid) from spm_user (nolock) where spm_user.groupccraid = spm_group.groupid and (spm_user.deleted = 0 or (spm_user.deleted = 1 and spm_user.updateddate &gt;= dateadd(month,-2,'{periodID}'+'01'))) and spm_user.createddate &lt; dateadd(month,-1,'{periodID}'+'01')) as pasttwoperiod from spm_group (nolock)">
+                    <fields>
+                        <field name="periodID" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null)">
+                    <fields>
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by="" />
+                    </fields>
+                </criterias>
+                <group-bys query=") detail group by detail.groupid, detail.title">
+                    <fields />
+                </group-bys>
+                <orders query="order by detail.groupid, detail.title desc" >
+                    <fields />
+                </orders>
+            </statement>
+            <statement name="inquiry">
+                <select query="select data.groupid as groupaiid, data.userid, data.user_name_en, sum(isnull(data.nomatchreportP2,0))+sum(isnull(data.basicreportP2,0))+sum(isnull(data.chinesereportP2,0))+sum(isnull(data.regis_monitoringP2,0))+sum(isnull(data.regis_enquiryP2,0)) as pasttwoperiod, sum(isnull(data.nomatchreportP1,0))+sum(isnull(data.basicreportP1,0))+sum(isnull(data.chinesereportP1,0))+sum(isnull(data.regis_monitoringP1,0))+sum(isnull(data.regis_enquiryP1,0)) as pastoneperiod, sum(isnull(data.nomatchreport,0))+sum(isnull(data.basicreport,0))+sum(isnull(data.chinesereport,0))+sum(isnull(data.regis_monitoring,0))+sum(isnull(data.regis_enquiry,0)) as currentperiod, sum(isnull(data.nomatchreportP2,0))+sum(isnull(data.basicreportP2,0))+sum(isnull(data.chinesereportP2,0))+sum(isnull(data.regis_monitoringP2,0))+sum(isnull(data.regis_enquiryP2,0))+ sum(isnull(data.nomatchreportP1,0))+sum(isnull(data.basicreportP1,0))+sum(isnull(data.chinesereportP1,0))+sum(isnull(data.regis_monitoringP1,0))+sum(isnull(data.regis_enquiryP1,0))+ sum(isnull(data.nomatchreport,0))+sum(isnull(data.basicreport,0))+sum(isnull(data.chinesereport,0))+sum(isnull(data.regis_monitoring,0))+sum(isnull(data.regis_enquiry,0)) as total, cast ((sum(isnull(data.nomatchreportP2,0))+sum(isnull(data.basicreportP2,0))+sum(isnull(data.chinesereportP2,0))+sum(isnull(data.regis_monitoringP2,0))+sum(isnull(data.regis_enquiryP2,0))+ sum(isnull(data.nomatchreportP1,0))+sum(isnull(data.basicreportP1,0))+sum(isnull(data.chinesereportP1,0))+sum(isnull(data.regis_monitoringP1,0))+sum(isnull(data.regis_enquiryP1,0))+ sum(isnull(data.nomatchreport,0))+sum(isnull(data.basicreport,0))+sum(isnull(data.chinesereport,0))+sum(isnull(data.regis_monitoring,0))+sum(isnull(data.regis_enquiry,0)) ) / 3.00 as numeric(15,2)) average, data.uid from (select spm_group.groupid ,case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid,spm_user.user_name_en, spm_group.monthly_plan , spm_group.disabled , spm_group.deleted , trans.uid , spm_group.aiflag , case 	when (trans.createddate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=47 and isnull(mal_prod.expenseid,0)&lt;&gt;0 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as nomatchreport , case when (trans.createddate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=50 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as basicreport , case 	when (trans.createddate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=51 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as chinesereport , case when (trans.createddate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) and isnull(regis.product_type,0)=54 then 1 else 0 end as regis_monitoring , case 	when (trans.createddate between cast('{periodID}'+'01' as datetime) and dateadd(month,1,'{periodID}'+'01')) and isnull(regis.product_type,0)=56 then 1 else 0 end as regis_enquiry , case 	when (trans.createddate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) and isnull(mal_prod.objectid,0)=47 and isnull(mal_prod.expenseid,0)&lt;&gt;0 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as nomatchreportP1 , case 	when (trans.createddate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) and isnull(mal_prod.objectid,0)=50 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as basicreportP1 	, case 	when (trans.createddate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) and isnull(mal_prod.objectid,0)=51 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as chinesereportP1 , case 	when (trans.createddate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) and isnull(regis.product_type,0)=54 then 1 else 0 end as regis_monitoringP1 , case 	when (trans.createddate between dateadd(month,-1,'{periodID}'+'01') and cast('{periodID}'+'01' as datetime)) and isnull(regis.product_type,0)=56 then 1 else 0 end as regis_enquiryP1 , case when (trans.createddate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=47 and isnull(mal_prod.expenseid,0)&lt;&gt;0 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as nomatchreportP2 , case 	when (trans.createddate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=50 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as basicreportP2 , case 	when (trans.createddate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) and isnull(mal_prod.objectid,0)=51 and ex.disabled=0 and tranid.flag=1 then 1 else 0 end as chinesereportP2 , case 	when (trans.createddate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) and isnull(regis.product_type,0)=54 then 1 else 0 end as regis_monitoringP2 , case 	when (trans.createddate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,-1,'{periodID}'+'01')) and isnull(regis.product_type,0)=56 then 1 else 0 end as regis_enquiryP2 from  spm_transaction trans (nolock) inner join mal_productdeliver mal_prod (nolock) on mal_prod.transactionid=trans.transactionid inner join spm_user (nolock) on spm_user.uid=trans.uid  inner join spm_group (nolock) on spm_group.groupid=spm_user.groupccraid left outer join spm_expense ex(nolock)on ex.expenseid=mal_prod.expenseid left outer join (select transactionid,product_type from prod_register (nolock)) regis on mal_prod.transactionid = regis.transactionid left outer join (select mal1.transactionid,1 as flag from mal_productdeliver mal1 (nolock) where mal1.transactionid = (select top 1 a.transactionid from mal_productdeliver a (nolock) where (a.expenseid = mal1.expenseid) order by a.transactionid desc) or mal1.expenseid is null) tranid on tranid.transactionid=mal_prod.transactionid where trans.objectid=47 and  trans.createddate  between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,1,'{periodID}'+'01')) data  ">
+                    <fields>
+                        <field name="periodID" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where 1=1 ">
+                    <fields>
+                        <field name="periodID" required="true" query="" by="" />
+                        <field name="memberID" required="false" query="and data.groupid = {memberID} " by="" />
+                        <field name="monthlyplan" required="false" query=" and data.monthly_plan in ({monthlyplan}) and data.disabled = 0 and data.deleted = 0" by="" />
+                    </fields>
+                </criterias>
+                <group-bys query=" group by data.groupid,data.uid, data.userid, data.user_name_en "/>
+                <orders query=" order by data.groupid, " >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+            <statement name="inactive">
+                <select query="select spm_user.groupccraid, case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid,  spm_user.user_name_en from spm_user (nolock) left outer join (select distinct uid from spm_session (nolock) where spm_session.logindate between dateadd(month,-2,'{periodID}'+'01') and dateadd(month,1,'{periodID}'+'01')) spm_session on spm_user.uid = spm_session.uid inner join spm_group (nolock) on spm_user.groupccraid = spm_group.groupid">
+                    <fields>
+                        <field name="periodID" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null) and spm_user.disabled = 0 and spm_user.deleted = 0 and spm_session.uid is null">
+                    <fields >
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="periodID" required="false" query="and spm_user.createdDate &lt; dateadd(month,1,'{periodID}'+'01')" by="" />
+                        <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by="" />
+                    </fields>
+                </criterias>
+                <group-bys />
+                <orders query="ORDER BY 1, 2" >
+                    <fields>
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="password-maintenance">
+        <statement-list>
+            <statement name="master">
+                <select query="select spm_user.groupaiid, dbo.convert_datetime(spm_password_mod.changedate) as dateandtime, case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid, (select case when temp_user.deleted = 0 then temp_user.userid else substring(temp_user.userid,1,len(temp_user.userid)-(len(temp_user.uid)+1)) end from spm_user temp_user (nolock) where temp_user.uid = spm_password_mod.changeby) as authorizer, case when spm_password_mod.uid = spm_password_mod.changeby then 'Change Password' when spm_password_mod.uid &lt;&gt; spm_password_mod.changeby then 'Reset Password' end as activity, spm_password_mod.changedate as dateandtime_order from spm_user (nolock), spm_password_mod (nolock), spm_group (nolock) where spm_user.uid = spm_password_mod.uid and spm_group.groupid = spm_user.groupaiid and spm_group.aiflag = 1  and spm_password_mod.changedate &gt;= convert(datetime, '{startDateSQL}', 101) and spm_password_mod.changedate &lt; dateadd(day, 1, convert( datetime ,'{endDateSQL}' ,101)) union select spm_user.groupaiid, dbo.convert_datetime(spm_user.createddate) as dateandtime, case when spm_user.deleted = 0 then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end as userid, (select case when temp_user.deleted = 0 then temp_user.userid else substring(temp_user.userid,1,len(temp_user.userid)-(len(temp_user.uid)+1)) end from spm_user temp_user (nolock) where temp_user.uid = spm_user.createdby) as authorizer, 'New Password' as activity, spm_user.createddate as dateandtime_order from spm_user (nolock), spm_group (nolock)">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="" by="" />
+                        <field name="endDateSQL" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where spm_group.groupid = spm_user.groupaiid and spm_group.aiflag = 1">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and spm_user.createddate &gt;= convert(datetime, '{startDateSQL}', 101)" by="" />
+                        <field name="endDateSQL" required="true" query="and spm_user.createddate &lt; dateadd(day, 1, convert( datetime ,'{endDateSQL}' ,101)) and spm_user.createddate &gt;= dateadd(year, -5, convert( datetime ,getdate() ,101))" by="" />
+                        <field name="memberID" required="false" query="and spm_user.groupaiid = {memberID}" by="" />
+						<field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query="">
+                    <fields />
+                </group-bys>
+                <orders query="order by" >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="password-maintenance-ccra">
+        <statement-list>
+            <statement name="master">
+                <select query="select spm_user.groupccraid as groupaiid, dbo.convert_datetime(spm_password_mod.changedate) as dateandtime, case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as userid, (select case when temp_user.deleted = 0 then temp_user.userid else substring(temp_user.userid,1,len(temp_user.userid)-(len(temp_user.uid)+1)) end from spm_user temp_user (nolock) where temp_user.uid = spm_password_mod.changeby) as authorizer, case when spm_password_mod.uid = spm_password_mod.changeby then 'Change Password' when spm_password_mod.uid &lt;&gt; spm_password_mod.changeby then 'Reset Password' end as activity, spm_password_mod.changedate as dateandtime_order from spm_user (nolock), spm_password_mod (nolock), spm_group (nolock) where spm_user.uid = spm_password_mod.uid {00} and spm_group.groupid = spm_user.groupccraid and (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null) and spm_password_mod.changedate &gt;= convert(datetime, '{startDateSQL}', 101) and spm_password_mod.changedate &lt; dateadd(day, 1, convert( datetime ,'{endDateSQL}' ,101)) union select spm_user.groupccraid as groupaiid, dbo.convert_datetime(spm_user.createddate) as dateandtime, case when spm_user.deleted = 0 then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end as userid, (select case when temp_user.deleted = 0 then temp_user.userid else substring(temp_user.userid,1,len(temp_user.userid)-(len(temp_user.uid)+1)) end from spm_user temp_user (nolock) where temp_user.uid = spm_user.createdby) as authorizer, 'New Password' as activity, spm_user.createddate as dateandtime_order from spm_user (nolock), spm_group (nolock)">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="" by="" />
+                        <field name="endDateSQL" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where spm_group.groupid = spm_user.groupccraid and (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null)">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and spm_user.createddate &gt;= convert(datetime, '{startDateSQL}', 101)" by="" />
+                        <field name="endDateSQL" required="true" query="and spm_user.createddate &lt; dateadd(day, 1, convert( datetime ,'{endDateSQL}' ,101)) and spm_user.createddate &gt;= dateadd(year, -5, convert( datetime ,getdate() ,101))" by="" />
+                        <field name="memberID" required="false" query="and spm_user.groupccraid = {memberID}" by="" />
+						<field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query="">
+                    <fields />
+                </group-bys>
+                <orders query="order by" >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="ai-profile-update">
+        <statement-list>
+            <statement name="summary">
+                <select query="select case when data.updated_type = 99 then 'AI Merge Update' else cat.name_en end as &#034;Changes&#034;, count(data.updated_type) as  &#034;Number of Update&#034;from spm_group_transaction_type cat (nolock) left outer join (select de.updated_type, de.groupid from (select updated_type, groupid from spm_group_transaction (nolock) where spm_group_transaction.updated_type &lt;= 5 and updated_date &gt;= convert(datetime, '{startDateSQL}', 101) and updated_date &lt; dateadd(day, 1, convert( datetime ,'{endDateSQL}' ,101)) union all select 99 as updated_type, groupid_merge as groupid from prod_ai_merge_detail a (nolock), prod_ai_merge b (nolock) where a.groupid = b.groupid and a.asof = b.asof and merge_effective_date &gt;= convert(datetime, '{startDateSQL}', 101) and merge_effective_date &lt; dateadd(day, 1, convert( datetime ,'{endDateSQL}' ,101)) ) de,  spm_group (nolock) ">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="" by="" />
+                        <field name="endDateSQL" required="true" query="" by="" />
+                    </fields>
+                </select>
+                <criterias query="where de.groupid = spm_group.groupid ">
+                    <fields>
+                        <field name="aiflag" required="false" query="and spm_group.aiflag = 1" by="" />
+                        <field name="ccraflag" required="false" query="and (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null)" by="" />
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+						            <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query=") data on cat.id = data.updated_type where cat.id &lt;&gt; 6 group by data.updated_type, cat.name_en, cat.id  ">
+                    <fields />
+                </group-bys>
+                <orders query="order by cat.id" >
+                    <fields />
+                </orders>
+            </statement>
+            <statement name="aiupdate">
+                <select query="select spm_group.aicode as &#034;AI Code&#034;, spm_group.group_name_en as &#034;AI Name&#034;, dbo.convert_datetime(trans.updated_date) as &#034;Updated Date&#034; ,case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end as &#034;Updated By&#034; ,trans_type.name_en as &#034;Update Type&#034; from spm_group (nolock) inner join spm_group_transaction as trans (nolock) on spm_group.groupid = trans.groupid inner join spm_group_transaction_type as trans_type (nolock) on trans.updated_type = trans_type.id inner join spm_user (nolock) on trans.updated_by = spm_user.uid ">
+                    <fields />
+                </select>
+                <criterias query="where trans.updated_type &lt;= 5 ">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and trans.updated_date &gt;= convert(datetime, '{startDateSQL}', 101)" by="" />
+                        <field name="endDateSQL" required="true" query="and trans.updated_date &lt; dateadd(day, 1, convert( datetime ,'{endDateSQL}' ,101))" by="" />
+                        <field name="aiflag" required="false" query="and spm_group.aiflag = 1" by="" />
+                        <field name="ccraflag" required="false" query="and (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null)" by="" />
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+						            <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query="">
+                    <fields />
+                </group-bys>
+                <orders query="order by" >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+            <statement name="aimerge">
+                <select query="select spm_group.aicode as &#034;AI Code&#034;, spm_group.group_name_en as &#034;AI Name&#034;, dbo.convert_datetime(ai_merge.requested_date) as &#034;Requested Date&#034; , ai_merge.requested_by as &#034;Requested By&#034; ,dbo.convert_datetime(ai_merge.updated_date) as &#034;Updated Date&#034; ,(select case when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0)  then spm_user.userid else substring(spm_user.userid,1,len(spm_user.userid)-(len(spm_user.uid)+1)) end end from spm_user (nolock) where spm_user.uid = ai_merge.updated_by) as &#034;Updated By&#034; ,dbo.convert_datetime(ai_merge.merge_effective_date) as &#034;Merge Effective Date&#034; ,dbo.convert_datetime(ai_merge.disable_effective_date) as &#034;Disable Users Effective Date&#034; ,dbo.convert_datetime(ai_merge.submission_deadline) as &#034;Data Submission Deadline&#034; ,(select temp_group.aicode from spm_group as temp_group (nolock) where temp_group.groupid = ai_merge.groupid) as &#034;Resultant AI Code&#034; ,(select temp_group.group_name_en from spm_group as temp_group (nolock) where temp_group.groupid = ai_merge.groupid) as &#034;Resultant AI Name&#034; ,case when status_merge = 1 then 'New' else 'Disabled' end as &#034;Membership Type of Resultant AI&#034; ,spm_group.remark as &#034;Remarks&#034; from spm_group (nolock) inner join prod_ai_merge_detail as merge_de (nolock) on spm_group.groupid = merge_de.groupid_merge inner join prod_ai_merge as ai_merge (nolock) on merge_de.groupid = ai_merge.groupid and merge_de.asof = ai_merge.asof ">
+                    <fields />
+                </select>
+                <criterias query="where spm_group.groupid is not null ">
+                    <fields>
+                        <field name="startDateSQL" required="true" query="and ai_merge.merge_effective_date &gt;= convert(datetime, '{startDateSQL}', 101)" by="" />
+                        <field name="endDateSQL" required="true" query="and ai_merge.merge_effective_date &lt; dateadd(day, 1, convert( datetime ,'{endDateSQL}' ,101))" by="" />
+                        <field name="aiflag" required="false" query="and spm_group.aiflag = 1" by="" />
+                        <field name="ccraflag" required="false" query="and (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null)" by="" />
+                        <field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+						            <field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+                <group-bys query="">
+                    <fields />
+                </group-bys>
+                <orders query="order by" >
+                    <fields>
+                        <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+                        <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+                    </fields>
+                </orders>
+            </statement>
+        </statement-list>
+    </report>
+	<report name="exception-facility-report">
+        <statement-list>
+            <statement name="exception-facility">
+                <select query="select spm_group.groupid as member_code, dbo.convert_datetime(DATAAPPLY_DATE) as DATAAPPLY_DATE, BASE_DATASOURCE.DESCRIPTION_EN as DATASOURCE , TOTAL_EXP_LIMIT, CASE WHEN TRAN_EXCEP_FAC_LIMIT.DATASOURCE_ID=1 THEN LOAD_REGISTRATIONFILE.CONTROLFILENAME  ELSE NULL END as CONTROLFILENAME ,LOAD_REGISTRATIONFILE.PERIOD AS Data_period, HKBRC, HKCI, OTHER_REG_NO, PLACE_OF_REG, CUSTOMER_NO, COMPANY_NAME_ENG , COMPANY_NAME_LO from TRAN_EXCEP_FAC_LIMIT (nolock) , spm_group (nolock) , BASE_DATASOURCE (nolock),LOAD_REGISTRATIONFILE (nolock)"/>
+                <criterias query="where TRAN_EXCEP_FAC_LIMIT.groupid = spm_group.groupid and TRAN_EXCEP_FAC_LIMIT.DATASOURCE_ID =   BASE_DATASOURCE.DATASOURCE_ID and	TRAN_EXCEP_FAC_LIMIT.REGISTRATIONFILEID = LOAD_REGISTRATIONFILE.REGISTRATIONFILEID ">
+                    <fields>
+                        <field name="periodID" required="true" query="and	DATAAPPLY_DATE &gt;= dateadd(month,0,'{periodID}'+'01') and 	DATAAPPLY_DATE &lt; dateadd(month,1,'{periodID}'+'01')" by=""/>
+                        <field name="memberID" required="false" query="and	spm_group.groupid = {memberID}" by="" />
+                        <field name="aiflag" required="false" query="and spm_group.aiflag = 1" by="" />
+                        <field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+                    </fields>
+                </criterias>
+				<group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						  <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						  <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+	<report name="exception-facility-report-ccra">
+        <statement-list>
+            <statement name="exception-facility">
+                <select query="select  spm_group.groupid as member_code, dbo.convert_datetime(DATAAPPLY_DATE) as DATAAPPLY_DATE, BASE_DATASOURCE.DESCRIPTION_EN as DATASOURCE , TOTAL_EXP_LIMIT, CASE WHEN TRAN_EXCEP_FAC_LIMIT.DATASOURCE_ID=1 THEN LOAD_REGISTRATIONFILE.CONTROLFILENAME  ELSE NULL END as CONTROLFILENAME ,LOAD_REGISTRATIONFILE.PERIOD AS Data_period, HKBRC, HKCI, OTHER_REG_NO, PLACE_OF_REG, CUSTOMER_NO, COMPANY_NAME_ENG , COMPANY_NAME_LO from TRAN_EXCEP_FAC_LIMIT (nolock) , spm_group (nolock) , BASE_DATASOURCE (nolock),LOAD_REGISTRATIONFILE (nolock)"/>
+                <criterias query="where TRAN_EXCEP_FAC_LIMIT.groupid = spm_group.groupid and	TRAN_EXCEP_FAC_LIMIT.DATASOURCE_ID =   BASE_DATASOURCE.DATASOURCE_ID and	TRAN_EXCEP_FAC_LIMIT.REGISTRATIONFILEID = LOAD_REGISTRATIONFILE.REGISTRATIONFILEID ">
+				    <fields>
+					   <field name="periodID" required="true" query="and	DATAAPPLY_DATE &gt;=	dateadd(month,0,'{periodID}'+'01') and DATAAPPLY_DATE &lt; 	dateadd(month,1,'{periodID}'+'01')" by=""/>
+					   <field name="memberID" required="false" query="and	spm_group.groupid = {memberID}" by="" />
+					   <field name="aiflag" required="false" query="and spm_group.aiflag &lt;&gt; 1" by="" />
+					   <field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+				    </fields>
+				</criterias>
+				<group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						  <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						  <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+	<report name="monthly-submission-exception-report">
+        <statement-list>
+            <statement name="monthly-submission-exception">
+                <select query="select 	files.groupid as membercode ,data.period,controlfilename,(case when demo.com_type = 1 then 'LIMITED' else 'UNLIMITED' end) as Company_Type,demo.brc_no as HKBRC,demo.ci_no AS HKCI,demo.other_reg_no ,demo.place_of_reg,demo.customer_no,demo.name_en AS COMPANYNAME_ENG,demo.name_lo AS COMPANYNAME_LO,credit.fac_cancel_status from 	load_registrationfile as files (nolock), load_registrationdata as data (nolock), history_demographic as demo(nolock), history_credit as credit(nolock), spm_group (nolock)"/>
+                <criterias query="where 	files.registrationfileid = data.registrationfileid and	data.registrationdataid = demo.registrationdataid and	demo.cbuid = credit.cbuid and	demo.groupid = credit.groupid and demo.period = credit.period  and	demo.groupid = spm_group.groupid and 	data.datafiletype = 'D'">
+					<fields>
+					   <field name="periodID" required="true" query="and dateadd(month,0,data.period + '15')  between dateadd(month,-1,'{periodID}' + '01') and dateadd(month,0,'{periodID}' + '01') and (demo.name_en is null or demo.name_en &lt;&gt; '[Record removed]') and  demo.cbuid not in (select cbuid from history_demographic curhis where curhis.groupid=demo.groupid and curhis.period='{periodID}') " by=""/>
+					   <field name="memberID" required="false" query="and 	spm_group.groupid = {memberID}" by="" />
+   					   <field name="aiflag" required="false" query="and 	spm_group.aiflag = 1" by="" />
+					   <field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						<field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						<field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+	 <report name="monthly-submission-exception-ccra">
+        <statement-list>
+            <statement name="monthly-submission-exception">
+                <select query="select 	files.groupid as membercode ,data.period,controlfilename,(case when demo.com_type = 1 then 'LIMITED' else 'UNLIMITED' end) as Company_Type,demo.brc_no as HKBRC,demo.ci_no AS HKCI,demo.other_reg_no ,demo.place_of_reg,demo.customer_no,demo.name_en AS COMPANYNAME_ENG,demo.name_lo AS COMPANYNAME_LO,credit.fac_cancel_status from 	load_registrationfile as files (nolock), load_registrationdata as data (nolock), history_demographic as demo(nolock), history_credit as credit(nolock), spm_group (nolock)"/>
+                <criterias query="where 	files.registrationfileid = data.registrationfileid and	data.registrationdataid = demo.registrationdataid and	demo.cbuid = credit.cbuid and	demo.groupid = credit.groupid  and demo.period = credit.period  and	demo.groupid = spm_group.groupid and 	data.datafiletype = 'D'">
+					<fields>
+					   <field name="periodID" required="true" query="and dateadd(month,0,data.period + '15')  between dateadd(month,-1,'{periodID}' + '01') and dateadd(month,0,'{periodID}' + '01') and  demo.cbuid not in (select cbuid from history_demographic curhis where curhis.groupid=demo.groupid and curhis.period='{periodID}') " by=""/>
+					   <field name="memberID" required="false" query="and 	spm_group.groupid = {memberID}" by="" />
+					   <field name="aiflag" required="false" query="and spm_group.aiflag &lt;&gt; 1" by="" />
+					   <field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+					   <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+					   <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+	<report name="detailed-system-access-report">
+        <statement-list>
+            <statement name="detailed-system-access">
+                <select query="SELECT   SPM_GROUP.GROUPID AS MEMBER_CODE, dbo.convert_datetime(TRANS.ACCESS_DATE) AS Date_and_Time, (SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end FROM SPM_USER (nolock) WHERE UID = TRANS.UID ) AS User_ID, (case when ACTION_TYPE = 1 then (select ACTIONDESC from BASE_LOGIN_ACTIVITY AS login (nolock) where 	login.actionid = TRANS.ACTIONID and	login.actiontype = TRANS.ACTION_TYPE)  ELSE case when ACTION_TYPE = 2 then (select ACTIONDESC from BASE_USER_MAINTENANCE AS mainten (nolock) where 	mainten.actionid = TRANS.ACTIONID and mainten.actiontype = TRANS.ACTION_TYPE)ELSE '-' END  END )AS Actions_Performed , (SELECT case  when spm_user.deleted = 0 then spm_user.userid else  case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt; 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end  FROM SPM_USER (nolock) WHERE UID = TRANS.PERFORMED_BY ) AS PERFORMED_BY FROM  TRANS_DETAIL_SYSTEM_ACCESS AS TRANS (nolock), spm_group (nolock), spm_user (nolock)"/>
+                <criterias query="WHERE  TRANS.UID = SPM_USER.UID  AND  SPM_USER.GROUPAIID = SPM_GROUP.GROUPID  AND TRANS.ACTION_TYPE IN (1,2) ">
+					<fields>
+						<field name="startDateSQL" required="true" query="AND	TRANS.ACCESS_DATE &gt;= convert(datetime, '{startDateSQL}' , 101)" by="" />
+						<field name="endDateSQL" required="true" query="AND 	TRANS.ACCESS_DATE &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}'))" by="" />
+						<field name="memberID" required="false" query="and	spm_group.groupid  = {memberID}" by="" />
+                        <field name="aiflag" required="false" query="and spm_group.aiflag = 1" by="" />
+            			<field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						 <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						 <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="detailed-system-access-report-ccra">
+        <statement-list>
+            <statement name="detailed-system-access">
+                <select query="SELECT   spm_user.groupccraid AS MEMBER_CODE, dbo.convert_datetime(TRANS.ACCESS_DATE) AS Date_and_Time, (SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end FROM SPM_USER (nolock) WHERE UID = TRANS.UID ) AS User_ID, (case when ACTION_TYPE = 1 then (select ACTIONDESC from BASE_LOGIN_ACTIVITY AS login (nolock) where 	login.actionid = TRANS.ACTIONID and	login.actiontype = TRANS.ACTION_TYPE)  ELSE case when ACTION_TYPE = 2 then (select ACTIONDESC from BASE_USER_MAINTENANCE AS mainten (nolock) where 	mainten.actionid = TRANS.ACTIONID and	mainten.actiontype = TRANS.ACTION_TYPE)ELSE '-' END  END )AS Actions_Performed ,(SELECT case  when spm_user.deleted = 0 then spm_user.userid else  case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt; 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end  FROM SPM_USER (nolock) WHERE UID = TRANS.PERFORMED_BY ) AS PERFORMED_BY FROM  TRANS_DETAIL_SYSTEM_ACCESS AS TRANS (nolock),spm_user (nolock) , spm_group (nolock)"/>
+                <criterias query="WHERE  TRANS.UID = spm_user.uid and  spm_user.groupccraid = spm_group.groupid
+				and  (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null)  AND TRANS.ACTION_TYPE IN (1,2) ">
+					<fields>
+						<field name="startDateSQL" required="true" query="AND	TRANS.ACCESS_DATE &gt;= convert(datetime, '{startDateSQL}' , 101)" by="" />
+						<field name="endDateSQL" required="true" query="AND 	TRANS.ACCESS_DATE &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}'))" by="" />
+						<field name="memberID" required="false" query="and	spm_group.groupid  = {memberID}" by="" />
+                        <field name="aiflag" required="false" query="and spm_group.aiflag &lt;&gt; 1" by="" />
+            			<field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						  <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						  <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="suspected-abnormal-access-report">
+        <statement-list>
+            <statement name="suspected-abnormal-access">
+                <select query="select spm_group.groupid as member_code, dbo.convert_datetime(trans.order_date) as report_order_date  , isnull((SELECT DESCRIPTION_EN FROM BASE_COMPANYTYPE (nolock) WHERE ID = trans.COMPTYPE),'N/A') AS COMPANY_TYPE, trans.HKBRC, trans.HKCI, trans.OTHER_REG_NO, trans.PLACE_OF_REG, trans.CUSTOMER_NO, trans.COMPANY_NAME_ENG , trans.COMPANY_NAME_LO,(SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid FROM SPM_USER (nolock) WHERE UID=trans.ORDER_BY ) AS ORDERED_BY, cast(report_order31day as varchar(10)) as access_details from TRANS_SUSPECT_ABNORMAL as trans ( nolock) ,spm_group (nolock) " />
+                <criterias query="where trans.groupaiid = spm_group.groupid and spm_group.aiflag = 1 and	report_order31day &gt;= 5 ">
+					<fields>
+						<field name="startDateSQL" required="true" query="and  order_date &gt;=  convert(datetime, '{startDateSQL}' , 101) " by="" />
+						<field name="endDateSQL" required="true" query=" and order_date &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}' ))" by="" />
+						<field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="aiflag" required="false" query="and spm_group.aiflag = 1" by="" />
+            			<field name="monthlyplan" required="false" query="and spm_group.monthly_plan in ({monthlyplan}) and spm_group.disabled = 0 and spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						  <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						  <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+	</report>
+    <report name="suspected-abnormal-access-report-ccra">
+        <statement-list>
+            <statement name="suspected-abnormal-access">
+                  <select query="select spm_group.groupid as member_code, dbo.convert_datetime(trans.order_date) as report_order_date, isnull((SELECT DESCRIPTION_EN FROM BASE_COMPANYTYPE (nolock) WHERE ID = trans.COMPTYPE),'N/A') AS COMPANY_TYPE, trans.HKBRC, trans.HKCI, trans.OTHER_REG_NO, trans.PLACE_OF_REG, trans.CUSTOMER_NO, trans.COMPANY_NAME_ENG , trans.COMPANY_NAME_LO,(SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid FROM SPM_USER (nolock)WHERE UID=trans.ORDER_BY ) AS ORDERED_BY, cast(report_order31day as varchar(10)) + ' report ordered within 31 days' as access_details from TRANS_SUSPECT_ABNORMAL as trans ( nolock) ,spm_group (nolock) " />
+                  <criterias query=" where trans.groupccraid = spm_group.groupid and (spm_group.parentgroupid = 1 or spm_group.parentgroupid is null) and report_order31day &gt;= 5 ">
+					<fields>
+						<field name="startDateSQL" required="true" query="and  order_date &gt;=  convert(datetime, '{startDateSQL}' , 101) " by="" />
+						<field name="endDateSQL" required="true" query=" and order_date &lt; dateadd(day, 1, convert(datetime, '{endDateSQL}' ))" by="" />
+						<field name="memberID" required="false" query="and spm_group.groupid = {memberID}" by="" />
+                        <field name="aiflag" required="false" query="and  spm_group.aiflag &lt;&gt;  1" by="" />
+            			<field name="monthlyplan" required="false" query=" and  spm_group.monthly_plan in ({monthlyplan}) and  spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						  <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						  <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+	</report>
+    <report name="monthly-correction-summary-report">
+        <statement-list>
+            <statement name="monthly-correction-summary">
+                <select query="select spm_group.groupid as member_code, DET.OMSACCESS_ID AS UPDATEID, DET.DATA_PERIOD ,(SELECT IG.aicode FROM spm_group IG (NOLOCK) WHERE IG.groupid = DET.groupid) AS MEMBERCODE, DET.COMPANY_NAME_ENG 	, DET.COMPANY_NAME_LO	, DET.HKBRC	, DET.HKCI	, DET.OTHER_REG_NO	, DET.PLACE_OF_REG	, DET.CUSTOMER_NO	, dbo.convert_datetime( DET.LAST_UPDATED_DATE) AS LAST_UPDATED	, DET.REASON_DESC , (SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid FROM SPM_USER WHERE SPM_USER.UID=DET.CREATEDBY) AS MODIFIED_BY	, (SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid FROM SPM_USER WHERE SPM_USER.UID=DET.APPROVE_BY) AS APPROVE_BY	, (SELECT STATUS_DESC FROM BASE_OMS_STATUS (nolock) WHERE STATUS_ID = DET.STATUS_ID) AS STATUS from 	OMS_DETAIL_ACCESS AS DET (nolock), SPM_GROUP (nolock)"/>
+                <criterias query="where DET.OWNER_GROUP = SPM_GROUP.GROUPID and	DET.APPROVE_BY is not null AND	DET.MODULEID = 1	AND 	DET.STATUS_ID = 1">
+				    <fields>
+						<field name="periodID" required="true" query="and 	DET.UPDATEDDATE  between dateadd(month,0,'{periodID}' + '01') and dateadd(month,1,'{periodID}' + '01')"  by=""/>
+						<field name="memberID" required="false" query="and 	spm_group.groupid = {memberID}" by="" />
+						<field name="aiflag" required="false" query="and 	spm_group.aiflag = 1" by="" />
+						<field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						  <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						  <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+	<report name="monthly-correction-summary-report-ccra">
+        <statement-list>
+            <statement name="monthly-correction-summary">
+                <select query="select spm_group.groupid as member_code	, DET.OMSACCESS_ID AS UPDATEID	, DET.DATA_PERIOD ,(SELECT IG.aicode FROM spm_group IG (NOLOCK) WHERE IG.groupid = DET.groupid) AS MEMBERCODE, DET.COMPANY_NAME_ENG 	, DET.COMPANY_NAME_LO	, DET.HKBRC	, DET.HKCI	, DET.OTHER_REG_NO	, DET.PLACE_OF_REG	, DET.CUSTOMER_NO	, dbo.convert_datetime( DET.LAST_UPDATED_DATE) AS LAST_UPDATED	, DET.REASON_DESC	, (SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid FROM SPM_USER (nolock) WHERE SPM_USER.UID=DET.CREATEDBY) AS MODIFIED_BY	, (SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid FROM SPM_USER (nolock) WHERE SPM_USER.UID=DET.APPROVE_BY) AS APPROVE_BY	, (SELECT STATUS_DESC FROM BASE_OMS_STATUS (nolock) WHERE STATUS_ID = DET.STATUS_ID) AS STATUS from 	OMS_DETAIL_ACCESS AS DET (nolock), SPM_GROUP (nolock) "/>
+                <criterias query="where DET.GROUPCCRAID = SPM_GROUP.GROUPID   and	DET.APPROVE_BY is not null AND	DET.MODULEID = 1	AND 	DET.STATUS_ID = 1">
+				    <fields>
+						<field name="periodID" required="true" query="and 	DET.UPDATEDDATE  between dateadd(month,0,'{periodID}' + '01') and dateadd(month,1,'{periodID}' + '01')"  by=""/>
+						<field name="memberID" required="false" query="and 	spm_group.groupid = {memberID}" by="" />
+						<field name="aiflag" required="false" query="and spm_group.aiflag &lt;&gt; 1" by="" />
+						<field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						 <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						 <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="monthly-opt-out-confirmation-report">
+        <statement-list>
+            <statement name="monthly-opt-out-confirmation">
+                <select query="SELECT 	spm_group.groupid as member_code, DBO.CONVERT_DATETIME(DET.UPDATEDDATE) as optout_date	,DET.HKBRC,DET.HKCI,DET.OTHER_REG_NO,DET.PLACE_OF_REG, DET.CUSTOMER_NO	,DET.COMPANY_NAME_ENG,DET.COMPANY_NAME_LO	,(SELECT DESCRIPTION_EN FROM  BASE_LOANTYPE (nolock) where CAST(BASE_LOANTYPE.ID AS INT) = CAST(DET.OPTOUT_LOAN_TYPE AS INT)) AS OPTOUT_LOAN_TYPE	,(SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid FROM SPM_USER (nolock) WHERE UID=DET.APPROVE_BY) AS APPROVE_BY, PENDING_CONTROLFILE_CONTAINING_OPTOUT PENDING_CONTROLFILE_CONTAINING FROM   OMS_DETAIL_ACCESS AS DET (nolock), spm_group (nolock)"/>
+                <criterias query="where DET.moduleid = DET.moduleid and 	DET.owner_group = spm_group.groupid AND DET.MODULEID = 3 and DET.PROCESS_STATUS = 'A03' and DET.PROCESS_RESULT ='B01'">
+				   <fields>
+						<field name ="periodID" required="true" query="and	DET.UPDATEDDATE &gt;=	dateadd(month,0,'{periodID}'+'01') and 	DET.UPDATEDDATE &lt; 	dateadd(month,1,'{periodID}'+'01')" by="" />
+						<field name="memberID" required="false" query="and	spm_group.groupid = {memberID}" by="" />
+						<field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+				  </fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						 <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						 <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="monthly-opt-out-confirmation-report-ccra">
+        <statement-list>
+            <statement name="monthly-opt-out-confirmation">
+                 <select query="SELECT 	spm_group.groupid as member_code, DBO.CONVERT_DATETIME(DET.UPDATEDDATE) as optout_date	,DET.HKBRC,DET.HKCI,DET.OTHER_REG_NO,DET.PLACE_OF_REG, DET.CUSTOMER_NO	,DET.COMPANY_NAME_ENG,DET.COMPANY_NAME_LO	,(SELECT DESCRIPTION_EN FROM  BASE_LOANTYPE (nolock) where CAST(BASE_LOANTYPE.ID AS INT) = CAST(DET.OPTOUT_LOAN_TYPE AS INT)) AS OPTOUT_LOAN_TYPE	,(SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid FROM SPM_USER (nolock) WHERE UID=DET.APPROVE_BY) AS APPROVE_BY	,PENDING_CONTROLFILE_CONTAINING_OPTOUT PENDING_CONTROLFILE_CONTAINING FROM 	OMS_DETAIL_ACCESS AS DET (nolock), spm_group (nolock)"/>
+                <criterias query="where 	DET.moduleid = DET.moduleid and 	DET.groupccraid = spm_group.groupid AND		DET.MODULEID = 3 and DET.PROCESS_STATUS ='A03' and DET.PROCESS_RESULT ='B01' ">
+				   <fields>
+						<field name ="periodID" required="true" query="and	DET.UPDATEDDATE &gt;=	dateadd(month,0,'{periodID}'+'01') and 	DET.UPDATEDDATE &lt; 	dateadd(month,1,'{periodID}'+'01')" by="" />
+						<field name="memberID" required="false" query="and	spm_group.groupid = {memberID}" by="" />
+						<field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+				  </fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						 <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						 <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+     <report name="detailed-oms-access-report">
+        <statement-list>
+            <statement name="detailed-oms-access">
+                <select query="SELECT  spm_group.groupid as member_code,BASE_OMS_MODULE.DESCRIPTION_EN AS MODULE, DET.OMSACCESS_ID AS TRANSACTIONID, DATA_PERIOD , (SELECT IG.aicode FROM spm_group IG (NOLOCK) WHERE IG.groupid = DET.groupid) AS MEMBERCODE , COMPANY_NAME_ENG, COMPANY_NAME_LO, HKBRC	, HKCI, OTHER_REG_NO, PLACE_OF_REG,CUSTOMER_NO, dbo.convert_datetime(DET.CREATEDDATE)as DATE_TIME	, (SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid FROM SPM_USER (nolock) WHERE SPM_USER.UID=DET.CREATEDBY) AS USERID	, (SELECT STATUS_DESC FROM BASE_OMS_STATUS (nolock) WHERE BASE_OMS_STATUS.STATUS_ID = DET.STATUS_ID)AS ACTIONS  FROM 	TRAN_DETAIL_OMS_ACCESS AS DET (nolock), BASE_OMS_MODULE (nolock), spm_group (nolock) "/>
+                <criterias query="WHERE  DET.MODULEID = BASE_OMS_MODULE.MODULEID and DET.OWNER_GROUP = spm_group.groupid ">
+				    <fields>
+						 <field name="periodID" required="true" query="AND 	DET.CREATEDDATE &gt;=	dateadd(month,0,'{periodID}'+'01') and 	DET.CREATEDDATE &lt; 	dateadd(month,1,'{periodID}'+'01')" by=""/>
+						 <field name="memberID" required="false" query="and	spm_group.groupid  = {memberID}" by="" />
+						 <field name="aiflag" required="false" query="and 	spm_group.aiflag = 1" by="" />
+						 <field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						  <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						  <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="detailed-oms-access-report-ccra">
+        <statement-list>
+            <statement name="detailed-oms-access">
+                <select query="SELECT  spm_group.groupid as member_code,BASE_OMS_MODULE.DESCRIPTION_EN AS MODULE, DET.OMSACCESS_ID AS TRANSACTIONID, DATA_PERIOD ,(SELECT IG.aicode FROM spm_group IG (NOLOCK) WHERE IG.groupid = DET.groupid) AS MEMBERCODE , COMPANY_NAME_ENG, COMPANY_NAME_LO, HKBRC	, HKCI, OTHER_REG_NO, PLACE_OF_REG,CUSTOMER_NO, dbo.convert_datetime(DET.CREATEDDATE)as DATE_TIME	, (SELECT case  when spm_user.deleted = 0 then spm_user.userid else case when (len(spm_user.userid)-(len(spm_user.uid)+1) &lt;= 0) then spm_user.userid  else  substring(spm_user.userid, 1,len(spm_user.userid)-(len(spm_user.uid)+1)) end  end as userid FROM SPM_USER (nolock) WHERE SPM_USER.UID=DET.CREATEDBY) AS USERID	, (SELECT STATUS_DESC FROM BASE_OMS_STATUS (nolock) WHERE BASE_OMS_STATUS.STATUS_ID = DET.STATUS_ID)AS ACTIONS  FROM  TRAN_DETAIL_OMS_ACCESS AS DET (nolock), BASE_OMS_MODULE (nolock), spm_group (nolock) "/>
+                <criterias query="WHERE  DET.MODULEID = BASE_OMS_MODULE.MODULEID and  DET.GROUPCCRAID = spm_group.groupid ">
+				    <fields>
+						 <field name="periodID" required="true" query="AND 	DET.CREATEDDATE &gt;=	dateadd(month,0,'{periodID}'+'01') and 	DET.CREATEDDATE &lt; 	dateadd(month,1,'{periodID}'+'01')" by=""/>
+						 <field name="memberID" required="false" query="and	spm_group.groupid  = {memberID}" by="" />
+						 <field name="aiflag" required="false" query="and spm_group.aiflag &lt;&gt; 1" by="" />
+						 <field name="monthlyplan" required="false" query="and 	spm_group.monthly_plan in ({monthlyplan}) and 	spm_group.disabled = 0 and 	spm_group.deleted = 0" by=""/>
+					</fields>
+				</criterias>
+                <group-bys/>
+                <orders query="ORDER BY">
+					<fields>
+						  <field name="sortPrimary" required="true" query="{sortPrimary}" by="" />
+						  <field name="sortSecondary" required="true" query="{sortSecondary}" by="" />
+					</fields>
+				</orders>
+            </statement>
+        </statement-list>
+    </report>
+    <report name="detailed-user-maintenance-report-ccra">
+         <statement-list>
+            <statement name="permission">
+				<select query="SELECT u.groupccraid as member_code, case when u.deleted = 0 then u.userid else case when (len(u.userid)-(len(u.uid)+1)  &lt;= 0)  then u.userid else substring(u.userid,1,len(u.userid)-(len(u.uid)+1)) end end  as USERID, t.user_name as user_name_en, case when (select GROUP_NAME_EN from spm_group sg inner join spm_user su on sg.groupid = su.groupid where su.GROUPAIID &lt;&gt; su.groupid and su.uid = t.uid) IS not null then GS.GROUP_NAME_EN else '-' end AS BRANCH, dbo.convert_datetime(T.CREATEDDATE) AS CREATEDDATE, dbo.convert_datetime(T.LASTUPDATEDDATE) AS LASTUPDATEDDATE, T.PERMISSION FROM TRAN_PRIVILEGE T (NOLOCK) INNER JOIN SPM_USER U (NOLOCK) ON T.UID = U.UID and U.GROUPAIID = 1  INNER JOIN SPM_GROUP G ON T.GROUPID =  G.GROUPID  "/>
+				<criterias query=" ">
+					<fields>
+						<field name="asOfDateSQL" required="true" query=" INNER JOIN (select * from  spm_group_snapshot b where transactionid in ( select c.MAX_TRANSACTIONID from (select a.GROUPID,MAX(a.TRANSACTIONID) MAX_TRANSACTIONID from SPM_GROUP_SNAPSHOT a where a.CREATEDDATE &lt;= DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101)) GROUP BY a.GROUPID) c ) ) GS ON GS.GROUPID = t.GROUPID WHERE t.LASTUPDATEDDATE &gt;= (SELECT isnull(MAX(LASTupdateddate),0) from TRAN_PRIVILEGE tt (nolock) where t.UID = tt.uid AND tt.lastupdateddate &lt;= DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101))) AND T.LASTUPDATEDDATE &lt;= DATEADD(DAY,1,convert(datetime,'{asOfDateSQL}',101)) AND t.LASTUPDATEDDATE &gt; (SELECT dateadd(day, 0, ISNULL(MAX(ACCESS_DATE),0)) from TRANS_DETAIL_SYSTEM_ACCESS tt (nolock) where t.UID = tt.uid AND Tt.ACCESS_DATE &lt;=  DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101)) and ((ACTION_TYPE = 2 AND (ACTIONID = 1 OR ACTIONID = 4)) OR (ACTIONID = 1 AND ACTION_TYPE = 3))) " by=""/>
+						<field name="memberID" required="false" query="AND U.GROUPCCRAID = {memberID} " by=""/>
+                                                <field name="nonMemberID" required="false" query="AND U.GROUPID = {nonMemberID} " by=""/>
+						<field name="branchID" required="false" query="AND U.GROUPID in({branchID}) " by=""/>
+						<field name="userID" required="false" query="AND U.UID = {userID} " by=""/>
+                                                <field name="monthlyplan" required="false" query="and u.groupccraid in(select groupid from spm_group where MONTHLY_PLAN in({monthlyplan}) and disabled = 0 and deleted = 0) " by=""/>
+					</fields>
+				</criterias>
+				<group-bys/>
+				<orders query="ORDER BY">
+					<fields>
+						<field name="sortPrimary" required="false" query="{sortPrimary} " by="ASC" />
+						<field name="sortSecondary" required="false" query="{sortSecondary}, U.CREATEDDATE, t.objectnumber " by="" />
+					</fields>
+				</orders>
+			</statement>
+			<statement name="disable">
+				<select query="SELECT u.groupccraid MEMBER_CODE, case when u.deleted = 0 then u.userid else case when (len(u.userid)-(len(u.uid)+1)  &lt;= 0)  then u.userid else substring(u.userid,1,len(u.userid)-(len(u.uid)+1)) end end  as USERID, t.user_name as user_name_en, case when (select GROUP_NAME_EN from spm_group sg inner join spm_user su on sg.groupid = su.groupid where su.GROUPAIID &lt;&gt; su.groupid and su.uid = t.uid) IS not null then GS.GROUP_NAME_EN else '-' end AS BRANCH, dbo.convert_datetime(U.CREATEDDATE) AS CREATEDDATE, dbo.convert_datetime(T.ACCESS_DATE) AS ACCESS_DATE FROM TRANS_DETAIL_SYSTEM_ACCESS T(NOLOCK) INNER JOIN SPM_USER U (NOLOCK) ON T.UID = U.UID and U.GROUPAIID = 1  INNER JOIN SPM_GROUP G ON U.GROUPID = G.GROUPID  "/>
+				<criterias query=" ">
+					<fields>
+                                            <field name="asOfDateSQL" required="true" query=" INNER JOIN (select * from  spm_group_snapshot b where transactionid in ( select c.MAX_TRANSACTIONID from (select a.GROUPID,MAX(a.TRANSACTIONID) MAX_TRANSACTIONID from SPM_GROUP_SNAPSHOT a where a.CREATEDDATE &lt;= DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101)) GROUP BY a.GROUPID) c ) ) GS ON GS.GROUPID = u.GROUPID WHERE ((t.ACTION_TYPE = 2 AND T.ACTIONID = 1) OR (T.ACTIONID = 1 AND T.ACTION_TYPE = 3)) and T.ACCESS_DATE &lt;=  DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101)) and T.ACCESS_DATE &gt;= dateadd(year, -1, convert(datetime, '{asOfDateSQL}', 101 ))" by="" />
+                                            <field name="memberID" required="false" query="AND U.GROUPCCRAID = {memberID} " by=""/>
+                                            <field name="branchID" required="false" query="AND U.GROUPID in({branchID}) " by=""/>
+                                            <field name="userID" required="false" query="AND U.UID = {userID} " by=""/>
+                                            <field name="monthlyplan" required="false" query="and u.groupccraid in(select groupid from spm_group where MONTHLY_PLAN in({monthlyplan}) and disabled = 0 and deleted = 0) " by=""/>
+					</fields>
+				</criterias>
+				<group-bys/>
+				<orders query="ORDER BY">
+					<fields>
+                                            <field name="sortPrimary" required="false" query="{sortPrimary} " by="ASC" />
+                                            <field name="sortSecondary" required="false" query="{sortSecondary}, U.CREATEDDATE " by="" />
+					</fields>
+				</orders>
+			</statement>
+            <statement name="delete">
+				<select query="SELECT u.groupccraid MEMBER_CODE, case when u.deleted = 0 then u.userid else case when (len(u.userid)-(len(u.uid)+1)  &lt;= 0)  then u.userid else substring(u.userid,1,len(u.userid)-(len(u.uid)+1)) end end  as USERID, t.user_name as user_name_en, case when (select GROUP_NAME_EN from spm_group sg inner join spm_user su on sg.groupid = su.groupid where su.GROUPAIID &lt;&gt; su.groupid and su.uid = t.uid) IS not null then GS.GROUP_NAME_EN else '-' end AS BRANCH, dbo.convert_datetime(U.CREATEDDATE) AS CREATEDDATE, dbo.convert_datetime(T.ACCESS_DATE) AS ACCESS_DATE FROM TRANS_DETAIL_SYSTEM_ACCESS T(NOLOCK) INNER JOIN SPM_USER U (NOLOCK) ON T.UID = U.UID and U.GROUPAIID = 1  INNER JOIN SPM_GROUP G ON U.GROUPID = G.GROUPID "/>
+				<criterias query=" ">
+					<fields>
+                                                <field name="asOfDateSQL" required="true" query=" INNER JOIN (select * from  spm_group_snapshot b where transactionid in ( select c.MAX_TRANSACTIONID from (select a.GROUPID,MAX(a.TRANSACTIONID) MAX_TRANSACTIONID from SPM_GROUP_SNAPSHOT a where a.CREATEDDATE &lt;= DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101)) GROUP BY a.GROUPID) c ) ) GS ON GS.GROUPID = u.GROUPID WHERE t.ACTION_TYPE = 2 and T.ACTIONID = 4 and T.ACCESS_DATE &lt;=  DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101))  and T.ACCESS_DATE &gt;= dateadd(year, -1, convert(datetime, '{asOfDateSQL}', 101 ))" by="" />
+                                                <field name="memberID" required="false" query="AND U.GROUPCCRAID = {memberID} " by=""/>
+						<field name="branchID" required="false" query="AND U.GROUPID in({branchID}) " by=""/>
+						<field name="userID" required="false" query="AND U.UID = {userID} " by=""/>
+                                                <field name="monthlyplan" required="false" query="and u.groupccraid in(select groupid from spm_group where MONTHLY_PLAN in({monthlyplan}) and disabled = 0 and deleted = 0) " by=""/>
+					</fields>
+				</criterias>
+				<group-bys/>
+				<orders query="ORDER BY">
+					<fields>
+						<field name="sortPrimary" required="false" query="{sortPrimary} " by="ASC" />
+						<field name="sortSecondary" required="false" query="{sortSecondary}, U.CREATEDDATE " by="" />
+					</fields>
+				</orders>
+			</statement>
+		</statement-list>
+    </report>
+
+    <report name="detailed-user-maintenance-report">
+        <statement-list>
+            <statement name="permission">
+				<select query="SELECT u.groupaiid as member_code, case when u.deleted = 0 then u.userid else case when (len(u.userid)-(len(u.uid)+1)  &lt;= 0)  then u.userid else substring(u.userid,1,len(u.userid)-(len(u.uid)+1)) end end  as USERID, t.user_name as user_name_en, case when (select GROUP_NAME_EN from spm_group sg inner join spm_user su on sg.groupid = su.groupid where su.GROUPAIID &lt;&gt; su.groupid and su.uid = t.uid) IS not null then GS.GROUP_NAME_EN else '-' end AS BRANCH, dbo.convert_datetime(T.CREATEDDATE) AS CREATEDDATE, dbo.convert_datetime(T.LASTUPDATEDDATE) AS LASTUPDATEDDATE, T.PERMISSION FROM TRAN_PRIVILEGE T (NOLOCK) INNER JOIN SPM_USER U (NOLOCK) ON T.UID = U.UID and U.GROUPAIID &lt;&gt; 1  INNER JOIN SPM_GROUP G ON T.GROUPID =  G.GROUPID "/>
+				<criterias query=" ">
+					<fields>
+						<field name="asOfDateSQL" required="true" query=" INNER JOIN (select * from  spm_group_snapshot b where transactionid in ( select c.MAX_TRANSACTIONID from (select a.GROUPID,MAX(a.TRANSACTIONID) MAX_TRANSACTIONID from SPM_GROUP_SNAPSHOT a where a.CREATEDDATE &lt;= DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101)) GROUP BY a.GROUPID) c ) ) GS ON GS.GROUPID = t.GROUPID WHERE t.LASTUPDATEDDATE &gt;= (SELECT isnull(MAX(LASTupdateddate),0) from TRAN_PRIVILEGE tt (nolock) where t.UID = tt.uid AND tt.lastupdateddate &lt;= DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101))) AND T.LASTUPDATEDDATE &lt;= DATEADD(DAY,1,convert(datetime,'{asOfDateSQL}',101)) AND t.LASTUPDATEDDATE &gt; (SELECT dateadd(day, 0, ISNULL(MAX(ACCESS_DATE),0)) from TRANS_DETAIL_SYSTEM_ACCESS tt (nolock) where t.UID = tt.uid AND Tt.ACCESS_DATE &lt;=  DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101)) and ((ACTION_TYPE = 2 AND (ACTIONID = 1 OR ACTIONID = 4)) OR (ACTIONID = 1 AND ACTION_TYPE = 3))) " by=""/>
+						<field name="memberID" required="false" query="AND U.GROUPAIID = {memberID} " by=""/>
+						<field name="branchID" required="false" query="AND U.GROUPID = {branchID} " by=""/>
+						<field name="userID" required="false" query="AND U.UID = {userID} " by=""/>
+                                                <field name="monthlyplan" required="false" query="and u.groupaiid in(select groupid from spm_group where MONTHLY_PLAN in({monthlyplan}) and disabled = 0 and deleted = 0) " by=""/>
+					</fields>
+				</criterias>
+				<group-bys/>
+				<orders query="ORDER BY">
+					<fields>
+						<field name="sortPrimary" required="false" query="{sortPrimary} " by="ASC" />
+						<field name="sortSecondary" required="false" query="{sortSecondary}, U.CREATEDDATE, t.objectnumber " by="" />
+					</fields>
+				</orders>
+			</statement>
+			<statement name="disable">
+				<select query="SELECT u.groupaiid MEMBER_CODE, case when u.deleted = 0 then u.userid else case when (len(u.userid)-(len(u.uid)+1)  &lt;= 0)  then u.userid else substring(u.userid,1,len(u.userid)-(len(u.uid)+1)) end end  as USERID, t.user_name as user_name_en, case when (select GROUP_NAME_EN from spm_group sg inner join spm_user su on sg.groupid = su.groupid where su.GROUPAIID &lt;&gt; su.groupid and su.uid = t.uid) IS not null then GS.GROUP_NAME_EN else '-' end AS BRANCH, dbo.convert_datetime(U.CREATEDDATE) AS CREATEDDATE, dbo.convert_datetime(T.ACCESS_DATE) AS ACCESS_DATE FROM TRANS_DETAIL_SYSTEM_ACCESS T(NOLOCK) INNER JOIN SPM_USER U (NOLOCK) ON T.UID = U.UID and U.GROUPAIID &lt;&gt; 1  INNER JOIN SPM_GROUP G ON u.GROUPID = G.GROUPID "/>
+				<criterias query=" ">
+					<fields>
+                                                <field name="asOfDateSQL" required="true" query=" INNER JOIN (select * from  spm_group_snapshot b where transactionid in ( select c.MAX_TRANSACTIONID from (select a.GROUPID,MAX(a.TRANSACTIONID) MAX_TRANSACTIONID from SPM_GROUP_SNAPSHOT a where a.CREATEDDATE &lt;= DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101)) GROUP BY a.GROUPID) c ) ) GS ON GS.GROUPID = u.GROUPID WHERE ((t.ACTION_TYPE = 2 AND T.ACTIONID = 1) OR (T.ACTIONID = 1 AND T.ACTION_TYPE = 3)) and  T.ACCESS_DATE &lt;=  DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101)) and T.ACCESS_DATE &gt;= dateadd(year, -1, convert(datetime, '{asOfDateSQL}', 101 ))" by="" />
+                                                <field name="memberID" required="false" query="AND U.GROUPAIID = {memberID} " by=""/>
+						<field name="branchID" required="false" query="AND U.GROUPID ={branchID} " by=""/>
+						<field name="userID" required="false" query="AND U.UID = {userID} " by=""/>
+                                                <field name="monthlyplan" required="false" query="and u.groupaiid in(select groupid from spm_group where MONTHLY_PLAN in({monthlyplan}) and disabled = 0 and deleted = 0) " by=""/>
+					</fields>
+				</criterias>
+				<group-bys/>
+				<orders query="ORDER BY">
+					<fields>
+						<field name="sortPrimary" required="false" query="{sortPrimary} " by="ASC" />
+						<field name="sortSecondary" required="false" query="{sortSecondary}, U.CREATEDDATE " by="" />
+					</fields>
+				</orders>
+			</statement>
+                <statement name="delete">
+				<select query="SELECT u.groupaiid MEMBER_CODE, case when u.deleted = 0 then u.userid else case when (len(u.userid)-(len(u.uid)+1)  &lt;= 0)  then u.userid else substring(u.userid,1,len(u.userid)-(len(u.uid)+1)) end end  as USERID, t.user_name as user_name_en, case when (select GROUP_NAME_EN from spm_group sg inner join spm_user su on sg.groupid = su.groupid where su.GROUPAIID &lt;&gt; su.groupid and su.uid = t.uid) IS not null then GS.GROUP_NAME_EN else '-' end AS BRANCH, dbo.convert_datetime(U.CREATEDDATE) AS CREATEDDATE, dbo.convert_datetime(T.ACCESS_DATE) AS ACCESS_DATE FROM TRANS_DETAIL_SYSTEM_ACCESS T(NOLOCK) INNER JOIN SPM_USER U (NOLOCK) ON T.UID = U.UID and U.GROUPAIID &lt;&gt; 1  INNER JOIN SPM_GROUP G ON u.GROUPID = G.GROUPID "/>
+				<criterias query=" ">
+					<fields>
+                                                <field name="asOfDateSQL" required="true" query=" INNER JOIN (select * from  spm_group_snapshot b where transactionid in ( select c.MAX_TRANSACTIONID from (select a.GROUPID,MAX(a.TRANSACTIONID) MAX_TRANSACTIONID from SPM_GROUP_SNAPSHOT a where a.CREATEDDATE &lt;= DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101)) GROUP BY a.GROUPID) c ) ) GS ON GS.GROUPID = u.GROUPID WHERE t.ACTION_TYPE = 2 and T.ACTIONID = 4 and  T.ACCESS_DATE &lt;=  DATEADD(DAY,1,convert(datetime, '{asOfDateSQL}', 101))  and T.ACCESS_DATE &gt;= dateadd(year, -1, convert(datetime, '{asOfDateSQL}', 101 ))" by="" />
+                                                <field name="memberID" required="false" query="AND U.GROUPAIID = {memberID} " by=""/>
+						<field name="branchID" required="false" query="AND U.GROUPID ={branchID} " by=""/>
+						<field name="userID" required="false" query="AND U.UID = {userID} " by=""/>
+                                                <field name="monthlyplan" required="false" query="and u.groupaiid in(select groupid from spm_group where MONTHLY_PLAN in({monthlyplan}) and disabled = 0 and deleted = 0) " by=""/>
+					</fields>
+				</criterias>
+				<group-bys/>
+				<orders query="ORDER BY">
+					<fields>
+						<field name="sortPrimary" required="false" query="{sortPrimary} " by="ASC" />
+						<field name="sortSecondary" required="false" query="{sortSecondary}, U.CREATEDDATE " by="" />
+					</fields>
+				</orders>
+			</statement>
+		</statement-list>
+    </report>
+</reports>

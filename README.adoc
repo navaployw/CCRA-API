@@ -1,0 +1,528 @@
+= Creating a New Application with Spring Boot and Angular
+
+Spring Boot works great as a back end for an Angular application but it can be difficult to get the ball rolling. Most Spring users are comfortable with Java and the tools that are used to create and build the backend server. The front end can be written with plain old JavaScript as long as it is relatively simple, and you are willing to search for the rare examples and tutorials in this style. But these days you are much more likely to find documentation and tutorials that use tools like `Typescript`, `node.js`, `npm` and the Angular CLI.
+
+This article shows you how to do that and keep your Spring Boot application intact. Much of the advice would apply equally well to other front end frameworks (anything that can be built using `npm` or similar). We use Maven, but similar tools are available for Gradle users. The goal is to have a single application that has Spring Boot and Angular, that can be built and developed by anyone who has knowledge of either ecosystem, and does not feel awkward or unidiomatic to either.
+
+== Create a Spring Boot Application
+
+Whatever you normally do to create a new Spring Boot application, do that. For example you could use your IDE features. Or you could do it on the command line:
+
+```
+$ curl start.spring.io/starter.tgz -d dependencies=web | tar -zxvf -
+$ ./mvnw install
+```
+
+Now we'll take that application and add some Angular scaffolding. Before we can do anything with Angular, we have to install `npm`.
+
+== Install Npm Locally
+
+Installing `npm` is fraught with issues, including but not limited to how to get it working as part of your build automation. We are going to use the excellent https://github.com/eirslett/frontend-maven-plugin[Maven Frontend Plugin] from Eirik Sletteberg. The first step is to add it to our `pom.xml`:
+
+.pom.xml
+```
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+        <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>1.12.0</version>
+            <configuration>
+                <nodeVersion>v16.13.1</nodeVersion>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>install-npm</id>
+                    <goals>
+                        <goal>install-node-and-npm</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```
+
+and then
+
+```
+$ ./mvnw generate-resources
+$ ls node*
+```
+
+Loads of stuff has been installed in the top level directory. Once the downloaded files are cached in your local Maven repository, it won't take long to run this for every build.
+
+== Install Angular CLI
+
+To build an Angular app these days it really helps to use the CLI provided by the Angular team. We can install it using the `npm` that we just got using the plugin. First create a convenient script to run `npm` from the local installation (in case you have others on your path):
+
+```
+$ cat > npm
+#!/bin/sh
+cd $(dirname $0)
+PATH="$PWD/node/":$PATH
+node "node/node_modules/npm/bin/npm-cli.js" "$@"
+$ chmod +x npm
+```
+
+and then run it to install the CLI:
+
+```
+$ ./npm install @angular/cli
+```
+
+NOTE: Windows users can find a similar looking `npm.cmd` script in
+`node/node_modules/npm/bin`. If you copy it to the root of the project,
+and edit to match the local paths, you can use it in the same way.
+
+Then create a similar wrapper for the CLI itself, and test it quickly:
+
+```
+$ cat > ng
+#!/bin/sh
+cd $(dirname $0)
+PATH="$PWD/node/":"$PWD":$PATH
+node_modules/@angular/cli/bin/ng.js "$@"
+$ chmod +x ng
+$ ./ng --version
+    _                      _                 ____ _     ___
+   / \   _ __   __ _ _   _| | __ _ _ __     / ___| |   |_ _|
+  / △ \ | '_ \ / _` | | | | |/ _` | '__|   | |   | |    | |
+ / ___ \| | | | (_| | |_| | | (_| | |      | |___| |___ | |
+/_/   \_\_| |_|\__, |\__,_|_|\__,_|_|       \____|_____|___|
+           |___/
+Angular CLI: 13.0.4
+Node: 16.13.1
+OS: linux x64
+...
+```
+
+NOTE: Windows user can try the same trick with `ng.cmd` as with
+`npm.cmd` to get a local command to run the Angular CLI.
+
+== Create an Angular App
+
+The Angular CLI can be used to generate new application scaffolding, as well as other things. It's a useful starting point, but you could at this point grab any existing Angular app and put it in the same place. We want to work with the Angular app in the top level directory to keep all the tools and IDEs happy, but we also want make it look like a regular Maven build.
+
+Create the app with the CLI:
+
+```
+$ ./ng new client # add --minimal here if you want to skip tests
+```
+
+and then move it into the root of the project:
+
+```
+$ cat client/.gitignore >> .gitignore
+$ rm -rf client/node* client/src/favicon.ico client/.gitignore client/.git
+$ cp -rf client/* .
+$ cp client/.??* .
+$ rm -rf client
+$ sed -i -e 's,dist/client,target/classes/static,' angular.json
+```
+
+We discarded the node modules that the CLI installed because we want the frontend plugin to do that work for us in an automated build. We also edited the `angular.json` (a bit like a `pom.xml` for the Angular CLI app) to point the output from the Angular build to a location that will be packaged in our JAR file.
+
+== Building
+
+Add an execution to install the modules used in the application:
+
+```
+<execution>
+    <id>npm-install</id>
+    <goals>
+        <goal>npm</goal>
+    </goals>
+</execution>
+```
+
+Install the modules again using `./mvnw generate-resources` and check the result (the versions will differ for you).
+
+```
+$ ./ng version
+    _                      _                 ____ _     ___
+   / \   _ __   __ _ _   _| | __ _ _ __     / ___| |   |_ _|
+  / △ \ | '_ \ / _` | | | | |/ _` | '__|   | |   | |    | |
+ / ___ \| | | | (_| | |_| | | (_| | |      | |___| |___ | |
+/_/   \_\_| |_|\__, |\__,_|_|\__,_|_|       \____|_____|___|
+           |___/
+Angular CLI: 13.0.4
+Node: 16.13.1
+OS: linux x64
+Angular: 13.0.3
+... animations, common, compiler, compiler-cli, core, forms
+... platform-browser, platform-browser-dynamic, router
+
+Package                           Version
+-----------------------------------------------------------
+@angular-devkit/architect       0.1300.4
+@angular-devkit/build-angular   13.0.4
+@angular-devkit/core            13.0.4
+@angular-devkit/schematics      13.0.4
+@angular/cli                    13.0.4
+@schematics/angular             13.0.4
+rxjs                            7.4.0
+typescript                      4.4.4
+```
+
+At this point, the tests work:
+
+```
+$ ./ng test
+Generating browser application bundles (phase: setup)...09 12 2021 13:57:18.567:WARN [karma]: No captured browser, open http://localhost:9876/
+09 12 2021 13:57:18.576:INFO [karma-server]: Karma v6.3.9 server started at http://localhost:9876/
+09 12 2021 13:57:18.576:INFO [launcher]: Launching browsers Chrome with concurrency unlimited
+09 12 2021 13:57:18.590:INFO [launcher]: Starting browser Chrome
+✔ Browser application bundle generation complete.
+09 12 2021 13:57:21.749:WARN [karma]: No captured browser, open http://localhost:9876/
+09 12 2021 13:57:21.797:INFO [Chrome 94.0.4606.71 (Linux x86_64)]: Connected on socket Fh4AKRcSDz0TEUkyAAAB with id 93745390
+✔ Browser application bundle generation complete.
+Chrome 94.0.4606.71 (Linux x86_64): Executed 3 of 3 SUCCESS (0.133 secs / 0.119 secs)
+TOTAL: 3 SUCCESS
+```
+
+and if you add this as well:
+
+```
+    <execution>
+        <id>npm-build</id>
+        <goals>
+            <goal>npm</goal>
+        </goals>
+        <configuration>
+            <arguments>run-script build</arguments>
+        </configuration>
+    </execution>
+```
+
+then the client app will be compiled during the Maven build.
+
+=== Stabilize the Build
+
+If you want a stable build you should put a `^` before the version of `@angular/cli` in your `package.json`. It isn't added by default when you do `ng new`, but it protects you from changes in the CLI. Example:
+
+.package.json
+```
+...
+"devDependencies": {
+    "@angular/cli": "^13.0.4",
+...
+```
+
+== Development Time
+
+You can build continuously with
+
+```
+$ ./ng build --watch
+```
+
+Updates are built (quickly) and pushed to `target/classes` where they can be picked up by Spring Boot. Your IDE might need to be tweaked to pick up the changes automatically (Spring Tool Suite does it out of the box).
+
+That's it really, but we can quickly look into a couple of extra things that will get you off the ground quickly with Spring Boot and Angular.
+
+=== VSCode
+
+https://code.visualstudio.com/[Microsoft VSCode] is quite a good tool for developing JavaScript applications, and it also has good support for Java and Spring Boot. If you install the "Java Extension Pack" (from Microsoft), the "Angular Essentials" (from Jon Papa) and the "Latest TypeScript and JavaScript Grammar" (from Microsoft) you will be able to do code completion and source navigation in the Angular app (all those extensions and discoverable from the IDE). There are also some Spring Boot features that you need to download and install (in Extensions view click on top right and choose `Install from VSIX...`) at http://dist.springsource.com/snapshot/STS4/nightly-distributions.html.
+
+What VSCode doesn't have currently is automatic detection of `npm` build tools in the project itself (and ours is in `.` so we need it). So to build from the IDE you might need to add a `.vscode/tasks.json` something like this:
+
+```
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "ng-build",
+            "type": "shell",
+            "command": "./ng build"
+        },
+        {
+            "label": "ng-watch",
+            "type": "shell",
+            "command": "./ng build --watch"
+        }
+    ]
+}
+```
+
+With that in place your `Tasks->Run Task...` menu should include the `ng-watch` option, and it will run the angular build for you and re-compile if you make changes. You could add other entries for running tests.
+
+== Adding Bootstrap
+
+You can add basic Twitter Bootstrap features to make the app look a bit less dull (taken from https://medium.com/codingthesmartway-com-blog/using-bootstrap-with-angular-c83c3cee3f4a[this blog]):
+
+```
+$ ./npm install bootstrap --save
+```
+
+and update `styles.css` to add the new content:
+
+.styles.css
+```css
+@import "~bootstrap/dist/css/bootstrap.css";
+```
+
+== Basic Angular Features
+
+Some basic features are included in the default scaffolding app, including the HTTP client, HTML forms support and navigation using the `Router`. All of them are extremely well documented at https://angular.io[angular.io], and there are thousands of examples out in the internet of how to use those features.
+
+As an example, lets look at how to add an HTTP Client call, and hook it up to a Spring `@RestController`. In the front end `app-root` component we can add some placeholders for dynamic content:
+
+.app.component.html:
+```html
+<div style="text-align:center"class="container">
+  <h1>
+    Welcome {{title}}!
+  </h1>
+  <div class="container">
+    <p>Id: <span>{{data.id}}</span></p>
+    <p>Message: <span>{{data.content}}</span></p>
+  </div>
+</div>
+```
+
+so we are looking for a `data` object in the scope of the component:
+
+.app.component.ts:
+```javascript
+import { Component } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'Demo';
+  data = {}  as any;
+  constructor(private http: HttpClient) {
+    http.get('resource').subscribe(data => this.data = data);
+  }
+}
+```
+
+Notice how the `AppComponent` has an `HttpClient` injected into its constructor. In the module definition we need to import the `HttpClientModule` as well, to enable the dependency injection:
+
+.app.module.ts
+```javascript
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppComponent } from './app.component';
+import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+In our Spring Boot application we need to service the `/resource` request and return an object with the right keys for the client:
+
+.DemoApplication.java:
+```java
+@SpringBootApplication
+@Controller
+public class DemoApplication {
+
+  @GetMapping("/resource")
+  @ResponseBody
+  public Map<String, Object> home() {
+    Map<String, Object> model = new HashMap<String, Object>();
+    model.put("id", UUID.randomUUID().toString());
+    model.put("content", "Hello World");
+    return model;
+  }
+
+...
+
+}
+```
+
+If you look at the source code https://github.com/dsyer/spring-boot-angular[in Github] you will also notice that there is a test for the backend interaction in `app.component.spec.ts` (thanks to http://blog.ninja-squad.com/2017/07/17/http-client-module/[this Ninja Squad blog]). The `pom.xml` has been modified to run the Angular e2e tests at the same time as the Java tests.
+
+== Conclusion
+
+We have created a Spring Boot application, added a simple HTTP endpoint to it, and then added a front end to it using Angular. The Angular app is self-contained, so anyone who knows the tools can work with it from its own directory. The Spring Boot application folds the Angular assets into its build and a developer can easily update and test the front end from a regular IDE by running the app in the usual way.
+
+
+
+======ARG======
+![Octocat](https://springdoc.org/images/springdoc-openapi.png)
+[![Build Status](https://travis-ci.org/springdoc/springdoc-openapi.svg?branch=master)](https://travis-ci.org/springdoc/springdoc-openapi)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=springdoc_springdoc-openapi&metric=alert_status)](https://sonarcloud.io/dashboard?id=springdoc_springdoc-openapi)
+[![Known Vulnerabilities](https://snyk.io/test/github/springdoc/springdoc-openapi.git/badge.svg)](https://snyk.io/test/github/springdoc/springdoc-openapi.git)
+[![Stack Exchange questions](https://img.shields.io/stackexchange/stackoverflow/t/springdoc)](https://stackoverflow.com/questions/tagged/springdoc?tab=Votes)
+
+# Table of Contents
+- [Full documentation](#full-documentation)
+- [**Introduction**](#introduction)
+- [**Getting Started**](#getting-started)
+  - [Library for springdoc-openapi integration with spring-boot and swagger-ui](#library-for-springdoc-openapi-integration-with-spring-boot-and-swagger-ui)
+  - [Spring-boot with OpenAPI Demo applications.](#spring-boot-with-openapi-demo-applications)
+    - [Source Code for Demo Applications.](#source-code-for-demo-applications)
+    - [Demo Spring Boot 2 Web MVC with OpenAPI 3.](#demo-spring-boot-2-web-mvc-with-openapi-3)
+    - [Demo Spring Boot 2 WebFlux with OpenAPI 3.](#demo-spring-boot-2-webflux-with-openapi-3)
+    - [Demo Spring Boot 1 Web MVC with OpenAPI 3.](#demo-spring-boot-1-web-mvc-with-openapi-3)
+    - [Demo Spring Boot 2 WebFlux with Functional endpoints OpenAPI 3.](#demo-spring-boot-2-webflux-with-functional-endpoints-openapi-3)
+    - [Demo Spring Boot 2 and Spring Hateoas with OpenAPI 3.](#demo-spring-boot-2-and-spring-hateoas-with-openapi-3)
+  - [Integration of the library in a Spring Boot 2.x.x project without the swagger-ui:](#integration-of-the-library-in-a-spring-boot-2xx-project-without-the-swagger-ui)
+  - [Error Handling for REST using @ControllerAdvice](#error-handling-for-rest-using-controlleradvice)
+  - [Adding API Information and Security documentation](#adding-api-information-and-security-documentation)
+  - [spring-webflux support with Annotated Controllers](#spring-webflux-support-with-annotated-controllers)
+- [Acknowledgements](#acknowledgements)
+  - [Contributors](#contributors)
+  - [Additional Support](#additional-support)
+
+# [Full documentation](https://springdoc.org)
+
+# **Introduction**
+
+The springdoc-openapi Java library helps automating the generation of API documentation using Spring Boot projects.
+springdoc-openapi works by examining an application at runtime to infer API semantics based on Spring configurations, class structure and various annotations.
+
+The library automatically generates documentation in JSON/YAML and HTML formatted pages. The generated documentation can be complemented using `swagger-api` annotations.
+
+This library supports:
+*  OpenAPI 3
+*  Spring-boot (v1 and v2)
+*  JSR-303, specifically for @NotNull, @Min, @Max, and @Size.
+*  Swagger-ui
+*  Oauth 2
+
+The following video introduces the Library:
+
+* [https://youtu.be/utRxyPfFlDw](https://youtu.be/utRxyPfFlDw)
+
+This is a community-based project, not maintained by the Spring Framework Contributors (Pivotal)
+
+# **Getting Started**
+
+## Library for springdoc-openapi integration with spring-boot and swagger-ui 
+*   Automatically deploys swagger-ui to a Spring Boot 2.x application
+*   Documentation will be available in HTML format, using the official [swagger-ui jars](https://github.com/swagger-api/swagger-ui.git).
+*   The Swagger UI page should then be available at http://server:port/context-path/swagger-ui.html and the OpenAPI description will be available at the following url for json format: http://server:port/context-path/v3/api-docs
+    * `server`: The server name or IP
+    * `port`: The server port
+    * `context-path`: The context path of the application
+*   Documentation can be available in yaml format as well, on the following path: /v3/api-docs.yaml
+*   Add the `springdoc-openapi-ui` library to the list of your project dependencies (No additional configuration is needed):
+
+```xml
+   <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-ui</artifactId>
+      <version>last-release-version</version>
+   </dependency>
+```
+*   This step is optional: For custom path of the swagger documentation in HTML format, add a custom springdoc property, in your spring-boot configuration file:
+
+```properties
+# swagger-ui custom path
+springdoc.swagger-ui.path=/swagger-ui.html
+```
+
+## Spring-boot with OpenAPI Demo applications.
+
+### [Source Code for Demo Applications](https://github.com/springdoc/springdoc-openapi-demos.git).
+### [Demo Spring Boot 2 Web MVC with OpenAPI 3](http://158.101.164.60:8081/).
+### [Demo Spring Boot 2 WebFlux with OpenAPI 3](http://158.101.164.60:8082/).
+### [Demo Spring Boot 1 Web MVC with OpenAPI 3](http://158.101.164.60:8083/).
+### [Demo Spring Boot 2 WebFlux with Functional endpoints OpenAPI 3](http://158.101.164.60:8084/swagger-ui.html).
+### [Demo Spring Boot 2 and Spring Hateoas with OpenAPI 3](http://158.101.164.60:8085/swagger-ui.html).
+
+![Branching](https://springdoc.org/images/pets.png)
+
+## Integration of the library in a Spring Boot 2.x.x project without the swagger-ui:
+*   Documentation will be available at the following url for json format: http://server:port/context-path/v3/api-docs
+    * `server`: The server name or IP
+    * `port`: The server port
+    * `context-path`: The context path of the application
+*   Documentation will be available in yaml format as well, on the following path : `/v3/api-docs.yaml`
+*   Add the library to the list of your project dependencies. (No additional configuration is needed)
+
+```xml
+   <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-webmvc-core</artifactId>
+      <version>last-release-version</version>
+   </dependency>
+```
+* This step is optional: For custom path of the OpenAPI documentation in Json format, add a custom springdoc property, in your spring-boot configuration file:
+
+```properties
+# /api-docs endpoint custom path
+springdoc.api-docs.path=/api-docs
+```
+
+* This step is optional: If you want to disable `springdoc-openapi` endpoints, add a custom springdoc property, in your `spring-boot` configuration file:
+
+```properties
+# disable api-docs
+springdoc.api-docs.enabled=false
+```
+ 
+## Error Handling for REST using @ControllerAdvice
+To generate documentation automatically, make sure all the methods declare the HTTP Code responses using the annotation: @ResponseStatus
+
+## Adding API Information and Security documentation
+  The library uses spring-boot application auto-configured packages to scan for the following annotations in spring beans: OpenAPIDefinition and Info.
+  These annotations declare, API Information: Title, version, licence, security, servers, tags, security and externalDocs.
+  For better performance of documentation generation, declare `@OpenAPIDefinition` and `@SecurityScheme` annotations within a Spring managed bean.  
+  
+## spring-webflux support with Annotated Controllers
+*   Documentation can be available in yaml format as well, on the following path : /v3/api-docs.yaml
+*   Add the library to the list of your project dependencies ( No additional configuration is needed)
+
+```xml
+   <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-webflux-ui</artifactId>
+      <version>last-release-version</version>
+   </dependency>
+```
+*   This step is optional: For custom path of the swagger documentation in HTML format, add a custom springdoc property, in your spring-boot configuration file:
+
+```properties
+# swagger-ui custom path
+springdoc.swagger-ui.path=/swagger-ui.html
+```
+
+The `springdoc-openapi` libraries are hosted on maven central repository. 
+The artifacts can be viewed accessed at the following locations:
+
+Releases:
+* [https://oss.sonatype.org/content/groups/public/org/springdoc/](https://oss.sonatype.org/content/groups/public/org/springdoc/).
+
+Snapshots:
+* [https://oss.sonatype.org/content/repositories/snapshots/org/springdoc/](https://oss.sonatype.org/content/repositories/snapshots/org/springdoc/).
+
+# Acknowledgements
+
+## Contributors
+springdoc-openapi is relevant and updated regularly due to the valuable contributions from its [contributors](https://github.com/springdoc/springdoc-openapi/graphs/contributors).
+
+<a href="https://github.com/springdoc/springdoc-openapi/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=springdoc/springdoc-openapi" width="50%"/>
+</a>
+
+Thanks a lot for your support!
+
+## Additional Support
+* [Spring Team](https://spring.io/team) - Thanks for their support by sharing all relevant resources around Spring projects.
+* [JetBrains](https://www.jetbrains.com/?from=springdoc-openapi) - Thanks a lot for supporting springdoc-openapi project.
+
+![JenBrains logo](https://springdoc.org/images/jetbrains.svg)

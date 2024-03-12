@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<!--
+    $Revision: 1.1 $
+    $Date: 2009/02/19 12:28:18 $
+
+    Sample XML for Basic/Chinese Report.
+-->
+
+<report type="basic report">
+    <header>
+        <uid><![CDATA[User1]]></uid>
+        <login-time><![CDATA[24 May 2004 15:15]]></login-time>
+        <ai-ref-code1><![CDATA[ACC1235980]]></ai-ref-code1>
+        <ai-ref-code2><![CDATA[ACC000002]]></ai-ref-code2>
+        <ai-ref-code3><![CDATA[ACC000003]]></ai-ref-code3>
+        <report-delivered-date><![CDATA[24 May 2004]]></report-delivered-date>
+        <reason-code><![CDATA[New]]></reason-code>
+        <report-ref-numb><![CDATA[200703181]]></report-ref-numb>
+    </header>
+    <general-information>
+        <executive-summary>
+            <exec-company-name><![CDATA[ABC Company]]></exec-company-name>
+            <re-submissions>
+                <re-submission><![CDATA[AI#1 has replaced previously submitted data as of November 2004.]]></re-submission>
+            </re-submissions>
+            <first-report><![CDATA[March 2004]]></first-report>
+            <submitters>
+                <period><![CDATA[December 2004]]></period>
+                <total><![CDATA[3]]></total>
+            </submitters>
+            <rev-of-consents>
+                <rev-of-consent id="1">
+                    <submitter><![CDATA[ABC Bank Limited]]></submitter>
+                    <notice-received-on><![CDATA[15 November 2004]]></notice-received-on>
+                    <effective-on><![CDATA[15 February 2005]]></effective-on>
+                </rev-of-consent>
+                <rev-of-consent id="2">
+                    <submitter><![CDATA[AI#2]]></submitter>
+                    <notice-received-on><![CDATA[15 November 2004]]></notice-received-on>
+                    <effective-on><![CDATA[15 February 2005]]></effective-on>
+                </rev-of-consent>
+                <rev-of-consent id="3">
+                    <submitter><![CDATA[AI#3]]></submitter>
+                    <notice-received-on><![CDATA[11 November 2004]]></notice-received-on>
+                    <effective-on><![CDATA[11 February 2005]]></effective-on>
+                </rev-of-consent>
+            </rev-of-consents>
+            <evidence-of-court>
+                <court>
+                    <date><![CDATA[2 November 2003]]></date>
+                    <total><![CDATA[1]]></total>
+                </court>
+            </evidence-of-court>
+            <pastdue60>
+                <period><![CDATA[December 2004]]></period>
+                <amount><![CDATA[1000000]]></amount>
+            </pastdue60>
+            <disputes>
+                <dispute id="1">
+                    <submitter><![CDATA[AI#2]]></submitter>
+                    <date><![CDATA[10 December 2004]]></date>
+                </dispute>
+                <dispute id="2">
+                    <submitter><![CDATA[AI#3]]></submitter>
+                    <date><![CDATA[10 January 2005]]></date>
+                </dispute>
+            </disputes>
+            <recovered>
+                <period><![CDATA[December 2004]]></period>
+                <amount><![CDATA[300000]]></amount>
+            </recovered>
+            <facilities>
+                <facility>
+                    <submitter><![CDATA[AI#4]]></submitter>
+                    <period><![CDATA[November 2004]]></period>
+                </facility>
+            </facilities>
+            <update-records>
+                <update-record>
+                    <submitter><![CDATA[AI#1]]></submitter>
+                    <period><![CDATA[July 2007]]></period>
+                    <date><![CDATA[24 September 2007]]></date>
+                </update-record>
+                <update-record>
+                    <submitter><![CDATA[AI#2]]></submitter>
+                    <period><![CDATA[July 2007]]></period>
+                    <date><![CDATA[24 September 2007]]></date>
+                </update-record>
+            </update-records>
+        </executive-summary>
+        <profile>
+            <submitter id="1">
+                <name><![CDATA[ABC Bank Limited]]></name>
+                <report-date><![CDATA[December 2004]]></report-date>
+                <identifiers>
+                    <identifier>
+                        <type><![CDATA[HKBRC]]></type>
+                        <number><![CDATA[12345678-001]]></number>
+                    </identifier>
+                    <identifier>
+                        <type><![CDATA[HKCI]]></type>
+                        <number><![CDATA[123321]]></number>
+                    </identifier>
+                </identifiers>
+                <company-name><![CDATA[Simple Report Company Limited]]></company-name>
+                <trade-name />
+                <previous-name><![CDATA[]]></previous-name>
+                <address><![CDATA[15/F, Warwick Hse West, 979 Kings Rd, Quarry Bay, Hong Kong]]></address>
+                <phone><![CDATA[12345678]]></phone>
+            </submitter>
+            <submitter id="2">
+                <name><![CDATA[AI#2]]></name>
+                <report-date><![CDATA[December 2004]]></report-date>
+                <identifiers>
+                    <identifier>
+                        <type><![CDATA[HKCI]]></type>
+                        <number><![CDATA[123321]]></number>
+                    </identifier>
+                </identifiers>
+                <company-name><![CDATA[Sample Report Co Ltd]]></company-name>
+                <previous-name><![CDATA[]]></previous-name>
+                <address><![CDATA[16/F, Warwick Hse West, 979 Kings Rd, Hong Kong]]></address>
+                <phone><![CDATA[23456789]]></phone>
+            </submitter>
+            <submitter id="3">
+                <name><![CDATA[AI#3]]></name>
+                <report-date><![CDATA[December 2004]]></report-date>
+                <identifiers>
+                    <identifier>
+                        <type><![CDATA[HKBRC]]></type>
+                        <number><![CDATA[12345678-000]]></number>
+                    </identifier>
+                </identifiers>
+                <company-name><![CDATA[Sample Report]]></company-name>
+                <previous-name><![CDATA[]]></previous-name>
+                <address><![CDATA[16/F 979 Kings Rd, Quarry Bay, Hong Kong]]></address>
+                <phone><![CDATA[12345678]]></phone>
+            </submitter>
+        </profile>
+        <group-structure>
+            <submitter id="1">
+                <name><![CDATA[Abc Bank Limited]]></name>
+                <sharedholder><![CDATA[2c Company]]></sharedholder>
+            </submitter>
+            <submitter id="2">
+                <name><![CDATA[AI#2]]></name>
+                <sharedholder><![CDATA[2C Company limited]]></sharedholder>
+            </submitter>
+            <submitter id="3">
+                <name><![CDATA[AI#3]]></name>
+                <sharedholder><![CDATA[]]></sharedholder>
+            </submitter>
+        </group-structure>
+        <courts>
+            <court id="1">
+                <defendant><![CDATA[SAMPLE REPORT HOLDINGS LTD and SAMPLE2 Company]]></defendant>
+                <action><![CDATA[DISTRICT COURT]]></action>
+                <plaintiff><![CDATA[Data in Chinese]]></plaintiff>
+                <amount><![CDATA[HKD 3,000.23]]></amount>
+                <date><![CDATA[15 January 2003]]></date>
+                <file-no><![CDATA[DCCJ444555/2000]]></file-no>
+                <cause><![CDATA[SUM]]></cause>
+            </court>
+        </courts>
+        <rev-of-consent>
+            <submitter id="1">
+                <name><![CDATA[Abc Bank Limited]]></name>
+                <notice-received-on><![CDATA[15 November 2004]]></notice-received-on>
+                <effective-on><![CDATA[15 February 2005]]></effective-on>
+            </submitter>
+            <submitter id="2">
+                <name><![CDATA[AI#2]]></name>
+                <notice-received-on><![CDATA[15 November 2004]]></notice-received-on>
+                <effective-on><![CDATA[15 February 2005]]></effective-on>
+            </submitter>
+            <submitter id="3">
+                <name><![CDATA[AI#3]]></name>
+                <notice-received-on><![CDATA[15 November 2004]]></notice-received-on>
+                <effective-on><![CDATA[15 February 2005]]></effective-on>
+            </submitter>
+        </rev-of-consent>
+    </general-information>
+    <financial>
+        <positive>
+            <summary>
+                <loans>
+                    <loan id="1">
+                        <type><![CDATA[Revolving]]></type>
+                        <total-fac><![CDATA[900000]]></total-fac>
+                        <shared><![CDATA[N]]></shared>
+                    </loan>
+                    <loan id="2">
+                        <type><![CDATA[Non-Revolving]]></type>
+                        <total-fac><![CDATA[100000]]></total-fac>
+                        <shared><![CDATA[N]]></shared>
+                    </loan>
+                    <loan id="3">
+                        <type><![CDATA[Contingent]]></type>
+                        <total-fac><![CDATA[1000000]]></total-fac>
+                        <shared><![CDATA[Y]]></shared>
+                    </loan>
+                    <loan id="4">
+                        <type><![CDATA[Combined]]></type>
+                        <total-fac><![CDATA[1000000]]></total-fac>
+                        <shared><![CDATA[N]]></shared>
+                    </loan>
+                    
+                    <loan id="5">
+                        <type><![CDATA[HP/Leasing]]></type>
+                        <total-fac><![CDATA[1000000]]></total-fac>
+                        <shared><![CDATA[Y]]></shared>
+                    </loan>
+                </loans>
+                <submitters><![CDATA[3]]></submitters>
+                <dispute><![CDATA[Y]]></dispute>
+                <total><![CDATA[3000000]]></total>
+            </summary>
+            <submitters-without-fac>
+                <submitter id="1">
+                    <name><![CDATA[Abc Bank Limited]]></name>
+                    <reported-in><![CDATA[December 2004]]></reported-in>
+                    <loans>
+                        <loan id="1">
+                            <type><![CDATA[Revolving]]></type>
+                            <total-fac><![CDATA[300000]]></total-fac>
+                            <shared><![CDATA[N]]></shared>
+                        </loan>
+                        <loan id="2">
+                            <type><![CDATA[Non-Revolving]]></type>
+                            <total-fac><![CDATA[100000]]></total-fac>
+                            <shared><![CDATA[N]]></shared>
+                        </loan>
+                        <loan id="3">
+                            <type><![CDATA[Contingent]]></type>
+                            <total-fac><![CDATA[1000000]]></total-fac>
+                            <shared><![CDATA[Y]]></shared>
+                        </loan>
+                    </loans>
+                    <tangible><![CDATA[FULL]]></tangible>
+                    <dispute><![CDATA[N]]></dispute>
+                    <dispute-date><![CDATA[N/A]]></dispute-date>
+                    <total><![CDATA[1400000]]></total>
+                </submitter>
+                <submitter id="2">
+                    <name><![CDATA[AI#2]]></name>
+                    <reported-in><![CDATA[December 2004]]></reported-in>
+                    <loans>
+                        <loan id="1">
+                            <type><![CDATA[Revolving]]></type>
+                            <total-fac><![CDATA[300000]]></total-fac>
+                            <shared><![CDATA[N]]></shared>
+                        </loan>
+                        <loan id="2">
+                            <type><![CDATA[Combined]]></type>
+                            <total-fac><![CDATA[1000000]]></total-fac>
+                            <shared><![CDATA[N]]></shared>
+                        </loan>
+                    </loans>
+                    <tangible><![CDATA[Partial]]></tangible>
+                    <dispute><![CDATA[Y]]></dispute>
+                    <dispute-date><![CDATA[10 December 2004]]></dispute-date>
+                    <total><![CDATA[1300000]]></total>
+                    <combined-detail><![CDATA[Revolving+Contingent]]></combined-detail>
+                </submitter>
+                <submitter id="3">
+                    <name><![CDATA[AI#3]]></name>
+                    <reported-in><![CDATA[December 2004]]></reported-in>
+                    <loans>
+                        <loan id="1">
+                            <type><![CDATA[Revolving]]></type>
+                            <total-fac><![CDATA[300000]]></total-fac>
+                            <shared><![CDATA[N]]></shared>
+                        </loan>
+                    </loans>
+                    <tangible><![CDATA[Partial]]></tangible>
+                    <dispute><![CDATA[Y]]></dispute>
+                    <dispute-date><![CDATA[10 January 2005]]></dispute-date>
+                    <total><![CDATA[300000]]></total>
+                </submitter>
+            </submitters-without-fac>
+            <submitters-with-fac>
+                <submitter id="1">
+                    <name><![CDATA[AI#4]]></name>
+                    <reported-in><![CDATA[November 2004]]></reported-in>
+                    <loans>
+                        <loan id="1">
+                            <type><![CDATA[Revolving]]></type>
+                            <total-fac><![CDATA[100000]]></total-fac>
+                            <shared><![CDATA[N]]></shared>
+                        </loan>
+                    </loans>
+                    <tangible><![CDATA[CLEAN]]></tangible>
+                    <dispute><![CDATA[N]]></dispute>
+                    <dispute-date><![CDATA[N/A]]></dispute-date>
+                    <fac-details>
+                        <date><![CDATA[November 2004]]></date>
+                        <status><![CDATA[Repaid]]></status>
+                    </fac-details>
+                    <total><![CDATA[100000]]></total>
+                </submitter>
+            </submitters-with-fac>
+        </positive>
+        <negative>
+            <summary>
+                <first-report>
+                    <past-12months><![CDATA[August 2004]]></past-12months>
+                    <past-24months><![CDATA[August 2004]]></past-24months>
+                </first-report>
+                <submitters>
+                    <past-12months><![CDATA[4]]></past-12months>
+                    <past-24months><![CDATA[4]]></past-24months>
+                </submitters>
+                <max-pastdue>
+                    <past-12months><![CDATA[110]]></past-12months>
+                    <past-24months><![CDATA[110]]></past-24months>
+                </max-pastdue>
+                <max-pastdue60>
+                    <past-12months><![CDATA[1000000]]></past-12months>
+                    <past-24months><![CDATA[1000000]]></past-24months>
+                </max-pastdue60>
+                <amount-writeoff>
+                    <past-12months><![CDATA[360000]]></past-12months>
+                    <past-24months><![CDATA[360000]]></past-24months>
+                </amount-writeoff>
+                <total-writeoff>
+                    <past-12months><![CDATA[2]]></past-12months>
+                    <past-24months><![CDATA[2]]></past-24months>
+                </total-writeoff>
+                <amount-recovery>
+                    <past-12months><![CDATA[340000]]></past-12months>
+                    <past-24months><![CDATA[340000]]></past-24months>
+                </amount-recovery>
+                <total-recovery>
+                    <past-12months><![CDATA[2]]></past-12months>
+                    <past-24months><![CDATA[2]]></past-24months>
+                </total-recovery>
+            </summary>
+            
+            <past-due>
+                <report period="December 2004">
+                    <reported-date>
+                        <date><![CDATA[December 2004]]></date>
+                        <pastdue60><![CDATA[1000000]]></pastdue60>
+                        <max-pastdue><![CDATA[110]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[November 2004]]></date>
+                        <pastdue60><![CDATA[900000]]></pastdue60>
+                        <max-pastdue><![CDATA[80]]></max-pastdue>
+                        <type><![CDATA[Non-Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[October 2004]]></date>
+                        <pastdue60><![CDATA[600000]]></pastdue60>
+                        <max-pastdue><![CDATA[71]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[September 2004]]></date>
+                        <pastdue60><![CDATA[N/A]]></pastdue60>
+                        <max-pastdue><![CDATA[N/A]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[August 2004]]></date>
+                        <pastdue60><![CDATA[100000]]></pastdue60>
+                        <max-pastdue><![CDATA[63]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[July 2004]]></date>
+                        <pastdue60><![CDATA[N/A]]></pastdue60>
+                        <max-pastdue><![CDATA[N/A]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[June 2004]]></date>
+                        <pastdue60><![CDATA[N/A]]></pastdue60>
+                        <max-pastdue><![CDATA[N/A]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[May 2004]]></date>
+                        <pastdue60><![CDATA[N/A]]></pastdue60>
+                        <max-pastdue><![CDATA[N/A]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[April 2004]]></date>
+                        <pastdue60><![CDATA[N/A]]></pastdue60>
+                        <max-pastdue><![CDATA[N/A]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[March 2004]]></date>
+                        <pastdue60><![CDATA[N/A]]></pastdue60>
+                        <max-pastdue><![CDATA[N/A]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[February 2004]]></date>
+                        <pastdue60><![CDATA[N/A]]></pastdue60>
+                        <max-pastdue><![CDATA[N/A]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                    <reported-date>
+                        <date><![CDATA[January 2004]]></date>
+                        <pastdue60><![CDATA[N/A]]></pastdue60>
+                        <max-pastdue><![CDATA[N/A]]></max-pastdue>
+                        <type><![CDATA[Revolving]]></type>
+                    </reported-date>
+                </report>
+            </past-due>
+            
+        </negative>
+        <write-off>
+            <report period="December 2004">
+                <reported-date>
+                    <date><![CDATA[December 2004]]></date>
+                    <amount><![CDATA[N/A]]></amount>
+                    <recovery><![CDATA[300000]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[November 2004]]></date>
+                    <amount><![CDATA[N/A]]></amount>
+                    <recovery><![CDATA[40000]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[October 2004]]></date>
+                    <amount><![CDATA[300000]]></amount>
+                    <recovery><![CDATA[N/A]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[September 2004]]></date>
+                    <amount><![CDATA[60000]]></amount>
+                    <recovery><![CDATA[N/A]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[August 2004]]></date>
+                    <amount><![CDATA[N/A]]></amount>
+                    <recovery><![CDATA[N/A]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[July 2004]]></date>
+                    <amount><![CDATA[N/A]]></amount>
+                    <recovery><![CDATA[N/A]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[June 2004]]></date>
+                    <amount><![CDATA[N/A]]></amount>
+                    <recovery><![CDATA[N/A]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[May 2004]]></date>
+                    <amount><![CDATA[N/A]]></amount>
+                    <recovery><![CDATA[N/A]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[April 2004]]></date>
+                    <amount><![CDATA[N/A]]></amount>
+                    <recovery><![CDATA[N/A]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[March 2004]]></date>
+                    <amount><![CDATA[N/A]]></amount>
+                    <recovery><![CDATA[N/A]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[February 2004]]></date>
+                    <amount><![CDATA[N/A]]></amount>
+                    <recovery><![CDATA[N/A]]></recovery>
+                </reported-date>
+                <reported-date>
+                    <date><![CDATA[January 2004]]></date>
+                    <amount><![CDATA[N/A]]></amount>
+                    <recovery><![CDATA[N/A]]></recovery>
+                </reported-date>
+            </report>
+        </write-off>
+    </financial>
+</report>

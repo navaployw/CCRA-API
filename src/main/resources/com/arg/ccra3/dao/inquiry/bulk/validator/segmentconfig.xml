@@ -1,0 +1,32 @@
+<CONFIG>
+    <SEGMENTCONFIG>
+        <SEGMENT id="BQ" name="BatchRequest File">
+            <FIELD id="1" field-name="IDTYPE" name="ID Type" key="false" length="5" required="true" type="Text" lookup="" pattern=""/>
+            <FIELD id="2" field-name="IDNUMBER" name="ID Number" key="false" length="25" required="true" type="Text" lookup="" pattern="[\p{Alnum}\p{Punct}\p{Blank}]*"/>
+            <FIELD id="3" field-name="PLACE-OF-REG" name="Place of Regis" key="false" length="2" required="false" type="Text" lookup="" pattern=""/>
+            <FIELD id="4" field-name="REPORT-TYPE" name="Report Type" key="false" length="3" required="false" type="Text" lookup="" pattern="[12]?"/>            
+            <FIELD id="5" field-name="REASON-CODE" name="Reason Code" key="false" length="3" required="true" type="Text" lookup="" pattern=""/>
+            <FIELD id="6" field-name="AI-REF-CODE-1" name="AI Ref Code1" key="false" length="30" required="false" type="Text" lookup="" pattern=""/>
+            <FIELD id="7" field-name="AI-REF-CODE-2" name="AI Ref Code2" key="false" length="30" required="false" type="Text" lookup="" pattern=""/>
+            <FIELD id="8" field-name="AI-REF-CODE-3" name="AI Ref Code3" key="false" length="30" required="false" type="Text" lookup="" pattern=""/>
+            <FIELD id="9" field-name="ENQUIRY-ALERT" name="Enquiry Alert" key="false" length="1" required="false" type="Text" lookup="" pattern="[YN]?"/>                        
+            <FIELD id="10" field-name="MONITORING" name="Monitering Alert" key="false" length="1" required="false" type="Text" lookup="" pattern="[YN]?"/>
+            <FIELD id="11" field-name="REORDER" name="Reorder 7 days" key="false" length="1" required="false" type="Text" lookup="" pattern="[YN]?"/>
+        </SEGMENT>
+    </SEGMENTCONFIG>
+    <HANDLERS>
+        <SEGMENT id="BQ" classname="com.arg.cb2.inquiry.bulk.validator.BatchRowRuleHandler" segment-rule-classname="" dataset-rule-classname="">
+            <FIELD field-name="IDTYPE" validation-classname="" cleansing-classname="" lookup-classname=""/>
+            <FIELD field-name="IDNUMBER" validation-classname="" cleansing-classname="" lookup-classname=""/>
+            <FIELD field-name="PLACE-OF-REG" validation-classname="" cleansing-classname="" lookup-classname="com.arg.cb2.inquiry.bulk.validator.PlaceRegLookupHandler"/>
+            <FIELD field-name="REPORT-TYPE" validation-classname="" cleansing-classname="" lookup-classname=""/>            
+            <FIELD field-name="REASON-CODE" validation-classname="" cleansing-classname="" lookup-classname="com.arg.cb2.inquiry.bulk.validator.ReasonLookupHandler"/>
+            <FIELD field-name="AI-REF-CODE-1" validation-classname="" cleansing-classname="" lookup-classname=""/>
+            <FIELD field-name="AI-REF-CODE-2" validation-classname="" cleansing-classname="" lookup-classname=""/>
+            <FIELD field-name="AI-REF-CODE-3" validation-classname="" cleansing-classname="" lookup-classname=""/>
+            <FIELD field-name="ENQUIRY-ALERT" validation-classname="" cleansing-classname="" lookup-classname=""/>                        
+            <FIELD field-name="MONITORING" validation-classname="" cleansing-classname="" lookup-classname=""/>
+            <FIELD field-name="REORDER" validation-classname="" cleansing-classname="" lookup-classname=""/>
+        </SEGMENT>
+    </HANDLERS>
+</CONFIG>

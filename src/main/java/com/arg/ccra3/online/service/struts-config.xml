@@ -1,0 +1,2795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    $Id: struts-config.xml,v 1.5 2011/05/08 11:33:03 thanasit Exp $
+-->
+
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
+
+<struts-config>
+
+    <form-beans>
+        <form-bean name="loginForm" type="com.arg.cb2.wbs.form.LoginForm" />
+        <form-bean name="searchTypeForm" type="com.arg.cb2.inquiry.oi.form.SearchTypeForm" />
+        <form-bean name="idSearchForm" type="com.arg.cb2.inquiry.oi.form.IDSearchForm" />
+        <form-bean name="nameSearchForm" type="com.arg.cb2.inquiry.oi.form.NameSearchForm" />
+        <form-bean name="requestReportForm" type="com.arg.cb2.inquiry.oi.form.RequestReportForm" />
+        <form-bean name="requestReportByIDForm" type="com.arg.cb2.inquiry.oi.form.RequestReportByIDForm" />
+        <form-bean name="requestReportByNameForm" type="com.arg.cb2.inquiry.oi.form.RequestReportByNameForm" />
+        <form-bean name="reportInfoForm" type="com.arg.cb2.inquiry.oi.form.ReportInformationForm" />
+        <form-bean name="changePasswdForm" type="com.arg.cb2.wbs.form.ChangePasswordForm" />
+        <form-bean name="refreshPageForm" type="com.arg.cb2.inquiry.oi.form.RefreshPageForm" />
+        <form-bean name="bulkFileForm" type="com.arg.cb2.inquiry.bulk.form.BulkFileForm" />
+        <form-bean name="bulkManualForm" type="com.arg.cb2.inquiry.bulk.form.BulkManualForm" />
+        <form-bean name="adminReportForm" type="com.arg.cb2.adminrpt.form.AdminReportSearchForm" />
+        <form-bean name="detailUserMaintenanceForm" type="com.arg.cb2.adminrpt.form.DetailUserMaintenanceForm" />
+        <form-bean name="fileRejectedForm" type="com.arg.cb2.adminrpt.form.FileRejectForm" />
+        <form-bean name="validateErrorForm" type="com.arg.cb2.adminrpt.form.ValidateErrorForm" />
+        <form-bean name="monthlySubmitForm" type="com.arg.cb2.adminrpt.form.MonthlySubmissionForm" />
+        <form-bean name="recordUnloadForm" type="com.arg.cb2.adminrpt.form.RecordUnloadForm" />
+        <form-bean name="keyNotSubmitForm" type="com.arg.cb2.adminrpt.form.KeyNotSubmitForm" />
+        <form-bean name="effectiveRevocForm" type="com.arg.cb2.adminrpt.form.EffectiveRevocForm" />
+        <form-bean name="fileProcessForm" type="com.arg.cb2.adminrpt.form.FileProcessForm" />
+        <form-bean name="memberInquiryForm" type="com.arg.cb2.adminrpt.form.MemberInquiryForm" />
+        <form-bean name="inquiryAnalysisForm" type="com.arg.cb2.adminrpt.form.InquiryAnalysisForm" />
+        <form-bean name="systemAccessForm" type="com.arg.cb2.adminrpt.form.SystemAccessForm" />
+        <form-bean name="inquiryExcepForm" type="com.arg.cb2.adminrpt.form.InquiryExceptionForm" />
+        <form-bean name="passwordMntForm" type="com.arg.cb2.adminrpt.form.PasswordMaintenanceForm" />
+        <form-bean name="dailyDunsForm" type="com.arg.cb2.adminrpt.form.DailyDunsForm" />
+        <form-bean name="usageForm" type="com.arg.cb2.adminrpt.form.UsageForm" />
+        <form-bean name="reportsOrderedForm" type="com.arg.cb2.adminrpt.form.ReportsOrderedForm"/>
+        <form-bean name="enquiryAlertForm" type="com.arg.cb2.inquiry.acc.form.EnquiryAlertForm"/>
+        <form-bean name="monitoringForm" type="com.arg.cb2.inquiry.acc.form.MonitoringForm"/>
+
+
+        <!-- mailbox -->
+        <form-bean name="browseReportForm" type="com.arg.cb2.mailbox.form.BrowseReportForm" />
+        <form-bean name="downloadBulkForm" type="com.arg.cb2.mailbox.form.DownloadBulkForm" />
+        <form-bean name="downloadOnlineForm" type="com.arg.cb2.mailbox.form.DownloadOnlineForm" />
+        <form-bean name="shareMailboxForm" type="com.arg.cb2.mailbox.form.ShareMailboxForm" />
+        <form-bean name="reportMailboxForm" type="com.arg.cb2.mailbox.form.ReportMailboxForm" />
+        <form-bean name="reportProductMailboxForm" type="com.arg.cb2.mailbox.form.ReportProductMailboxForm" />
+        <form-bean name="delOnlineMailboxForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="delOnlineMailboxFromTrashForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="restoreOnlineMailboxForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="delBulkMailboxForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="delBulkMailboxFromTrashForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="delEnquiryMailboxForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="delEnquiryMailboxFromTrashForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="restoreEnquiryMailboxForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="delMonitoringMailboxForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="delMonitoringMailboxFromTrashForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="restoreMonitoringMailboxForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="restoreBulkMailboxForm" type="com.arg.cb2.mailbox.form.DelForm" />
+        <form-bean name="checkNodeTypeForm" type="com.arg.cb2.mailbox.form.CheckNodeTypeForm" />
+        <!-- mailbox -->
+
+        <!-- form umt -->
+        <form-bean name="getBranchListForm" type="com.arg.cb2.umt.form.GetBranchListForm" />
+        <form-bean name="branchDelsForm" type="com.arg.cb2.umt.form.BranchDelsForm" />
+        <form-bean name="getBranchDetailForm" type="com.arg.cb2.umt.form.GetBranchDetailForm" />
+        <form-bean name="updateBranchDetailForm" type="com.arg.cb2.umt.form.BranchDetailForm" />
+        <form-bean name="insertBranchForm" type="com.arg.cb2.umt.form.InsertBranchDetailForm" />
+        <form-bean name="getUserListForm" type="com.arg.cb2.umt.form.GetUserListForm" />
+        <form-bean name="getUserDetailForm" type="com.arg.cb2.umt.form.GetUserDetailForm" />
+        <form-bean name="updateUserDetailForm" type="com.arg.cb2.umt.form.UpdateUserDetailForm" />
+        <form-bean name="insertUserDetailForm" type="com.arg.cb2.umt.form.InsertUserDetailForm" />
+        <form-bean name="getUserPermissionForm" type="com.arg.cb2.umt.form.GetUserPermissionForm" />
+        <!--
+        <form-bean name="getGroupListForm" type="com.arg.cb2.umt.form.GetGroupListForm" />
+        -->
+        <form-bean name="branchPrivilegeForm"  type ="com.arg.cb2.umt.form.BranchPrivilegeForm"/>
+        <form-bean name="updateUserPermissionForm" type="com.arg.cb2.umt.form.UpdateUserPermissionForm" />
+        <form-bean name="deleteUserForm" type="com.arg.cb2.umt.form.DeleteUserForm" />
+        <form-bean name="preparedInsertUserDetailForm" type="com.arg.cb2.umt.form.PreparedInsertUserDetailForm" />
+        <!-- form umt -->
+
+        <!-- setting -->
+        <!--form-bean name="passwordForm" type="com.arg.cb2.wbs.form.PasswordForm" /-->
+        <form-bean name="mailboxForm" type="com.arg.cb2.wbs.form.MailboxForm" />
+        <form-bean name="languageForm" type="com.arg.cb2.wbs.form.LanguageForm" />
+        <!-- setting -->
+
+        <!--- admin report csv -->
+
+        <!-- OMS -->
+        <form-bean name="OmsSrdcCriteriaForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="memberID" type="java.lang.Integer" />
+            <form-property name="memberCode" type="java.lang.String" />
+            <form-property name="idType" type="java.lang.String" />
+            <form-property name="idNumber" type="java.lang.String" />
+            <form-property name="reason" type="java.lang.String" />
+            <form-property name="placeRegist" type="java.lang.String" />
+        </form-bean>
+
+        <form-bean name="OmsSrdcAddToUpdListForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="memberID" type="java.lang.Integer" />
+            <form-property name="memberCode" type="java.lang.String" />
+            <form-property name="idType" type="java.lang.String" />
+            <form-property name="idNumber" type="java.lang.String" />
+            <form-property name="reason" type="java.lang.String" />
+            <form-property name="rowId" type="java.lang.String[]" />
+        </form-bean>
+
+        <form-bean name="OmsSrdcDropUpdateListItemsForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="accessIDs" type="java.lang.String[]" />
+        </form-bean>
+
+        <form-bean name="OmsSrdcLocateRecordForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="accessID" type="java.lang.Long" />
+        </form-bean>
+
+        <form-bean name="OmsSrdcSubmitApprovalForm" type="com.arg.cb2.wbs.oms.srdc.SrdcUpdateDataForm" />
+
+        <form-bean name="OmsSrdcApproveForm" type="com.arg.cb2.wbs.oms.srdc.SrdcUpdateDataForm" />
+
+        <form-bean name="OmsSrdcProcessApprovalForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="accessIDs" type="java.lang.String[]" />
+        </form-bean>
+
+        <form-bean name="OmsSrdcPrinterVersionForm" type="com.arg.cb2.wbs.oms.srdc.SrdcUpdateDataForm" />
+
+        <form-bean name="OmsDptCriteriaForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="memberID" type="java.lang.Integer" />
+            <form-property name="idType" type="java.lang.String" />
+            <form-property name="idNumber" type="java.lang.String" />
+            <form-property name="placeRegist" type="java.lang.String" />
+        </form-bean>
+
+        <form-bean name="UpdateAIAttributesForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm" >
+            <form-property name="memberID" type="java.lang.Integer" />
+            <form-property name="groupName" type="java.lang.String" />
+            <form-property name="newTotalFacLimit" type="java.lang.String" />
+            <form-property name="oldTotalFacLimit" type="java.lang.String" />
+            <form-property name="newSessionTimeout" type="java.lang.String" />
+            <form-property name="oldSessionTimeout" type="java.lang.String" />
+        </form-bean>
+
+        <form-bean name="OmsUsrCriteriaForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+                  <form-property name="memberID" type="java.lang.Integer" />
+                  <form-property name="memberCode" type="java.lang.String" />
+                  <form-property name="idType" type="java.lang.String" />
+                  <form-property name="idNumber" type="java.lang.String" />
+                  <form-property name="placeRegist" type="java.lang.String" />
+        </form-bean>
+
+        <form-bean name="OmsUsrSearchForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+          <form-property name="memberID" type="java.lang.Integer" />
+          <form-property name="memberCode" type="java.lang.String" />
+          <form-property name="idType" type="java.lang.String" />
+          <form-property name="idNumber" type="java.lang.String" />
+          <form-property name="placeRegist" type="java.lang.String" />
+        </form-bean>
+
+        <form-bean name="OmsDptAddToDisputeListForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="memberID" type="java.lang.Integer" />
+            <form-property name="idType" type="java.lang.String" />
+            <form-property name="idNumber" type="java.lang.String" />
+            <form-property name="disputeDate" type="java.lang.String" />
+            <form-property name="status" type="java.lang.String" />
+            <form-property name="reason" type="java.lang.String" />
+            <form-property name="rowId" type="java.lang.String[]" />
+            <form-property name="placeRegist" type="java.lang.String" />
+        </form-bean>
+
+        <form-bean name="OmsUsrAddToUpdListForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+          <form-property name="memberID" type="java.lang.Integer" />
+          <form-property name="memberCode" type="java.lang.String" />
+          <form-property name="idType" type="java.lang.String" />
+          <form-property name="idNumber" type="java.lang.String" />
+          <form-property name="requestedBy" type="java.lang.String" />
+          <form-property name="reason" type="java.lang.String" />
+          <form-property name="rowId" type="java.lang.String[]" />
+          <form-property name="version" type="java.lang.String" />
+        </form-bean>
+
+        <form-bean name="OmsUsrShowRecordForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="accessID" type="java.lang.Long" />
+        </form-bean>
+
+        <form-bean name="OmsUsrRejectRecordForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="accessIDs" type="java.lang.String[]" />
+        </form-bean>
+
+         <form-bean name="OmsUsrApproveForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm" >
+             <form-property name="accessID" type="java.lang.Long" />
+        </form-bean>
+
+        <form-bean name="OmsUsrPrinterVersionForm" type="com.arg.cb2.wbs.oms.usr.UsrUnloadDataForm" />
+
+        <!-- OPTOUT FORM-->
+        <form-bean name="OmsOOCriteriaForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="memberID" type="java.lang.Integer" />
+            <form-property name="memberCode" type="java.lang.String" />
+            <form-property name="idType" type="java.lang.String" />
+            <form-property name="idNumber" type="java.lang.String" />
+            <form-property name="loanType" type="java.lang.String" />
+            <form-property name="singleType" type="java.lang.Boolean" />
+            <form-property name="comType" type="java.lang.Integer" />
+            <form-property name="placeRegist" type="java.lang.String" />
+        </form-bean>
+
+       <form-bean name="OmsOOAddToOOListForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="cbuid" type="java.lang.String[]" />
+            <form-property name="memberID" type="java.lang.Integer" />
+            <form-property name="memberCode" type="java.lang.String" />
+            <form-property name="singleType" type="java.lang.Boolean" />
+            <form-property name="loanType" type="java.lang.String" />
+            <form-property name="period" type="java.lang.String[]" />
+            <form-property name="nameEn" type="java.lang.String[]" />
+            <form-property name="nameLo" type="java.lang.String[]" />
+            <form-property name="brcno" type="java.lang.String[]" />
+            <form-property name="cino" type="java.lang.String[]" />
+            <form-property name="otherRegNo" type="java.lang.String[]" />
+            <form-property name="placeOfReg" type="java.lang.String[]" />
+            <form-property name="facilityLimit" type="java.lang.String[]" />
+            <form-property name="nonFacilityLimit" type="java.lang.String[]" />
+            <form-property name="facCancelStatus" type="java.lang.String[]" />
+            <form-property name="combinedLimitDetails" type="java.lang.String[]" />
+            <form-property name="canEdit" type="java.lang.String[]" />
+        </form-bean>
+
+        <form-bean name="OmsOOProcessApprovalForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="accessID" type="java.lang.Long" />
+        </form-bean>
+
+        <form-bean name="OmsOORejectApprovalForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="accessIDs" type="java.lang.String[]" />
+        </form-bean>
+
+        <form-bean name="OmsOOLocateRecordForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="accessID" type="java.lang.Long" />
+            <form-property name="optoutID" type="java.lang.Long" />
+            <form-property name="loanType" type="java.lang.String" />
+            <form-property name="errorID" type="java.lang.Long" />
+        </form-bean>
+
+        <form-bean name="OmsOOItemForm" type="com.arg.cb2.wbs.oms.CommonDynaValidatorForm">
+            <form-property name="accessID" type="java.lang.Long" />
+            <form-property name="errorID" type="java.lang.Long" />
+        </form-bean>
+
+    </form-beans>
+
+    <global-forwards>
+        <forward name="login" path="/index.jsp" />
+        <forward name="logout" path="/logout.do" />
+        <forward name="session-timeout" path="/logout.do" />
+        <forward name="not-login" path="/index.jsp" />
+        <forward name="permission-denied" path="/search-type.jsp" />
+    </global-forwards>
+
+    <action-mappings type="com.arg.cb2.wbs.action.AuthenticationMapping">
+
+        <action path="/prelogin"
+                type="com.arg.cb2.wbs.synchro.ForwardSynchroAction"
+                scope="request"
+                parameter="/login.jsp" >
+                <set-property property="loginRequired" value="false" />
+                <set-property property="permissions" value="n/a" />
+                <forward name="success" path="/check-message.do" />
+        </action>
+
+        <action path="/login"
+                type="com.arg.cb2.wbs.action.LoginAction"
+                name="loginForm"
+                input="/login.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="false" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/check-message.do" />
+            <forward name="failed" path="/login.jsp" />
+            <forward name="password-expired" path="/prepare-change-passwd-form.do" />
+        </action>
+
+        <action path="/prepare-change-passwd-form"
+                type="com.arg.cb2.wbs.action.PrepareChangePasswordFormAction"
+                name="changePasswdForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="false" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/change-password.jsp" />
+            <forward name="failed" path="/change-password.jsp" />
+        </action>
+
+        <action path="/change-expired-passwd"
+                type="com.arg.cb2.wbs.action.ChangePasswordAction"
+                name="changePasswdForm"
+                input="/change-password.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/check-message.do" />
+            <forward name="failed" path="/change-password.jsp" />
+        </action>
+
+        <action path="/logout"
+                type="com.arg.cb2.wbs.action.LogoutAction"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="false" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/thankyou.jsp" />
+            <forward name="failed" path="/thankyou.jsp" />
+        </action>
+
+        <action path="/check-message"
+                type="com.arg.cb2.wbs.action.CheckMessageAction"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="new-message" path="/msg-summary.jsp" />
+            <forward name="no-message" path="/search-type.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+
+        <action path="/view-alertmessage"
+                type="com.arg.cb2.wbs.action.ViewAlertMessageAction"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="mailbox" path="/mailbox.jsp" />
+            <forward name="failed" path="/check-message.do" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+         </action>
+
+        <action path="/check-search-type"
+                type="com.arg.cb2.inquiry.oi.action.SearchTypeAction"
+                name="searchTypeForm"
+                input="/search-type.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.report.searchcompany" />
+            <forward name="by-id" path="/id-search.jsp" />
+            <forward name="by-name" path="/confirm-name-search.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/check-timeout"
+                type="com.arg.cb2.wbs.action.DoNothingAction"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.report.searchcompany" />
+            <forward name="success" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/id-search"
+                type="com.arg.cb2.inquiry.oi.action.IDSearchAction"
+                name="idSearchForm"
+                input="/id-search.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/id-search-result.jsp" />
+            <forward name="failed" path="/id-search.jsp" />
+            <forward name="permission-denied" path="/id-search.jsp" />
+        </action>
+
+        <action path="/preval-prod-priv-id"
+                type="com.arg.cb2.inquiry.oi.action.PrevalidateProductPrivilegeAction"
+                name="requestReportByIDForm"
+                input="/id-search.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/id-order.jsp" />
+            <forward name="failed" path="/id-search.do" />
+            <forward name="permission-denied" path="/id-search.jsp" />
+        </action>
+
+        <action path="/preval-prod-priv-vap"
+                type="com.arg.cb2.inquiry.oi.action.PrevalidateProductPrivilegeAction"
+                name="requestReportByIDForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/id-order.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/val-prod-priv-id"
+                type="com.arg.cb2.inquiry.oi.action.ValidateProductPrivilegeAction"
+                name="requestReportByIDForm"
+                input="/id-order.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/id-confirm.jsp" />
+            <forward name="failed" path="/id-order.jsp" />
+            <forward name="permission-denied" path="/id-order.jsp" />
+        </action>
+
+        <action path="/create-report"
+                type="com.arg.cb2.inquiry.oi.action.CreateReportAction"
+                name ="requestReportForm"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/cover-page.jsp" />
+            <forward name="ccra-report" path="/ccra-coverPage.do"/>
+            <forward name="set-alert" path="/set-alerts.do" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/set-alerts"
+                type="com.arg.cb2.inquiry.oi.action.SetAlertsAction"
+                name ="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="order-report" path="/cover-page.jsp" />
+            <forward name="ccra-report" path="/ccra-coverPage.do"/>
+            <forward name="set-inquiry-alert" path="/enq-acc-alert.do" />
+            <forward name="set-monitoring" path="/mon-acc-alert.do" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/ccra-coverPage"
+                type="com.arg.cb2.inquiry.oi.action.GetCCRACoverPageAction"
+                name ="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/cover-page-system.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/prepare-expid"
+                scope="request"
+                type="com.arg.cb2.inquiry.oi.action.PrepareExpenseIDAction">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/name-search-exp.jsp" />
+            <forward name="failed" path="/name-search-exp.jsp" />
+        </action>
+
+        <action path="/create-expid"
+                type="com.arg.cb2.inquiry.oi.action.CreateExpenseIDAction"
+                name="nameSearchForm"
+                input="/name-search-exp.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/name-search.do" />
+            <forward name="failed" path="/name-search-exp.jsp" />
+        </action>
+
+        <action path="/create-expid-id"
+                type="com.arg.cb2.inquiry.oi.action.CreateExpIDAction"
+                name="requestReportForm"
+                input="/search-type.jsp"
+                scope="request"
+                validate="true">
+            <!--input="/id-confirm.jsp" -->
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="alert" path="/set-alerts.do"/>
+            <forward name="success" path="/create-report.do" />
+            <forward name="fail-inquiry" path="/enq-acc-alert.do"/>
+            <forward name="fail-monitoring" path="/mon-acc-alert.do"/>
+            <forward name="failed" path="/search-type.jsp" />
+        </action>
+
+        <action path="/name-search"
+                type="com.arg.cb2.inquiry.oi.action.NameSearchAction"
+                name="nameSearchForm"
+                input="/name-search.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/name-search-result.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/name-search.jsp" />
+        </action>
+
+        <action path="/batch-search"
+                type="com.arg.cb2.inquiry.oi.action.BatchSearchAction"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.batch.submitfile" />
+            <forward name="success" path="/batch-search.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/name-search-again"
+                type="com.arg.cb2.inquiry.oi.action.NameSearchAgainAction"
+                name="nameSearchForm"
+                input="/name-search.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/name-search.jsp" />
+            <forward name="failed" path="/name-search.jsp" />
+            <forward name="permission-denied" path="/name-search.jsp" />
+        </action>
+
+        <action path="/basic-nomatch-id"
+                type="com.arg.cb2.inquiry.oi.action.NoMacthIDAction"
+                name="idSearchForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/search-type.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+        </action>
+
+        <action path="/basic-nomatch-name"
+                type="com.arg.cb2.wbs.action.DoNothingAction"
+                name="nameSearchForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/report-nomatch-name.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+        </action>
+
+        <action path="/ping"
+            scope="request"
+            type="com.arg.cb2.wbs.action.DoNothingAction">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/ping-xml.jsp" />
+            <forward name="failed" path="/ping-xml.jsp" />
+            <forward name="permission-denied" path="/ping-xml.jsp" />
+            <forward name="session-timeout" path="/ping-xml.jsp" />
+        </action>
+
+        <action path="/preval-prod-priv-name"
+                type="com.arg.cb2.inquiry.oi.action.PrevalidateProductPrivilegeAction"
+                name="requestReportByNameForm"
+                input="/name-search.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/name-order.jsp" />
+            <forward name="failed" path="/name-search.do" />
+            <forward name="permission-denied" path="/name-search.do" />
+        </action>
+
+        <action path="/order-vap"
+                type="com.arg.cb2.inquiry.oi.action.PriorOrderVAPAction"
+                name="requestReportByIDForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/preval-prod-priv-vap.do" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/val-prod-priv-name"
+                type="com.arg.cb2.inquiry.oi.action.ValidateProductPrivilegeAction"
+                name="requestReportByNameForm"
+                input="/name-order.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/name-confirm.jsp" />
+            <forward name="failed" path="/name-order.jsp" />
+            <forward name="permission-denied" path="/name-order.jsp" />
+        </action>
+
+        <action path="/check-avail-data"
+                type="com.arg.cb2.inquiry.oi.action.CheckAvailableDataAction"
+                name="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="exec-summary" path="/get-exec-summary.do" />
+            <forward name="profile" path="/get-profile.do" />
+            <forward name="comp-structure" path="/get-comp-structure.do" />
+            <forward name="court" path="/get-court.do" />
+            <forward name="revoc-consent" path="/get-revoc-consent.do" />
+            <forward name="fin-pos" path="/get-fin-pos.do" />
+            <forward name="fin-writeoff" path="/get-fin-writeoff.do" />
+            <forward name="fin-neg" path="/get-fin-neg.do" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/get-exec-summary"
+                type="com.arg.cb2.inquiry.oi.action.GetExecutiveSummaryAction"
+                name="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/exec-summary.jsp" />
+            <forward name="failed" path="/exec-summary.jsp" />
+            <forward name="permission-denied" path="/cover-page.jsp" />
+        </action>
+
+        <action path="/get-profile"
+                type="com.arg.cb2.inquiry.oi.action.GetProfileAction"
+                name="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/profile.jsp" />
+            <forward name="failed" path="/profile.jsp" />
+            <forward name="permission-denied" path="/cover-page.jsp" />
+        </action>
+
+        <action path="/get-comp-structure"
+                type="com.arg.cb2.inquiry.oi.action.GetCompanyStructureAction"
+                name="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/comp-structure.jsp" />
+            <forward name="failed" path="/comp-structure.jsp" />
+            <forward name="permission-denied" path="/cover-page.jsp" />
+        </action>
+
+        <action path="/get-court"
+                type="com.arg.cb2.inquiry.oi.action.GetCourtAction"
+                name="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/court.jsp" />
+            <forward name="failed" path="/court.jsp" />
+            <forward name="permission-denied" path="/cover-page.jsp" />
+        </action>
+
+        <action path="/get-revoc-consent"
+                type="com.arg.cb2.inquiry.oi.action.GetRevocationOfConsentAction"
+                name="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/revoc-consent.jsp" />
+            <forward name="failed" path="/revoc-consent.jsp" />
+            <forward name="permission-denied" path="/cover-page.jsp" />
+        </action>
+        <!--
+        <action path="/export-2-xml"
+                type="com.arg.cb2.inquiry.oi.action.ExportXMLAction"
+                name="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/export-xml.jsp" />
+            <forward name="failed" path="/alert-then-close.jsp" />
+            <forward name="permission-denied" path="/alert-then-close.jsp" />
+        </action>
+        -->
+        <action path="/get-fin-pos"
+                type="com.arg.cb2.inquiry.oi.action.GetFinancialPositiveAction"
+                name="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/fin-positive.jsp" />
+            <forward name="failed" path="/fin-positive.jsp" />
+            <forward name="permission-denied" path="/cover-page.jsp" />
+        </action>
+
+        <action path="/get-fin-writeoff"
+                type="com.arg.cb2.inquiry.oi.action.GetFinancialWriteOffAction"
+                name="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/fin-writeoff.jsp" />
+            <forward name="failed" path="/fin-writeoff.jsp" />
+            <forward name="permission-denied" path="/cover-page.jsp" />
+        </action>
+
+        <action path="/get-fin-neg"
+                type="com.arg.cb2.inquiry.oi.action.GetFinancialNegativeAction"
+                name="requestReportForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/fin-negative.jsp" />
+            <forward name="failed" path="/fin-negative.jsp" />
+            <forward name="permission-denied" path="/cover-page.jsp" />
+        </action>
+
+        <action path="/set-change-password"
+                type="com.arg.cb2.wbs.action.ChangePasswordAction"
+                name="changePasswdForm"
+                input="/set-change-password.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/set-change-password.jsp" />
+            <forward name="failed" path="/set-change-password.jsp" />
+            <forward name="permission-denied" path="/set-change-password.jsp" />
+        </action>
+
+        <!--Setting -->
+        <!--
+        <action path="/changePassword"
+                name="changePasswdForm"
+                type="com.arg.cb2.wbs.action.ChangePasswordAction"
+                scope="request"
+                input="/set-change-password.jsp"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/set-change-password.jsp" />
+            <forward name="failed" path="/set-change-password.jsp" />
+        </action>
+
+        <action path="/get-language"
+                type="com.arg.cb2.wbs.action.GetLanguageAction"
+                name="languageForm"
+                scope="request">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/set-language.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/set-language.jsp" />
+        </action>
+        -->
+        <action path="/set-language"
+                type="com.arg.cb2.wbs.action.SetLanguageAction"
+                name="languageForm"
+                input="/set-language.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/set-language.jsp" />
+            <forward name="failed" path="/set-language.jsp" />
+            <forward name="permission-denied" path="/set-language.jsp" />
+        </action>
+        <!--
+        <action path="/getMailbox"
+                name="mailboxForm"
+                scope="request"
+                type="com.arg.cb2.wbs.action.GetMailboxSettingAction"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/set-mailbox.jsp" />
+            <forward name="failed" path="/set-mailbox.jsp" />
+        </action>
+        -->
+        <!--Setting -->
+
+        <action path="/get-share-mailbox-info"
+                type="com.arg.cb2.mailbox.action.GetShareMailboxInfoAction"
+                name="mailboxForm"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/set-mailbox.jsp" />
+            <forward name="failed" path="/set-mailbox.jsp" />
+            <forward name="permission-denied" path="/set-mailbox.jsp" />
+        </action>
+
+        <action path="/share-mailbox"
+                type="com.arg.cb2.mailbox.action.ShareMailboxAction"
+                name="shareMailboxForm"
+                input="/set-mailbox.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/get-share-mailbox-info.do" />
+            <forward name="failed" path="/set-mailbox.jsp" />
+            <forward name="permission-denied" path="/set-mailbox.jsp" />
+        </action>
+
+        <action path="/bulk-submit-file"
+                type="com.arg.cb2.inquiry.bulk.action.SubmitFileAction"
+                name="bulkFileForm"
+                input="/batch-search.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.batch.submitfileandorderreport" />
+            <forward name="success" path="/mal-bulk-notify.jsp" />
+            <forward name="failed" path="/batch-search.jsp" />
+            <forward name="permission-denied" path="/batch-search.jsp" />
+        </action>
+
+        <action path="/bulk-submit-form"
+                type="com.arg.cb2.inquiry.bulk.action.SubmitFormAction"
+                name="bulkManualForm"
+                input="/batch-search.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.batch.submitfileandorderreport" />
+            <forward name="success" path="/mal-bulk-notify.jsp" />
+            <forward name="failed" path="/batch-search.jsp" />
+            <forward name="permission-denied" path="/batch-search.jsp" />
+        </action>
+
+        <action path="/mailbox-productdelivered"
+                type="com.arg.cb2.mailbox.action.GetProductDeliveredInfoAction"
+                name="mailboxForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/onlineproduct-2-xml"
+                type="com.arg.cb2.mailbox.action.GetOnlineProductXMLAction"
+                name="reportMailboxForm"
+                input="/mailbox-xml.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/delonlineproduct"
+                type="com.arg.cb2.mailbox.action.DeleteOnlineMessagesAction"
+                name="delOnlineMailboxForm"
+                input="/onlineproduct-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/onlineproduct-2-xml.do" />
+            <forward name="failed" path="/onlineproduct-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/delonlineproductfromtrash"
+                type="com.arg.cb2.mailbox.action.DeleteOnlineMessagesFromTrashAction"
+                name="delOnlineMailboxFromTrashForm"
+                input="/onlineproduct-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/onlineproduct-2-xml.do" />
+            <forward name="failed" path="/onlineproduct-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/restoreonlineproduct"
+                type="com.arg.cb2.mailbox.action.RestoreOnlineMessagesAction"
+                name="restoreOnlineMailboxForm"
+                input="/onlineproduct-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/onlineproduct-2-xml.do" />
+            <forward name="failed" path="/onlineproduct-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/bulkproduct-2-xml"
+                type="com.arg.cb2.mailbox.action.GetBulkProductXMLAction"
+                name="reportMailboxForm"
+                input="/mailbox-xml.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/delbulkproduct"
+                type="com.arg.cb2.mailbox.action.DeleteBulkMessagesAction"
+                name="delBulkMailboxForm"
+                input="/bulkproduct-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/bulkproduct-2-xml.do" />
+            <forward name="failed" path="/bulkproduct-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/delbulkproductfromtrash"
+                type="com.arg.cb2.mailbox.action.DeleteBulkMessagesFromTrashAction"
+                name="delBulkMailboxFromTrashForm"
+                input="/bulkproduct-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/bulkproduct-2-xml.do" />
+            <forward name="failed" path="/bulkproduct-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/restorebulkproduct"
+                type="com.arg.cb2.mailbox.action.RestoreBulkMessagesAction"
+                name="restoreBulkMailboxForm"
+                input="/bulkproduct-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/bulkproduct-2-xml.do" />
+            <forward name="failed" path="/bulkproduct-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/bulkproductcontent-2-xml"
+                type="com.arg.cb2.mailbox.action.GetBulkProductContentXMLAction"
+                name="reportProductMailboxForm"
+                input="/mailbox-xml.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <!-- Enquiry and Monitoring Alert -->
+
+        <action path="/mailbox-enquiry"
+                type="com.arg.cb2.mailbox.action.GetEnquiryInfoAction"
+                name="mailboxForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/enquiry-2-xml"
+        		type="com.arg.cb2.mailbox.action.GetEnquiryXMLAction"
+        		name="reportMailboxForm"
+        		input="/mailbox-xml.jsp"
+        		scope="request"
+        		validate="true">
+        	<set-property property="loginRequired" value="true" />
+        	<set-property property="permissions" value="n/a" />
+        	<forward name="success" path="/mailbox-xml.jsp" />
+        	<forward name="failed" path="/mailbox-xml.jsp" />
+        	<forward name="session-timeout" path="/mailbox-xml.jsp" />
+        	<forward name="not-login" path="/mailbox-xml.jsp" />
+        	<forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/delenquiryreport"
+                type="com.arg.cb2.mailbox.action.DeleteAlertMessagesAction"
+                name="delEnquiryMailboxForm"
+                input="/enquiry-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/enquiry-2-xml.do" />
+            <forward name="failed" path="/enquiry-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/delenquiryreportfromtrash"
+                type="com.arg.cb2.mailbox.action.DeleteAlertMessagesFromTrashAction"
+                name="delEnquiryMailboxFromTrashForm"
+                input="/enquiry-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/enquiry-2-xml.do" />
+            <forward name="failed" path="/enquiry-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/restoreenquiryreport"
+                type="com.arg.cb2.mailbox.action.RestoreAlertMessagesAction"
+                name="restoreEnquiryMailboxForm"
+                input="/enquiry-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/enquiry-2-xml.do" />
+            <forward name="failed" path="/enquiry-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/enquiry-shared-ai-2-xml"
+                type="com.arg.cb2.mailbox.action.GetEnquiryAIListsXMLAction"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/enquiry-shared-branch-2-xml"
+                type="com.arg.cb2.mailbox.action.GetEnquiryBranchListsXMLAction"
+                name="checkNodeTypeForm"
+                input="/mailbox-xml.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/enquiry-shared-user-2-xml"
+                type="com.arg.cb2.mailbox.action.GetEnquiryUserListsXMLAction"
+                name="checkNodeTypeForm"
+                input="/mailbox-xml.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/mailbox-monitoring"
+                type="com.arg.cb2.mailbox.action.GetMonitoringInfoAction"
+                name="mailboxForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/monitoring-2-xml"
+        		type="com.arg.cb2.mailbox.action.GetMonitoringXMLAction"
+        		name="reportMailboxForm"
+        		input="/mailbox-xml.jsp"
+        		scope="request"
+        		validate="true">
+        	<set-property property="loginRequired" value="true" />
+        	<set-property property="permissions" value="n/a" />
+        	<forward name="success" path="/mailbox-xml.jsp" />
+        	<forward name="failed" path="/mailbox-xml.jsp" />
+        	<forward name="session-timeout" path="/mailbox-xml.jsp" />
+        	<forward name="not-login" path="/mailbox-xml.jsp" />
+        	<forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/delmonitoringreport"
+                type="com.arg.cb2.mailbox.action.DeleteAlertMessagesAction"
+                name="delMonitoringMailboxForm"
+                input="/monitoring-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/monitoring-2-xml.do" />
+            <forward name="failed" path="/monitoring-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/delmonitoringreportfromtrash"
+                type="com.arg.cb2.mailbox.action.DeleteAlertMessagesFromTrashAction"
+                name="delMonitoringMailboxFromTrashForm"
+                input="/monitoring-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/monitoring-2-xml.do" />
+            <forward name="failed" path="/monitoring-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/restoremonitoringreport"
+                type="com.arg.cb2.mailbox.action.RestoreAlertMessagesAction"
+                name="restoreMonitoringMailboxForm"
+                input="/monitoring-2-xml.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/monitoring-2-xml.do" />
+            <forward name="failed" path="/monitoring-2-xml.do" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/monitoring-shared-ai-2-xml"
+        		type="com.arg.cb2.mailbox.action.GetMonitoringAIListsXMLAction"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/monitoring-shared-branch-2-xml"
+                type="com.arg.cb2.mailbox.action.GetMonitoringBranchListsXMLAction"
+                name="checkNodeTypeForm"
+                input="/mailbox-xml.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/monitoring-shared-user-2-xml"
+                type="com.arg.cb2.mailbox.action.GetMonitoringUserListsXMLAction"
+                name="checkNodeTypeForm"
+                input="/mailbox-xml.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/enquiry"
+        		type="com.arg.cb2.mailbox.action.GetEnquiryXMLAction"
+        		name="reportMailboxForm"
+        		input="/mailbox-xml.jsp"
+        		scope="request"
+        		validate="true">
+        	<set-property property="loginRequired" value="true" />
+        	<set-property property="permissions" value="n/a" />
+        	<forward name="success" path="/enquiry-list.jsp" />
+        	<forward name="failed" path="/enquiry-list.jsp" />
+        	<forward name="session-timeout" path="/enquiry-list.jsp" />
+        	<forward name="not-login" path="/enquiry-list.jsp" />
+        	<forward name="permission-denied" path="/enquiry-list.jsp" />
+        </action>
+
+        <action path="/ailists-2-xml"
+                type="com.arg.cb2.mailbox.action.GetAIListsXMLAction"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/branchlists-2-xml"
+                type="com.arg.cb2.mailbox.action.GetBranchListsXMLAction"
+                name="checkNodeTypeForm"
+                input="/mailbox-xml.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/userlists-2-xml"
+                type="com.arg.cb2.mailbox.action.GetUserListsXMLAction"
+                name="checkNodeTypeForm"
+                input="/mailbox-xml.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/mailbox-xml.jsp" />
+            <forward name="failed" path="/mailbox-xml.jsp" />
+            <forward name="session-timeout" path="/mailbox-xml.jsp" />
+            <forward name="not-login" path="/mailbox-xml.jsp" />
+            <forward name="permission-denied" path="/mailbox-xml.jsp" />
+        </action>
+
+        <action path="/enq-acc-alert"
+                type="com.arg.cb2.inquiry.acc.action.GetEnquiryAccountAction"
+				scope="request"
+				validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="failed" path="/search-type.jsp" />
+			<forward name="success" path="/enq-account.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+		<action path="/get-un-subscribe-enq-acc-alert"
+			type="com.arg.cb2.inquiry.acc.action.GetUnSubScribeEnquiryAccAction"
+				scope="request"
+				validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="failed" path="/search-type.jsp" />
+			<forward name="success" path="/un-subscribe-enq-account.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/mon-acc-alert"
+                type="com.arg.cb2.inquiry.acc.action.GetMonitoringAccountAction"
+				scope="request"
+				validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="failed" path="/search-type.jsp" />
+			<forward name="success" path="/mon-account.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/get-un-subscribe-mon-acc-alert"
+                type="com.arg.cb2.inquiry.acc.action.GetUnSubscribeMonitoringAccAction"
+				scope="request"
+				validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="failed" path="/search-type.jsp" />
+			<forward name="success" path="/un-subscribe-mon-account.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/del-enq-acc-alert"
+                type="com.arg.cb2.inquiry.acc.action.DeleteEnquiryAccountAction"
+				name="enquiryAlertForm"
+				input="/enq-acc-alert.do"                
+                scope="request"
+				validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.product.subscribe-unsubscribe-enquiry-alert" />
+            <forward name="failed" path="/enq-acc-alert.do" />
+			<forward name="success" path="/enq-acc-alert.do" />
+            <forward name="permission-denied" path="/enq-acc-alert.do" />
+        </action>
+
+        <action path="/re-subscribe-enq-acc-alert"
+                type="com.arg.cb2.inquiry.acc.action.ReSubScribeEnquiryAccountAction"
+				name="enquiryAlertForm"
+				scope="request"
+				validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.product.subscribe-unsubscribe-enquiry-alert" />
+            <forward name="failed" path="/get-un-subscribe-enq-acc-alert.do" />
+			<forward name="success" path="/get-un-subscribe-enq-acc-alert.do" />
+            <forward name="permission-denied" path="/enq-acc-alert.do" />
+        </action>
+
+        <action path="/auto-renew-mon-acc-alert"
+                type="com.arg.cb2.inquiry.acc.action.AutoRenewMonitoringAction"
+				name="monitoringForm"
+				input="/mon-acc-alert.do"
+				scope="request"
+				validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.product.subscribe-unsubscribe-monitoring-alert" />
+            <forward name="failed" path="/mon-acc-alert.do" />
+			<forward name="success" path="/mon-acc-alert.do" />
+            <forward name="permission-denied" path="/mon-acc-alert.do" />
+        </action>
+
+        <action path="/re-subscribe-mon-acc-alert"
+                type="com.arg.cb2.inquiry.acc.action.ReSubScribeMonitoringAction"
+				name="monitoringForm"
+				input="/get-un-subscribe-mon-acc-alert.do"
+				scope="request"
+				validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.product.subscribe-unsubscribe-monitoring-alert" />
+            <forward name="failed" path="/get-un-subscribe-mon-acc-alert.do" />
+			<forward name="success" path="/get-un-subscribe-mon-acc-alert.do" />
+            <forward name="permission-denied" path="/mon-acc-alert.do" />
+        </action>
+
+        <action path="/chk-admin-rpt-type-save"
+                type="com.arg.cb2.adminrpt.action.AdminReportSearchAction"
+                name="adminReportForm"
+                input="/main-admin-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="full-file" path="/cr-file-reject-save.jsp" />
+            <forward name="validate-error" path="/cr-validate-error-save.jsp" />
+            <forward name="data-submission" path="/cr-monthly-submission-save.jsp" />
+            <forward name="unload" path="/cr-unload-save.jsp" />
+            <forward name="key-not-submitted" path="/cr-key-not-submit-save.jsp" />
+            <forward name="effective-confirm" path="/cr-effective-revoc-save.jsp" />
+            <forward name="file-summary" path="/cr-file-process-save.jsp" />
+            <forward name="member-inquiry" path="/cr-member-inquiry-save.jsp" />
+            <forward name="inquiry-analysis" path="/cr-inquiry-analysis-save.jsp" />
+            <forward name="system-access" path="/cr-system-access-save.jsp" />
+            <forward name="pwd-maintenance" path="/cr-pwd-save.jsp" />
+            <forward name="usage" path="/cr-usage-save.jsp" />
+            <forward name="reports_ordered" path="/cr-reports-ordered-save.jsp" />
+            <forward name="exception-facility" path="/cr-exception-facility-save.jsp" />
+            <forward name="monthly-submission-exception" path="/cr-monthly-submission-exception-save.jsp" />
+            <forward name="detailed-system-access" path="/cr-detailed-system-access-save.jsp" />
+            <forward name="suspected-abnormal-access" path="/cr-suspected-abnormal-access-save.jsp" />
+            <forward name="monthly-correction-summary" path="/cr-monthly-correction-summary-save.jsp" />
+            <forward name="monthly-opt-out-confirmation" path="/cr-monthly-opt-out-confirmation-save.jsp" />
+            <forward name="detailed-oms-access" path="/cr-detailed-oms-access-save.jsp" />
+            <forward name="ccra-full-file" path="/ccra-cr-file-rejection-save.jsp" />
+            <forward name="ccra-validate-error" path="/ccra-cr-validate-error-save.jsp" />
+            <forward name="ccra-data-submission" path="/ccra-cr-monthly-submission-save.jsp" />
+            <forward name="ccra-unload" path="/ccra-cr-unload-save.jsp" />
+            <forward name="ccra-key-not-submitted" path="/ccra-cr-key-not-submit-save.jsp" />
+            <forward name="ccra-effective-confirm" path="/ccra-cr-effective-revoc-save.jsp" />
+            <forward name="ccra-file-summary" path="/ccra-cr-file-process-save.jsp" />
+            <forward name="ccra-member-inquiry" path="/ccra-cr-member-inquiry-save.jsp" />
+            <forward name="ccra-inquiry-analysis" path="/ccra-cr-inquiry-analysis-save.jsp" />
+            <forward name="ccra-system-access" path="/ccra-cr-system-access-save.jsp" />
+            <forward name="ccra-pwd-maintenance" path="/ccra-cr-pwd-save.jsp" />
+            <forward name="ccra-duns-numbering" path="/ccra-cr-daily-duns-save.jsp" />
+            <forward name="ccra-usage" path="/ccra-cr-usage-save.jsp" />
+            <forward name="ccra-reports-ordered" path="/ccra-cr-reports-ordered-save.jsp"/>
+            <forward name="ccra-ai-profile-update" path="/ccra-cr-ai-profile-update-save.jsp" />
+            <forward name="ccra-exception-facility" path="/ccra-cr-exception-facility-save.jsp" />
+            <forward name="ccra-monthly-submission-exception" path="/ccra-cr-monthly-submission-exception-save.jsp" />
+            <forward name="ccra-detailed-system-access" path="/ccra-cr-detailed-system-access-save.jsp" />
+            <forward name="ccra-suspected-abnormal-access" path="/ccra-cr-suspected-abnormal-access-save.jsp" />
+            <forward name="ccra-monthly-correction-summary" path="/ccra-cr-monthly-correction-summary-save.jsp" />
+            <forward name="ccra-monthly-opt-out-confirmation" path="/ccra-cr-monthly-opt-out-confirmation-save.jsp" />
+            <forward name="ccra-detailed-oms-access" path="/ccra-cr-detailed-oms-access-save.jsp" />
+            <forward name="detail-user-maintenance" path="/cr-detail-user-maintenance-save.jsp" />
+            <forward name="ccra-detail-user-maintenance" path="/ccra-cr-detail-user-maintenance-save.jsp" />
+            <forward name="failed" path="/main-admin-save.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+       <!-- Admin Report -->
+
+        <action path="/get-file-list-save"
+                type="com.arg.cb2.adminrpt.action.FileRejectListAction"
+                name="fileRejectedForm"
+                input="/cr-file-reject-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/cr-file-reject-save.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/get-list-file-process-save"
+                type="com.arg.cb2.adminrpt.action.FileProcessListAction"
+                name="fileProcessForm"
+                input="/cr-file-process-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/cr-file-process-save.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+        <!--
+        <action path="/get-list-period-file-process"
+                type="com.arg.cb2.adminrpt.action.GetListPeriodFileProcessAction"
+                name="fileProcessForm"
+                input="/ccra-cr-file-process.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/ccra-cr-file-process.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/get-list-period-usage"
+                type="com.arg.cb2.adminrpt.action.GetListPeriodUsageAction"
+                name="usageForm"
+                input="/ccra-cr-usage.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/ccra-cr-usage.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+        -->
+        <action path="/get-list-file-error-save"
+                type="com.arg.cb2.adminrpt.action.ValidateErrorListAction"
+                name="validateErrorForm"
+                input="/cr-validate-error-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/cr-validate-error-save.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/request-file-rejected-rpt"
+                type="com.arg.cb2.adminrpt.action.FullFileRejectedAction"
+                name="fileRejectedForm"
+                input="/cr-file-reject-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.fullfilerejectionreport" />
+            <forward name="success" path="/rptdl-file-reject.jsp" />
+            <forward name="failed" path="/cr-file-reject-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-file-rejected-rpt"
+                type="com.arg.cb2.adminrpt.action.FullFileRejectedAction"
+                name="fileRejectedForm"
+                input="/ccra-cr-file-rejection-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.fullfilerejectionreport" />
+            <forward name="success" path="/rptdl-file-reject.jsp" />
+            <forward name="failed" path="/ccra-cr-file-rejection-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        <!--
+        <action path="/request-ccra-file-rejected-rpt-alert"
+                type="com.arg.cb2.adminrpt.action.FullFileRejectedAction"
+                name="fileRejectedForm"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.fullfilerejectionreport" />
+            <forward name="success" path="/rptdl-file-reject.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        -->
+        <action path="/request-validate-error-rpt"
+                type="com.arg.cb2.adminrpt.action.ValidateErrorAction"
+                name="validateErrorForm"
+                input="/cr-validate-error-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.validationerrorreport" />
+            <forward name="success" path="/rptdl-validation-err.jsp" />
+            <forward name="failed" path="/cr-validate-error-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-validate-error-rpt"
+                type="com.arg.cb2.adminrpt.action.ValidateErrorAction"
+                name="validateErrorForm"
+                input="/ccra-cr-validate-error-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.validationerrorreport" />
+            <forward name="success" path="/rptdl-validation-err.jsp" />
+            <forward name="failed" path="/ccra-cr-validate-error-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        <!--
+        <action path="/request-ccra-validate-error-rpt-alert"
+                type="com.arg.cb2.adminrpt.action.ValidateErrorAction"
+                name="validateErrorForm"
+                input="/ccra-cr-validate-error.jsp"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.validationerrorreport" />
+            <forward name="success" path="/rptdl-validation-err.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        -->
+        <action path="/request-monthly-submit-rpt"
+                type="com.arg.cb2.adminrpt.action.MonthlySubmitAction"
+                name="monthlySubmitForm"
+                input="/cr-monthly-submission-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.monthlydatasubmissionreport" />
+            <forward name="success" path="/rptdl-monthly-data-submission.jsp" />
+            <forward name="failed" path="/cr-monthly-submission-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-monthly-submit-rpt"
+                type="com.arg.cb2.adminrpt.action.MonthlySubmitAction"
+                name="monthlySubmitForm"
+                input="/ccra-cr-monthly-submission-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.monthlydatasubmissionreport" />
+            <forward name="success" path="/rptdl-monthly-data-submission.jsp" />
+            <forward name="failed" path="/ccra-cr-monthly-submission-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-record-unload-rpt"
+                type="com.arg.cb2.adminrpt.action.RecordUnloadAction"
+                name="recordUnloadForm"
+                input="/cr-unload-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.fullrecordunloadreport" />
+            <forward name="success" path="/rptdl-record-unload.jsp" />
+            <forward name="failed" path="/cr-unload-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-record-unload-rpt"
+                type="com.arg.cb2.adminrpt.action.RecordUnloadAction"
+                name="recordUnloadForm"
+                input="/ccra-cr-unload-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.fullrecordunloadreport" />
+            <forward name="success" path="/rptdl-record-unload.jsp" />
+            <forward name="failed" path="/ccra-cr-unload-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        <!--
+        <action path="/request-ccra-record-unload-rpt-alert"
+                type="com.arg.cb2.adminrpt.action.RecordUnloadAction"
+                name="recordUnloadForm"
+                input="/ccra-cr-unload.jsp"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.fullrecordunloadreport" />
+            <forward name="success" path="/rptdl-record-unload.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        -->
+        <action path="/request-key-not-submit-rpt"
+                type="com.arg.cb2.adminrpt.action.KeyNotSubmitAction"
+                name="keyNotSubmitForm"
+                input="/cr-key-not-submit-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.keyoptionalitemsnotsubmittedreport" />
+            <forward name="success" path="/rptdl-key-notsubmit.jsp" />
+            <forward name="failed" path="/cr-key-not-submit-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-key-not-submit-rpt"
+                type="com.arg.cb2.adminrpt.action.KeyNotSubmitAction"
+                name="keyNotSubmitForm"
+                input="/ccra-cr-key-not-submit-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.keyoptionalitemsnotsubmittedreport" />
+            <forward name="success" path="/rptdl-key-notsubmit.jsp" />
+            <forward name="failed" path="/ccra-cr-key-not-submit-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-effective-revoc-rpt"
+                type="com.arg.cb2.adminrpt.action.EffectiveRevocAction"
+                name="effectiveRevocForm"
+                input="/cr-effective-revoc-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.effectiverevocationconfirmationreport" />
+            <forward name="success" path="/rptdl-effective-revoc.jsp" />
+            <forward name="failed" path="/cr-effective-revoc-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-effective-revoc-rpt"
+                type="com.arg.cb2.adminrpt.action.EffectiveRevocAction"
+                name="effectiveRevocForm"
+                input="/ccra-cr-effective-revoc-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.effectiverevocationconfirmationreport" />
+            <forward name="success" path="/rptdl-effective-revoc.jsp" />
+            <forward name="failed" path="/ccra-cr-effective-revoc-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        <!--
+        <action path="/request-ccra-effective-revoc-rpt-alert"
+                type="com.arg.cb2.adminrpt.action.EffectiveRevocAction"
+                name="effectiveRevocForm"
+                input="/ccra-cr-effective-revoc.jsp"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.effectiverevocationconfirmationreport" />
+            <forward name="success" path="/rptdl-effective-revoc.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        -->
+        <action path="/request-file-process-rpt"
+                type="com.arg.cb2.adminrpt.action.FileProcessAction"
+                name="fileProcessForm"
+                input="/cr-file-process-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.inputfileprocesssummaryreport" />
+            <forward name="success" path="/rptdl-file-process.jsp" />
+            <forward name="failed" path="/cr-file-process-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+         <action path="/request-ccra-file-process-rpt"
+                type="com.arg.cb2.adminrpt.action.FileProcessAction"
+                name="fileProcessForm"
+                input="/ccra-cr-file-process-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.inputfileprocesssummaryreport" />
+            <forward name="success" path="/rptdl-file-process.jsp" />
+            <forward name="failed" path="/ccra-cr-file-process-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        <!--
+        <action path="/request-ccra-file-process-rpt-alert"
+                type="com.arg.cb2.adminrpt.action.FileProcessAction"
+                name="fileProcessForm"
+                input="/ccra-cr-file-process.jsp"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.inputfileprocesssummaryreport" />
+            <forward name="success" path="/rptdl-file-process.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        -->
+        <action path="/request-member-inquiry-rpt"
+                type="com.arg.cb2.adminrpt.action.MemberInquiryAction"
+                name="memberInquiryForm"
+                input="/cr-member-inquiry-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.memberinquiryreport" />
+            <forward name="success" path="/rptmis-member-inquiry.jsp" />
+            <forward name="failed" path="/cr-member-inquiry-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-member-inquiry-rpt"
+                type="com.arg.cb2.adminrpt.action.MemberInquiryAction"
+                name="memberInquiryForm"
+                input="/ccra-cr-member-inquiry-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.memberinquiryreport" />
+            <forward name="success" path="/rptmis-member-inquiry.jsp" />
+            <forward name="failed" path="/ccra-cr-member-inquiry-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-inquiry-analysis-rpt"
+                type="com.arg.cb2.adminrpt.action.InquiryAnalysisAction"
+                name="inquiryAnalysisForm"
+                input="/cr-inquiry-analysis-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.inquiryanalysisreport" />
+            <forward name="success" path="/rptmis-inquiry-analysis.jsp" />
+            <forward name="failed" path="/cr-inquiry-analysis-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-inquiry-analysis-rpt"
+                type="com.arg.cb2.adminrpt.action.InquiryAnalysisAction"
+                name="inquiryAnalysisForm"
+                input="/ccra-cr-inquiry-analysis-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.inquiryanalysisreport" />
+            <forward name="success" path="/rptmis-inquiry-analysis.jsp" />
+            <forward name="failed" path="/ccra-cr-inquiry-analysis-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-system-access-rpt"
+                type="com.arg.cb2.adminrpt.action.SystemAccessAction"
+                name="systemAccessForm"
+                input="/cr-system-access-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.systemaccessreport" />
+            <forward name="success" path="/rptmis-system-access.jsp" />
+            <forward name="failed" path="/cr-system-access-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        <!--
+        <action path="/request-ccra-system-access-rpt"
+                type="com.arg.cb2.adminrpt.action.SystemAccessAction"
+                name="systemAccessForm"
+                input="/ccra-cr-system-access.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.systemaccessreport" />
+            <forward name="success" path="/rptmis-system-access.jsp" />
+            <forward name="failed" path="/ccra-cr-system-access.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-inquiry-excep-rpt"
+                type="com.arg.cb2.adminrpt.action.InquiryExceptionAction"
+                name="inquiryExcepForm"
+                input="/cr-inquiry-excep.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.inquiryexceptionreport" />
+            <forward name="success" path="/rptmis-inquiry-exception.jsp" />
+            <forward name="failed" path="/cr-inquiry-excep.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-inquiry-excep-rpt"
+                type="com.arg.cb2.adminrpt.action.InquiryExceptionAction"
+                name="inquiryExcepForm"
+                input="/ccra-cr-inquiry-exception.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.inquiryexceptionreport" />
+            <forward name="success" path="/rptmis-inquiry-exception.jsp" />
+            <forward name="failed" path="/ccra-cr-inquiry-excep.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        -->
+        <action path="/request-password-mnt-rpt"
+                type="com.arg.cb2.adminrpt.action.PasswordMaintenanceAction"
+                name="passwordMntForm"
+                input="/cr-pwd-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.passwordmaintenancereport" />
+            <forward name="success" path="/rptmtn-password.jsp" />
+            <forward name="failed" path="/cr-pwd-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-password-mnt-rpt"
+                type="com.arg.cb2.adminrpt.action.PasswordMaintenanceAction"
+                name="passwordMntForm"
+                input="/ccra-cr-pwd-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.passwordmaintenancereport" />
+            <forward name="success" path="/rptmtn-password.jsp" />
+            <forward name="failed" path="/ccra-cr-pwd-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-daily-duns-rpt"
+                type="com.arg.cb2.adminrpt.action.DailyDunsAction"
+                name="dailyDunsForm"
+                input="/ccra-cr-daily-duns-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.dl.dailydunsnumberingerrorreport" />
+            <forward name="success" path="/rptmtn-daily-duns.jsp" />
+            <forward name="failed" path="/ccra-cr-daily-duns-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-usage-rpt"
+                type="com.arg.cb2.adminrpt.action.UsageAction"
+                name="usageForm"
+                input="/cr-usage-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.usage.usagereport" />
+            <forward name="success" path="/rptusage.jsp" />
+            <forward name="failed" path="/cr-usage-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-usage-rpt"
+                type="com.arg.cb2.adminrpt.action.UsageAction"
+                name="usageForm"
+                input="/ccra-cr-usage-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.usage.usagereport" />
+            <forward name="success" path="/rptusage.jsp" />
+            <forward name="failed" path="/ccra-cr-usage-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-detail-user-maintenance-rpt"
+                type="com.arg.cb2.adminrpt.action.DetailUserMaintenanceAction"
+                name="detailUserMaintenanceForm"
+                input="/cr-detail-user-maintenance-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.detailedusermaintenancereport" />
+            <forward name="success" path="/rptdetailuser-maintenance.jsp" />
+            <forward name="failed" path="/cr-detail-user-maintenance-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <action path="/request-ccra-detail-user-maintenance-rpt"
+                type="com.arg.cb2.adminrpt.action.DetailUserMaintenanceAction"
+                name="detailUserMaintenanceForm"
+                input="/ccra-cr-detail-user-maintenance-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.mis.detailedusermaintenancereport" />
+            <forward name="success" path="/rptdetailuser-maintenance.jsp" />
+            <forward name="failed" path="/ccra-cr-detail-user-maintenance-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+        <!--
+        <action path="/request-consent-rpt"
+                type="com.arg.cb2.adminrpt.action.ConsentAction"
+                name="reportsOrderedForm"
+                input="/cr-reports-ordered.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.usage.customerwithoutconsent" />
+            <forward name="success" path="/rptusage-reportsordered.jsp" />
+            <forward name="failed" path="/cr-reports-ordered.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+        -->
+        <action path="/request-ccra-consent-rpt"
+                type="com.arg.cb2.adminrpt.action.ConsentAction"
+                name="reportsOrderedForm"
+                input="/ccra-cr-reports-ordered-save.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.adminreport.usage.customerwithoutconsent" />
+            <forward name="success" path="/rptusage-reportsordered.jsp" />
+            <forward name="failed" path="/ccra-cr-reports-ordered-save.jsp" />
+            <forward name="permission-denied" path="/main-admin-save.jsp" />
+        </action>
+
+       <!-- Admin Report -->
+
+       <!--User Maintenance-->
+        <!--Branch Section -->
+
+        <action path="/getBranchList"
+                name="getBranchListForm"
+                type="com.arg.cb2.umt.action.GetBranchListAction"
+                input="/search-type.jsp"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.branchmaintenance.listbranches" />
+            <forward name="success" path="/umt-brc-lists.jsp" />
+            <forward name="failed" path="/search-type.jsp" />
+            <forward name="permission-denied" path="/search-type.jsp" />
+        </action>
+
+        <action path="/deleteBranch"
+                name="branchDelsForm"
+                type="com.arg.cb2.umt.action.DeleteBranchAction"
+                input="/search-type.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.branchmaintenance.deletebranch" />
+            <forward name="success" path="/getBranchList.do" />
+            <forward name="failed" path="/getBranchList.do" />
+            <forward name="permission-denied" path="/getBranchList.do" />
+        </action>
+
+        <action path="/disabledBranch"
+                name="getBranchListForm"
+                type="com.arg.cb2.umt.action.DisabledBranchAction"
+                input="/search-type.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="n/a" />
+            <forward name="success" path="/getBranchList.do" />
+            <forward name="failed" path="/getBranchList.do" />
+            <forward name="permission-denied" path="/getBranchList.do" />
+        </action>
+
+        <action path="/insertBranch"
+                name="insertBranchForm"
+                type="com.arg.cb2.umt.action.InsertBranchAction"
+                   input="/umt-brc-insert.jsp"
+                   scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.branchmaintenance.createbranch" />
+            <forward name="success" path="/getBranchList.do" />
+            <forward name="failed" path="/getBranchList.do" />
+            <forward name="permission-denied" path="/getBranchList.do" />
+        </action>
+
+        <action path="/getBranchDetail"
+                name="getBranchDetailForm"
+                type="com.arg.cb2.umt.action.GetBranchDetailAction"
+                input="/getBranchList.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.branchmaintenance.listbranches" />
+            <forward name="success" path="/umt-brc-detail.jsp" />
+            <forward name="failed" path="/getBranchList.do" />
+            <forward name="permission-denied" path="/getBranchList.do" />
+        </action>
+
+        <action path="/updateBranchDetail"
+               name="updateBranchDetailForm"
+               type="com.arg.cb2.umt.action.UpdateBranchDetailAction"
+               input="/getBranchDetail.do"
+               scope="request"
+               validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.branchmaintenance.updatebranch" />
+            <forward name="success" path="/getBranchDetail.do" />
+            <forward name="failed" path="/getBranchDetail.do" />
+            <forward name="permission-denied" path="/getBranchDetail.do" />
+        </action>
+
+        <action path="/getBranchPrivilege"
+               type="com.arg.cb2.umt.action.GetBranchPrivilegeAction"
+               name="getBranchDetailForm"
+               input="/getBranchDetail.do"
+               scope="request"
+               validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.branchmaintenance.listbranches" />
+            <forward name="success" path="/umt-brc-permission.jsp" />
+            <forward name="failed" path="/getBranchDetail.do" />
+            <forward name="permission-denied" path="/getBranchDetail.do" />
+        </action>
+
+        <action path="/updateBranchPermission"
+                name="branchPrivilegeForm"
+                type="com.arg.cb2.umt.action.UpdateBranchPrivilegeAction"
+                input="/umt-brc-permission.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.branchmaintenance.updatebranch" />
+            <forward name="success" path="/getBranchPrivilege.do" />
+            <forward name="failed" path="/getBranchPrivilege.do" />
+            <forward name="permission-denied" path="/getBranchPrivilege.do" />
+        </action>
+
+        <!--user section -->
+
+        <action path="/getUserList"
+                name="getUserListForm"
+                type="com.arg.cb2.umt.action.GetUserListAction"
+                input="/getBranchList.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.usermaintenance.listusers" />
+            <forward name="success" path="/umt-usr-lists.jsp" />
+            <forward name="failed" path="/getBranchList.do" />
+            <forward name="permission-denied" path="/getBranchList.do" />
+        </action>
+
+        <action path="/deleteUser"
+                name="deleteUserForm"
+                type="com.arg.cb2.umt.action.DeleteUserAction"
+                input="/getUserList.do"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.usermaintenance.deleteuser" />
+            <forward name="success" path="/getUserList.do" />
+            <forward name="failed" path="/getUserList.do" />
+            <forward name="permission-denied" path="/getUserList.do" />
+        </action>
+
+        <action path="/insertUserDetail"
+                name="insertUserDetailForm"
+                type="com.arg.cb2.umt.action.InsertUserDetailAction"
+                input="/umt-usr-insert.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.usermaintenance.createuser" />
+            <forward name="success" path="/getUserList.do" />
+            <forward name="failed" path="/preparedInsertUserDetail.do" />
+            <forward name="permission-denied" path="/preparedInsertUserDetail.do" />
+        </action>
+
+        <action path="/getUserDetail"
+                name="getUserDetailForm"
+                type="com.arg.cb2.umt.action.GetUserDetailAction"
+                   input="/getUserList.do"
+                   scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.usermaintenance.listusers" />
+            <forward name="success" path="/umt-usr-detail.jsp" />
+            <forward name="failed" path="/getUserList.do" />
+            <forward name="permission-denied" path="/getUserList.do" />
+        </action>
+
+        <action path="/updateUserDetail"
+                name="updateUserDetailForm"
+                type="com.arg.cb2.umt.action.UpdateUserDetailAction"
+                   input="/umt-usr-detail.jsp"
+                   scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.usermaintenance.updateuser" />
+            <forward name="success" path="/getUserDetail.do" />
+            <forward name="failed" path="/getUserDetail.do" />
+            <forward name="permission-denied" path="/getUserDetail.do" />
+        </action>
+
+        <action path="/getUserPermission"
+                type="com.arg.cb2.umt.action.GetUserPermissionAction"
+                name="getUserPermissionForm"
+                   input="/getUserDetail.do"
+                   scope="request"
+                    validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.usermaintenance.listusers" />
+            <forward name="success" path="/umt-usr-permission.jsp" />
+            <forward name="failed" path="/getUserDetail.do" />
+            <forward name="permission-denied" path="/getUserDetail.do" />
+        </action>
+
+        <action path="/updateUserPermission"
+                name="updateUserPermissionForm"
+                type="com.arg.cb2.umt.action.UpdateUserPermissionAction"
+                input="/getUserDetail.do"
+                scope="request"
+                validate="false">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.usermaintenance.updateuser" />
+            <forward name="success" path="/getUserDetail.do" />
+            <forward name="failed" path="/getUserPermission.do" />
+            <forward name="permission-denied" path="/getUserPermission.do" />
+        </action>
+
+        <action path="/preparedInsertUserDetail"
+                name="preparedInsertUserDetailForm"
+                type="com.arg.cb2.umt.action.PreparedInsertUserDetailAction"
+                input="/umt-usr-insert.jsp"
+                scope="request"
+                validate="true">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.useraccountsmaintenance.usermaintenance.createuser" />
+            <forward name="success" path="/umt-usr-insert.jsp" />
+            <forward name="failed" path="/getUserList.do" />
+            <forward name="permission-denied" path="/getUserList.do" />
+        </action>
+
+        <!-- OMS -->
+        <action path="/oms/srdc/criteria"
+                type="com.arg.cb2.wbs.oms.srdc.CriteriaAction"
+                name="OmsSrdcCriteriaForm"
+                input="/oms/srdc/search-criteria.jsp"
+                scope="request"
+                validate="false"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-correction, onlineinquiry.oms-approve-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/srdc/search-criteria.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+        <action path="/oms/srdc/search"
+                type="com.arg.cb2.wbs.oms.srdc.SearchAction"
+                name="OmsSrdcCriteriaForm"
+                input="/oms/srdc/criteria.do"
+                scope="request"
+                validate="true"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/srdc/search-result.jsp" />
+            <forward name="failed" path="/oms/srdc/criteria.do" />
+        </action>
+
+        <action path="/oms/srdc/add2updlist"
+                type="com.arg.cb2.wbs.oms.srdc.AddToUpdateListAction"
+                name="OmsSrdcAddToUpdListForm"
+                input="/oms/srdc/search.do"
+                validate="true"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/srdc/view-updatelist.do" />
+            <forward name="failed" path="/oms/srdc/search.do" />
+        </action>
+
+        <action path="/oms/srdc/view-updatelist"
+                type="com.arg.cb2.wbs.oms.srdc.ViewUpdateListAction"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/srdc/view-updatelist.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+        <action path="/oms/srdc/drop-updatelist-items"
+                type="com.arg.cb2.wbs.oms.srdc.DropUpdateListItemsAction"
+                name="OmsSrdcDropUpdateListItemsForm"
+                validate="true"
+                input="/oms/srdc/view-updatelist.do"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/srdc/view-updatelist.do" />
+            <forward name="failed" path="/oms/srdc/view-updatelist.do" />
+        </action>
+
+        <action path="/oms/srdc/locate-record"
+                type="com.arg.cb2.wbs.oms.srdc.LocateRecordAction"
+                name="OmsSrdcLocateRecordForm"
+                validate="true"
+                input="/oms/srdc/view-updatelist.do"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="readonly" path="/oms/srdc/view-record.jsp" />
+            <forward name="editable" path="/oms/srdc/edit-record.jsp" />
+            <forward name="failed" path="/oms/srdc/view-updatelist.do" />
+        </action>
+
+        <action path="/oms/srdc/submit-approval"
+                type="com.arg.cb2.wbs.oms.srdc.SubmitForApprovalAction"
+                name="OmsSrdcSubmitApprovalForm"
+                validate="true"
+                input="/oms/srdc/edit-record.jsp"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/srdc/view-updatelist.do" />
+            <forward name="failed" path="/oms/srdc/edit-record.jsp" />
+        </action>
+
+        <action path="/oms/srdc/view-approvallist"
+                type="com.arg.cb2.wbs.oms.srdc.ViewApprovalListAction"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/srdc/view-approvallist.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+        <action path="/oms/srdc/reject-items"
+                type="com.arg.cb2.wbs.oms.srdc.RejectItemsAction"
+                name="OmsSrdcProcessApprovalForm"
+                validate="true"
+                scope="request"
+                input="/oms/srdc/view-approvallist.jsp"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/srdc/view-approvallist.do" />
+            <forward name="failed" path="/oms/srdc/view-approvallist.do" />
+        </action>
+
+        <action path="/oms/srdc/locate-approval"
+                type="com.arg.cb2.wbs.oms.srdc.LocateApprovalRecordAction"
+                name="OmsSrdcLocateRecordForm"
+                validate="true"
+                input="/oms/srdc/view-approvallist.do"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="readonly" path="/oms/srdc/view-approval-details.jsp" />
+            <forward name="can-be-approved" path="/oms/srdc/approve.jsp" />
+            <forward name="failed" path="/oms/srdc/view-approvallist.do" />
+        </action>
+
+        <action path="/oms/srdc/approve"
+                type="com.arg.cb2.wbs.oms.srdc.ApproveAction"
+                name="OmsSrdcApproveForm"
+                validate="true"
+                scope="request"
+                input="/oms/srdc/view-approvallist.jsp"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/srdc/view-approvallist.do" />
+            <forward name="failed" path="/oms/srdc/view-approvallist.do" />
+        </action>
+
+        <action path="/oms/srdc/printer-version"
+                type="com.arg.cb2.wbs.oms.srdc.PrinterVersionAction"
+                name="OmsSrdcPrinterVersionForm"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-correction, onlineinquiry.oms-operator-correction" />
+            <forward name="success" path="/oms/srdc/printer-version.jsp" />
+            <forward name="failed" path="/oms/srdc/printer-version.jsp" />
+        </action>
+
+        <action path="/show-ai-attbs"
+                type="com.arg.cb2.wbs.oms.uaa.ShowAIAttributesAction"
+                name="UpdateAIAttributesForm"
+                validate="false"
+                scope="request"
+                input="/oms.jsp"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-update-ai-attribute" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/upd/ai-attbs-display.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+        <action path="/upd-ai-attbs"
+                type="com.arg.cb2.wbs.oms.uaa.UpdateAIAttributesAction"
+                name="UpdateAIAttributesForm"
+                validate="true"
+                scope="request"
+                input="/show-ai-attbs.do"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-update-ai-attribute" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/show-ai-attbs.do" />
+            <forward name="failed" path="/show-ai-attbs.do" />
+        </action>
+
+        <!-- OMS Unload Single Record-->
+
+        <action path="/oms/usr/criteria"
+                type="com.arg.cb2.wbs.oms.usr.CriteriaAction"
+                name="OmsUsrCriteriaForm"
+                scope="request"
+                input="/oms/usr/search-criteria.jsp"
+                validate="false"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-unload, onlineinquiry.oms-approve-unload" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/usr/search-criteria.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+        <action path="/oms/usr/search"
+                        type="com.arg.cb2.wbs.oms.usr.SearchAction"
+                        name="OmsUsrCriteriaForm"
+                        input="/oms/usr/criteria.do"
+                        scope="request"
+                        validate="true"
+                        >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-unload" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/usr/search-result.jsp" />
+            <forward name="failed" path="/oms/usr/criteria.do" />
+        </action>
+
+         <action path="/oms/usr/add2unllist"
+                type="com.arg.cb2.wbs.oms.usr.AddToUnloadListAction"
+                name="OmsUsrAddToUpdListForm"
+                input="/oms/usr/search.do"
+                validate="true"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-unload" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/usr/view-unloadlist.do" />
+            <forward name="failed" path="/oms/usr/search.do" />
+        </action>
+
+         <action path="/oms/usr/view-unloadlist"
+                type="com.arg.cb2.wbs.oms.usr.ViewUnloadListAction"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-unload" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/usr/view-unloadlist.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+        <action path="/oms/usr/view-approvallist"
+                type="com.arg.cb2.wbs.oms.usr.ViewApprovalListAction"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-unload" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/usr/view-approvallist.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+         <action path="/oms/usr/show-record-unload-list"
+                type="com.arg.cb2.wbs.oms.usr.ShowUnloadListRecordAction"
+                name="OmsUsrShowRecordForm"
+                validate="true"
+                input="/oms/usr/view-unloadlist.do"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-unload" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/usr/view-unload-list-details.jsp" />
+            <forward name="failed" path="/oms/usr/view-unloadlist.do" />
+        </action>
+
+        <action path="/oms/usr/show-record-approve-list"
+                type="com.arg.cb2.wbs.oms.usr.ShowUnloadApproveRecordAction"
+                name="OmsUsrShowRecordForm"
+                validate="true"
+                input="/oms/usr/view-approvallist.do"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-unload" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/usr/view-unload-approve-details.jsp" />
+            <forward name="failed" path="/oms/usr/view-approvallist.do" />
+        </action>
+
+         <action path="/oms/usr/reject-items"
+                type="com.arg.cb2.wbs.oms.usr.RejectItemsAction"
+                name="OmsUsrRejectRecordForm"
+                validate="true"
+                scope="request"
+                input="/oms/usr/view-approvallist.jsp"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-unload" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/usr/view-approvallist.do" />
+            <forward name="failed" path="/oms/usr/view-approvallist.do" />
+        </action>
+
+        <action path="/oms/usr/approve"
+                type="com.arg.cb2.wbs.oms.usr.ApproveAction"
+                name="OmsUsrApproveForm"
+                validate="true"
+                scope="request"
+                input="/oms/usr/view-approvallist.jsp"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-unload" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/usr/view-approvallist.do" />
+            <forward name="failed" path="/oms/usr/view-approvallist.do" />
+        </action>
+
+        <action path="/oms/usr/printer-version"
+                       type="com.arg.cb2.wbs.oms.usr.PrinterVersionAction"
+                       name="OmsUsrPrinterVersionForm"
+                       scope="request"
+                       >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-unload, onlineinquiry.oms-operator-unload" />
+            <forward name="success" path="/oms/usr/printer-version.jsp" />
+            <forward name="failed" path="/oms/usr/printer-version.jsp" />
+       </action>
+
+
+        <!--##############################################-->
+
+	<action path="/oms/oo/criteria"
+                type="com.arg.cb2.wbs.oms.oo.OptOutCriteriaAction"
+                name="OmsOOCriteriaForm"
+                scope="request"
+                input="/oms/oo/search-criteria.jsp"
+                validate="false"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-opt-out, onlineinquiry.oms-approve-opt-out" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/oo/search-criteria.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+        <action path="/oms/oo/search"
+                type="com.arg.cb2.wbs.oms.oo.OptOutSearchAction"
+                name="OmsOOCriteriaForm"
+                input="/oms/oo/criteria.do"
+                scope="request"
+                validate="true"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-opt-out" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="single-loan" path="/oms/oo/search-result-single.jsp" />
+            <forward name="not-single-loan" path="/oms/oo/search-result-not-single.jsp" />
+            <forward name="failed" path="/oms/oo/criteria.do" />
+        </action>
+
+        <action path="/oms/oo/add2oolist"
+                type="com.arg.cb2.wbs.oms.oo.AddToOptOutListAction"
+                name="OmsOOAddToOOListForm"
+                input="/oms/oo/search.do"
+                validate="true"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-opt-out" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/oo/view-optout-list.do" />
+            <forward name="failed" path="/oms/oo/search.do" />
+        </action>
+
+        <action path="/oms/oo/view-approvallist"
+                type="com.arg.cb2.wbs.oms.oo.ViewApprovalListAction"
+                scope="request">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-opt-out" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/oo/view-approvallist.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+        <action path="/oms/oo/reject-items"
+                type="com.arg.cb2.wbs.oms.oo.RejectItemsAction"
+                name="OmsOORejectApprovalForm"
+                validate="true"
+                scope="request"
+                input="/oms/oo/view-approvallist.jsp"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-opt-out" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/oo/view-approvallist.do" />
+            <forward name="failed" path="/oms/oo/view-approvallist.do" />
+        </action>
+
+        <action path="/oms/oo/locate-approval"
+                type="com.arg.cb2.wbs.oms.oo.LocateApprovalRecordAction"
+                name="OmsOOLocateRecordForm"
+                validate="true"
+                input="/oms/oo/view-approvallist.do"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-opt-out" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="readonly" path="/oms/oo/view-approval-details.jsp" />
+            <forward name="can-be-approved" path="/oms/oo/approve.jsp" />
+            <forward name="failed" path="/oms/oo/view-approvallist.do" />
+        </action>
+
+        <action path="/oms/oo/approve"
+                type="com.arg.cb2.wbs.oms.oo.ApproveAction"
+                name="OmsOOProcessApprovalForm"
+                validate="true"
+                scope="request"
+                input="/oms/oo/view-approvallist.jsp">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-opt-out" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/oo/view-approvallist.do" />
+            <forward name="failed" path="/oms/oo/view-approvallist.do" />
+        </action>
+
+        <action path="/oms/oo/view-optout-list"
+            type="com.arg.cb2.wbs.oms.oo.ViewOptOutListAction"
+            validate="false"
+            scope="request">
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-correction" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path=".view-optout-list"/>
+            <forward name="failed" path="/oms/oo/search.do"/>
+        </action>
+
+        <action path="/oms/oo/view-optout-item"
+            type="com.arg.cb2.wbs.oms.oo.ViewOptOutItemAction"
+            name="OmsOOItemForm"
+            validate="false"
+            scope="request">
+
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-correction" />
+
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path=".view-optout-item"/>
+            <forward name="failed" path="/oms/oo/search.do"/>
+        </action>
+
+        <action path="/oms/oo/view-optout-item-print"
+            type="com.arg.cb2.wbs.oms.oo.ViewOptOutItemAction"
+            name="OmsOOItemForm"
+            validate="false"
+            scope="request">
+
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-correction" />
+
+            <forward name="success" path=".view-optout-item-print" />
+            <forward name="failed" path=".view-optout-item-print" />
+
+        </action>
+
+            <!-- OMS dispute  -->
+         <action path="/oms-dpt-criteria"
+                type="com.arg.cb2.wbs.oms.dpt.CriteriaAction"
+                name="OmsDptCriteriaForm"
+                input="/oms/dpt/search-criteria.jsp"
+                scope="request"
+                validate="false"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-dispute, onlineinquiry.oms-approve-dispute" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/dpt/search-criteria.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+        <action path="/oms-dpt-search"
+                type="com.arg.cb2.wbs.oms.dpt.SearchAction"
+                name="OmsDptCriteriaForm"
+                input="/oms-dpt-criteria.do"
+                scope="request"
+                validate="false"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-dispute" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/dpt/search-result.jsp" />
+            <forward name="failed" path="/oms-dpt-criteria.do" />
+        </action>
+
+        <action path="/oms-dpt-add2disputelist"
+                type="com.arg.cb2.wbs.oms.dpt.AddToDisputeListAction"
+                name="OmsDptAddToDisputeListForm"
+                input="/oms-dpt-search.do"
+                validate="true"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-dispute" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms-dpt-view-disputelist.do" />
+            <forward name="failed" path="/oms-dpt-search.do" />
+        </action>
+
+        <action path="/oms-dpt-view-disputelist"
+                type="com.arg.cb2.wbs.oms.dpt.ViewDisputeListAction"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-operator-dispute" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/dpt/view-disputelist.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+
+        <action path="/oms-dpt-view-approvallist"
+                type="com.arg.cb2.wbs.oms.dpt.ViewApprovalListAction"
+                scope="request"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-dispute" />
+            <forward name="permission-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/dpt/view-approvallist.jsp" />
+            <forward name="failed" path="/oms.jsp" />
+        </action>
+
+        <action path="/oms-dpt-reject-items"
+                type="com.arg.cb2.wbs.oms.dpt.RejectItemsAction"
+                name="OmsSrdcProcessApprovalForm"
+                validate="true"
+                scope="request"
+                input="/oms/dpt/view-approvallist.jsp"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-dispute" />
+            <forward name="permissions-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms-dpt-view-approvallist.do" />
+            <forward name="failed" path="/oms-dpt-view-approvallist.do" />
+        </action>
+
+        <action path="/oms-dpt-approve-item"
+                type="com.arg.cb2.wbs.oms.dpt.ApproveItemsAction"
+                name="OmsSrdcLocateRecordForm"
+                validate="true"
+                scope="request"
+                input="/oms/dpt/approve-approvalRecord.jsp"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-dispute" />
+            <forward name="permissions-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms-dpt-view-approvallist.do" />
+            <forward name="failed" path="/oms-dpt-view-approvallist.do" />
+        </action>
+
+        <action path="/oms-dpt-view-approveRecord"
+                type="com.arg.cb2.wbs.oms.dpt.ViewApproveRecordAction"
+                name="OmsSrdcLocateRecordForm"
+                validate="true"
+                scope="request"
+                input="/oms/dpt/view-approvallist.jsp"
+                >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-dispute" />
+            <forward name="permissions-denied" path="/oms.jsp" />
+            <forward name="success" path="/oms/dpt/approve-approvalRecord.jsp" />
+            <forward name="failed" path="/oms-dpt-view-approvallist.do" />
+        </action>
+
+        <action path="/oms-dpt-printer-version"
+                       type="com.arg.cb2.wbs.oms.dpt.PrinterVersionAction"
+                       name="OmsUsrPrinterVersionForm"
+                       scope="request"
+                       >
+            <set-property property="loginRequired" value="true" />
+            <set-property property="permissions" value="onlineinquiry.oms-approve-dispute" />
+            <forward name="success" path="/oms/dpt/printer-version.jsp" />
+            <forward name="failed" path="/oms/dpt/printer-version.jsp" />
+       </action>
+
+       <!-- finish Dispute-->
+
+    </action-mappings>
+
+    <!-- <controller processorClass="org.apache.struts.tiles.TilesRequestProcessor" /> -->
+
+    <controller processorClass="com.arg.cb2.wbs.MultipartAwareRequestProcessor" contentType="text/html">
+        <set-property property="contentType" value="text/html;charset=UTF-8" />
+        <set-property property="nocache" value="true" />
+    </controller>
+
+    <message-resources parameter="com.arg.cb2.inquiry.app-resources" />
+
+    <plug-in className="org.apache.struts.tiles.TilesPlugin">
+    <set-property
+        property="definitions-config"
+           value="/WEB-INF/tiles-defs.xml"/>
+    </plug-in>
+
+    <plug-in className="com.arg.cb2.wbs.ResourcesPlugIn" />
+
+    <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+        <set-property property="pathnames" value="/org/apache/struts/validator/validator-rules.xml, /WEB-INF/validator-rules/oms/srdc.xml,, /WEB-INF/validator-rules/oms/dpt.xml" />
+        <set-property property="stopOnFirstError" value="false"/>
+    </plug-in>
+
+</struts-config>
