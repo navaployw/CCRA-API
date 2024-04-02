@@ -135,6 +135,10 @@ public class ReportService {
         logger.info(">>>>creatReportHTML 1<<<<");
         try{
             String dirPath = env.getProperty("html_report_dir_path");
+            if(dirPath != null && dirPath.contains(".."))
+            {
+                throw new Exception("path file html not found.");
+            }
             FileManagerUtil.createDirIfNotExist(dirPath);
             User user = getUserForReport(uForm);
             logger.info(">>>>creatReportHTML 2<<<<");
