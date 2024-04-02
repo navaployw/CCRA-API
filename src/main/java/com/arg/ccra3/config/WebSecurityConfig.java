@@ -50,7 +50,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         // We don't need CSRF for this example
-        httpSecurity.csrf().disable()
+        httpSecurity
         // don't authenticate this particular request
         .authorizeHttpRequests()
         
@@ -76,8 +76,11 @@ public class WebSecurityConfig {
         .requestMatchers("/swagger-ui.html").permitAll()
         .requestMatchers("/swagger-ui/**").permitAll()
         .requestMatchers("/api-docs/**").permitAll()
+        
         // all other requests need to be authenticated
-        .anyRequest().authenticated().and()
+        .anyRequest()
+        .authenticated()
+        .and()
         // make sure we use stateless session; session won't be used to
         // store user's state.
 //        .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
@@ -87,6 +90,7 @@ public class WebSecurityConfig {
 //        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         
         httpSecurity.cors();
+        httpSecurity.csrf().disable();
         
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
