@@ -149,7 +149,7 @@ public class ReportService {
             logger.info(">>>>creatReportHTML 2<<<<");
             File htmlFolder = htmlDao.getHtmlFolder(dirPath, expenseId, user);
             logger.info(">>>>creatReportHTML 3<<<<");            
-            zipToResponse(response, htmlFolder);
+            // zipToResponse(response, htmlFolder);
             
             // FileManagerUtil.deleteDirectory(htmlFolder);
         }
