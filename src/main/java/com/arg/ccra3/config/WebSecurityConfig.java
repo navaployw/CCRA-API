@@ -81,15 +81,17 @@ public class WebSecurityConfig {
         .anyRequest()
         .authenticated()
         .and()
+        
         // make sure we use stateless session; session won't be used to
         // store user's state.
 //        .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+        .csrf().disable();
 
         // Add a filter to validate the tokens with every request
 //        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         
-        httpSecurity.cors().and().csrf().disable();
+        httpSecurity.cors();
 
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
