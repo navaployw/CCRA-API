@@ -222,9 +222,9 @@ public class ReportService {
     {
         throw new Exception("path file not support.");
     }
-    
-    zipDirectory(dir, zipStream, "");
-    zipStream.close();
+
+    // zipDirectory(dir, zipStream, "");
+    // zipStream.close();
 }
 private void zipDirectory(File directory, ZipOutputStream zipStream, String parent) throws Exception {
     byte[] buffer = new byte[1024];
