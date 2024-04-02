@@ -199,7 +199,11 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
     byte[] buffer = new byte[1024];
     for (File file : directory.listFiles()) {
         if (file.isDirectory()) {
-            zipDirectory(file, zipStream, parent + file.getName() + "/");
+            StringBuilder s = new StringBuilder();
+            s.append(parent);
+            s.append(file.getName());
+            s.append("/");
+            zipDirectory(file, zipStream, s.toString());
             continue;
         }
         FileInputStream fis = new FileInputStream(file);
