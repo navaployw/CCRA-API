@@ -134,24 +134,24 @@ public class ReportService {
     public void generateReportHtml(HttpServletResponse response, ReportAPIRequest uForm, long expenseId){
         logger.info(">>>>creatReportHTML 1<<<<");
         try{
-            String dirPath = env.getProperty("html_report_dir_path");
-            dirPath = dirPath.replace("%2e", ".");
-            dirPath = dirPath.replace("%2f", "/");
-            dirPath = dirPath.replace("%5c", "/");
+            // String dirPath = env.getProperty("html_report_dir_path");
+            // dirPath = dirPath.replace("%2e", ".");
+            // dirPath = dirPath.replace("%2f", "/");
+            // dirPath = dirPath.replace("%5c", "/");
 
-            if(dirPath != null && dirPath.contains(".."))
-            {
-                throw new Exception("path file not support.");
-            }
+            // if(dirPath != null && dirPath.contains(".."))
+            // {
+            //     throw new Exception("path file not support.");
+            // }
 
-            FileManagerUtil.createDirIfNotExist(dirPath);
-            User user = getUserForReport(uForm);
-            logger.info(">>>>creatReportHTML 2<<<<");
-            File htmlFolder = htmlDao.getHtmlFolder(dirPath, expenseId, user);
-            logger.info(">>>>creatReportHTML 3<<<<");            
-            zipToResponse(response, htmlFolder);
+            // FileManagerUtil.createDirIfNotExist(dirPath);
+            // User user = getUserForReport(uForm);
+            // logger.info(">>>>creatReportHTML 2<<<<");
+            // File htmlFolder = htmlDao.getHtmlFolder(dirPath, expenseId, user);
+            // logger.info(">>>>creatReportHTML 3<<<<");            
+            // zipToResponse(response, htmlFolder);
             
-            FileManagerUtil.deleteDirectory(htmlFolder);
+            // FileManagerUtil.deleteDirectory(htmlFolder);
         }
         catch(Exception e){
             logger.error(e.getMessage(),e);
