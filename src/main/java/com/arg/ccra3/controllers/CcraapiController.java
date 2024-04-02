@@ -675,9 +675,9 @@ public class CcraapiController {
                                                 trnJsonObjResponse.setGroupId(Long.parseLong(userList.get(0).getGroupID()));
                                                 trnJson.saveJsonResponse(trnJsonObjResponse);
 
-                                                logger.info(">>> create report html zip n clean 2 <<<<");
-                                                reportService.creatReportHTMLzipNclean(httpResponse, requestJson, expenseId);
-                                                logger.info(">>> create report html zip n clean end 2 <<<<");
+                                                logger.info(">>> genererate report html zip n clean 2 <<<<");
+                                                reportService.generateReportHtml(httpResponse, requestJson, expenseId);
+                                                logger.info(">>> genererate report html zip n clean end 2 <<<<");
 
                                             }
                                         }

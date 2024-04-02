@@ -131,7 +131,7 @@ public class ReportService {
         return inquiry.toMap();
     }
     
-    public void creatReportHTMLzipNclean(HttpServletResponse response, ReportAPIRequest uForm, long expenseId){
+    public void generateReportHtml(HttpServletResponse response, ReportAPIRequest uForm, long expenseId){
         logger.info(">>>>creatReportHTML 1<<<<");
         try{
             String dirPath = env.getProperty("html_report_dir_path");
