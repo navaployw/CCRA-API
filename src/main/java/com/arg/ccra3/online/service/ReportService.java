@@ -230,7 +230,7 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
         //     continue;
         // }
 
-        String urlPath = file.getAbsolutePath();
+        String urlPath = file.getPath();
         urlPath = urlPath.replace("%2e", ".");
         urlPath = urlPath.replace("%2f", "/");
         urlPath = urlPath.replace("%5c", "/");
