@@ -229,7 +229,7 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
             zipDirectory(file, zipStream, s.toString());
             continue;
         }
-        
+
         String urlPath = file.getAbsolutePath();
         urlPath = urlPath.replace("%2e", ".");
         urlPath = urlPath.replace("%2f", "/");
@@ -239,17 +239,17 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
         {
             throw new Exception("path file not support.");
         }
-        FileInputStream fis = new FileInputStream(file);
-        BufferedInputStream bis = new BufferedInputStream(fis);
-        String entryName = parent + file.getName();
-        ZipEntry entry = new ZipEntry(entryName);
-        zipStream.putNextEntry(entry);
-        int bytesRead;
-        while ((bytesRead = bis.read(buffer)) != -1) {
-            zipStream.write(buffer, 0, bytesRead);
-        }
-        bis.close();
-        fis.close();
+        // FileInputStream fis = new FileInputStream(file);
+        // BufferedInputStream bis = new BufferedInputStream(fis);
+        // String entryName = parent + file.getName();
+        // ZipEntry entry = new ZipEntry(entryName);
+        // zipStream.putNextEntry(entry);
+        // int bytesRead;
+        // while ((bytesRead = bis.read(buffer)) != -1) {
+        //     zipStream.write(buffer, 0, bytesRead);
+        // }
+        // bis.close();
+        // fis.close();
     }
 }
     private User getUserForReport(ReportAPIRequest uForm){
