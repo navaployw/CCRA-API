@@ -135,10 +135,15 @@ public class ReportService {
         logger.info(">>>>creatReportHTML 1<<<<");
         try{
             String dirPath = env.getProperty("html_report_dir_path");
+            dirPath = dirPath.replace("%2e", ".");
+            dirPath = dirPath.replace("%2f", "/");
+            dirPath = dirPath.replace("%5c", "/");
+
             if(dirPath != null && dirPath.contains(".."))
             {
-                throw new Exception("path file html not found.");
+                throw new Exception("path file not support.");
             }
+
             FileManagerUtil.createDirIfNotExist(dirPath);
             User user = getUserForReport(uForm);
             logger.info(">>>>creatReportHTML 2<<<<");
