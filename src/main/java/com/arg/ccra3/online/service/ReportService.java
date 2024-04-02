@@ -242,14 +242,15 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
         FileInputStream fis = new FileInputStream(file);
         BufferedInputStream bis = new BufferedInputStream(fis);
         String entryName = parent + file.getName();
-        ZipEntry entry = new ZipEntry(entryName);
-        zipStream.putNextEntry(entry);
-        int bytesRead;
-        while ((bytesRead = bis.read(buffer)) != -1) {
-            zipStream.write(buffer, 0, bytesRead);
-        }
-        bis.close();
-        fis.close();
+
+        // ZipEntry entry = new ZipEntry(entryName);
+        // zipStream.putNextEntry(entry);
+        // int bytesRead;
+        // while ((bytesRead = bis.read(buffer)) != -1) {
+        //     zipStream.write(buffer, 0, bytesRead);
+        // }
+        // bis.close();
+        // fis.close();
     }
 }
     private User getUserForReport(ReportAPIRequest uForm){
