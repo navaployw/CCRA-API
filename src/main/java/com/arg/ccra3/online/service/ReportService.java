@@ -239,7 +239,8 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
         {
             throw new Exception("path file not support.");
         }
-        FileInputStream fis = new FileInputStream(file);
+        FileInputStream fis = new FileInputStream("Test");
+ 
         // BufferedInputStream bis = new BufferedInputStream(fis);
         // String entryName = parent + file.getName();
 
