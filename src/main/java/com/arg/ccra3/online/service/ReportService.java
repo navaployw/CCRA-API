@@ -213,18 +213,10 @@ public class ReportService {
 
     ZipOutputStream zipStream = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
 
-    String urlPath = dir.getAbsolutePath();
-    urlPath = urlPath.replace("%2e", ".");
-    urlPath = urlPath.replace("%2f", "/");
-    urlPath = urlPath.replace("%5c", "/");
+    
 
-    if(urlPath != null && urlPath.contains(".."))
-    {
-        throw new Exception("path file not support.");
-    }
-
-    // zipDirectory(dir, zipStream, "");
-    // zipStream.close();
+    zipDirectory(dir, zipStream, "");
+    zipStream.close();
 }
 private void zipDirectory(File directory, ZipOutputStream zipStream, String parent) throws Exception {
     byte[] buffer = new byte[1024];
@@ -236,6 +228,16 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
             s.append("/");
             zipDirectory(file, zipStream, s.toString());
             continue;
+        }
+        
+        String urlPath = file.getAbsolutePath();
+        urlPath = urlPath.replace("%2e", ".");
+        urlPath = urlPath.replace("%2f", "/");
+        urlPath = urlPath.replace("%5c", "/");
+
+        if(urlPath != null && urlPath.contains(".."))
+        {
+            throw new Exception("path file not support.");
         }
         FileInputStream fis = new FileInputStream(file);
         BufferedInputStream bis = new BufferedInputStream(fis);
