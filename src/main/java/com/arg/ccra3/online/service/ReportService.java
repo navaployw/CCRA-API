@@ -134,15 +134,15 @@ public class ReportService {
     public void generateReportHtml(HttpServletResponse response, ReportAPIRequest uForm, long expenseId){
         logger.info(">>>>creatReportHTML 1<<<<");
         try{
-            // String dirPath = env.getProperty("html_report_dir_path");
-            // dirPath = dirPath.replace("%2e", ".");
-            // dirPath = dirPath.replace("%2f", "/");
-            // dirPath = dirPath.replace("%5c", "/");
+            String dirPath = env.getProperty("html_report_dir_path");
+            dirPath = dirPath.replace("%2e", ".");
+            dirPath = dirPath.replace("%2f", "/");
+            dirPath = dirPath.replace("%5c", "/");
 
-            // if(dirPath != null && dirPath.contains(".."))
-            // {
-            //     throw new Exception("path file not support.");
-            // }
+            if(dirPath != null && dirPath.contains(".."))
+            {
+                throw new Exception("path file not support.");
+            }
 
             // FileManagerUtil.createDirIfNotExist(dirPath);
             // User user = getUserForReport(uForm);
