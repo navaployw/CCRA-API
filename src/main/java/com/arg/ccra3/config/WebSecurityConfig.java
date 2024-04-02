@@ -89,9 +89,8 @@ public class WebSecurityConfig {
         // Add a filter to validate the tokens with every request
 //        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         
-        httpSecurity.cors();
-        httpSecurity.csrf().disable();
-        
+        httpSecurity.cors().and().csrf().disable();
+
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         corsConfiguration.setAllowedOrigins(List.of("*"));
