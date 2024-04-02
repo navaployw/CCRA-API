@@ -211,9 +211,20 @@ public class ReportService {
     response.setContentType("application/zip");
     response.setHeader("Content-Disposition", "attachment; filename=" + zipName);
 
-    // ZipOutputStream zipStream = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
-    // zipDirectory(dir, zipStream, "");
-    // zipStream.close();
+    ZipOutputStream zipStream = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
+
+    String urlPath = dir.getAbsolutePath();
+    urlPath = urlPath.replace("%2e", ".");
+    urlPath = urlPath.replace("%2f", "/");
+    urlPath = urlPath.replace("%5c", "/");
+
+    if(urlPath != null && urlPath.contains(".."))
+    {
+        throw new Exception("path file not support.");
+    }
+    
+    zipDirectory(dir, zipStream, "");
+    zipStream.close();
 }
 private void zipDirectory(File directory, ZipOutputStream zipStream, String parent) throws Exception {
     byte[] buffer = new byte[1024];
