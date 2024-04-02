@@ -135,23 +135,26 @@ public class ReportService {
         logger.info(">>>>creatReportHTML 1<<<<");
         try{
             String dirPath = env.getProperty("html_report_dir_path");
-            dirPath = dirPath.replace("%2e", ".");
-            dirPath = dirPath.replace("%2f", "/");
-            dirPath = dirPath.replace("%5c", "/");
-
-            if(dirPath != null && dirPath.contains(".."))
-            {
-                throw new Exception("path file not support.");
-            }
 
             FileManagerUtil.createDirIfNotExist(dirPath);
             User user = getUserForReport(uForm);
             logger.info(">>>>creatReportHTML 2<<<<");
             File htmlFolder = htmlDao.getHtmlFolder(dirPath, expenseId, user);
-            logger.info(">>>>creatReportHTML 3<<<<");            
-            // zipToResponse(response, htmlFolder);
+            logger.info(">>>>creatReportHTML 3<<<<");  
             
-            // FileManagerUtil.deleteDirectory(htmlFolder);
+            String urlPath = htmlFolder.getAbsolutePath();
+            urlPath = urlPath.replace("%2e", ".");
+            urlPath = urlPath.replace("%2f", "/");
+            urlPath = urlPath.replace("%5c", "/");
+
+            if(urlPath != null && urlPath.contains(".."))
+            {
+                throw new Exception("path file not support.");
+            }
+            
+            zipToResponse(response, htmlFolder);
+            
+            FileManagerUtil.deleteDirectory(htmlFolder);
         }
         catch(Exception e){
             logger.error(e.getMessage(),e);
