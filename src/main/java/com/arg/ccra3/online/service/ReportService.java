@@ -221,14 +221,14 @@ public class ReportService {
 private void zipDirectory(File directory, ZipOutputStream zipStream, String parent) throws Exception {
     byte[] buffer = new byte[1024];
     for (File file : directory.listFiles()) {
-        // if (file.isDirectory()) {
-        //     StringBuilder s = new StringBuilder();
-        //     s.append(parent);
-        //     s.append(file.getName());
-        //     s.append("/");
-        //     zipDirectory(file, zipStream, s.toString());
-        //     continue;
-        // }
+        if (file.isDirectory()) {
+            StringBuilder s = new StringBuilder();
+            s.append(parent);
+            s.append(file.getName());
+            s.append("/");
+            zipDirectory(file, zipStream, s.toString());
+            continue;
+        }
 
         String urlPath = file.getPath();
         urlPath = urlPath.replace("%2e", ".");
@@ -241,17 +241,17 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
         }
         FileInputStream fis = new FileInputStream("Test");
  
-        // BufferedInputStream bis = new BufferedInputStream(fis);
-        // String entryName = parent + file.getName();
+        BufferedInputStream bis = new BufferedInputStream(fis);
+        String entryName = parent + file.getName();
 
-        // ZipEntry entry = new ZipEntry(entryName);
-        // zipStream.putNextEntry(entry);
-        // int bytesRead;
-        // while ((bytesRead = bis.read(buffer)) != -1) {
-        //     zipStream.write(buffer, 0, bytesRead);
-        // }
-        // bis.close();
-        // fis.close();
+        ZipEntry entry = new ZipEntry(entryName);
+        zipStream.putNextEntry(entry);
+        int bytesRead;
+        while ((bytesRead = bis.read(buffer)) != -1) {
+            zipStream.write(buffer, 0, bytesRead);
+        }
+        bis.close();
+        fis.close();
     }
 }
     private User getUserForReport(ReportAPIRequest uForm){
