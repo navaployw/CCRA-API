@@ -156,6 +156,18 @@ public class ReportService {
     public void zipErrorResponseNclean(HttpServletResponse response, ResponseModel error) throws Exception{
         String dirPath = env.getProperty("html_report_dir_path");        
         String errorDirPath = dirPath + File.separator + "error" + System.nanoTime();
+
+        String urlPath = errorDirPath;
+
+        urlPath = urlPath.replace("%2e", ".");
+        urlPath = urlPath.replace("%2f", "/");
+        urlPath = urlPath.replace("%5c", "/");
+
+        if(urlPath.contains(".."))
+        {
+            throw new Exception("Path not support.");
+        }
+
         File errorDir = FileManagerUtil.createDirIfNotExist(errorDirPath);
         
         String jsonPath = errorDir + File.separator + "response.json";
