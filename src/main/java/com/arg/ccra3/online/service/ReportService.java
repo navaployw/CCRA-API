@@ -221,14 +221,14 @@ public class ReportService {
 private void zipDirectory(File directory, ZipOutputStream zipStream, String parent) throws Exception {
     byte[] buffer = new byte[1024];
     for (File file : directory.listFiles()) {
-        if (file.isDirectory()) {
-            StringBuilder s = new StringBuilder();
-            s.append(parent);
-            s.append(file.getName());
-            s.append("/");
-            zipDirectory(file, zipStream, s.toString());
-            continue;
-        }
+        // if (file.isDirectory()) {
+        //     StringBuilder s = new StringBuilder();
+        //     s.append(parent);
+        //     s.append(file.getName());
+        //     s.append("/");
+        //     zipDirectory(file, zipStream, s.toString());
+        //     continue;
+        // }
 
         String urlPath = file.getAbsolutePath();
         urlPath = urlPath.replace("%2e", ".");
