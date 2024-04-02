@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,43 +51,33 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         // We don't need CSRF for this example
-        httpSecurity
+        httpSecurity.csrf(AbstractHttpConfigurer::disable)
         // don't authenticate this particular request
-        .authorizeHttpRequests()
-        
-         .requestMatchers("/get_ccra_report").permitAll()
-         .requestMatchers("/get_ccra_report/html").permitAll()
-        // .requestMatchers("/api/admin/checkLogin"
-        //                             ,"/api/admin/logout"
-        //                             ,"/api/admin/getVersionNo"
-        // ).permitAll()
-        .requestMatchers("/ccraapiauth/**").authenticated() 
-        .requestMatchers("/v3/**").permitAll()
-        .requestMatchers(
-                                    "/*"
-                                    ,"/error"
-                                    ,"/index.html"
-                                    , "/assets/**"
-                                    , "/main.*"
-                                    , "/polyfills.*"
-                                    , "/runtime.*"
-                                    , "/styles.*"
-                                    , "/favicon.ico"
-                                    ).permitAll()
-        .requestMatchers("/swagger-ui.html").permitAll()
-        .requestMatchers("/swagger-ui/**").permitAll()
-        .requestMatchers("/api-docs/**").permitAll()
-        
-        // all other requests need to be authenticated
-        .anyRequest()
-        .authenticated()
-        .and()
-        
-        // make sure we use stateless session; session won't be used to
-        // store user's state.
-//        .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and()
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-        .csrf().disable();
+        .authorizeHttpRequests(authorize -> authorize                    
+                    .requestMatchers("/get_ccra_report"
+                    ,"/get_ccra_report/html"
+                    ,"/ccraapiauth/**"                     
+                    ,"/v3/**"
+                    ,"/*"
+                    ,"/error"
+                    ,"/index.html"
+                    , "/assets/**"
+                    , "/main.*"
+                    , "/polyfills.*"
+                    , "/runtime.*"
+                    , "/styles.*"
+                    , "/favicon.ico"
+                    ,"/swagger-ui.html"
+                    ,"/swagger-ui/**"
+                    ,"/api-docs/**"
+            )
+            .permitAll()
+            .anyRequest().authenticated()  
+                      
+        )
+        .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .csrf(AbstractHttpConfigurer::disable);
 
         // Add a filter to validate the tokens with every request
 //        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
