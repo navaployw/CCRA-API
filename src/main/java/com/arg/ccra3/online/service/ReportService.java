@@ -144,14 +144,14 @@ public class ReportService {
                 throw new Exception("path file not support.");
             }
 
-            FileManagerUtil.createDirIfNotExist(dirPath);
-            User user = getUserForReport(uForm);
-            logger.info(">>>>creatReportHTML 2<<<<");
-            File htmlFolder = htmlDao.getHtmlFolder(dirPath, expenseId, user);
-            logger.info(">>>>creatReportHTML 3<<<<");            
-            zipToResponse(response, htmlFolder);
+            // FileManagerUtil.createDirIfNotExist(dirPath);
+            // User user = getUserForReport(uForm);
+            // logger.info(">>>>creatReportHTML 2<<<<");
+            // File htmlFolder = htmlDao.getHtmlFolder(dirPath, expenseId, user);
+            // logger.info(">>>>creatReportHTML 3<<<<");            
+            // zipToResponse(response, htmlFolder);
             
-            FileManagerUtil.deleteDirectory(htmlFolder);
+            // FileManagerUtil.deleteDirectory(htmlFolder);
         }
         catch(Exception e){
             logger.error(e.getMessage(),e);
