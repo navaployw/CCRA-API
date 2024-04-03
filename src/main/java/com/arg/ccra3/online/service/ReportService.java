@@ -233,12 +233,14 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
             continue;
         }
  
+        /*  Verify Path Travarsal CWE-23 */
         String targetDirPath = file.getCanonicalPath()+ File.separator;
 
         if (!file.getCanonicalPath().startsWith(targetDirPath)) {
             throw new Exception("expanding " + file.getName()
                 + " would create file outside of " + targetDirPath);
         }
+        /*  END Verify Path Travarsal CWE-23 */
 
         FileInputStream fis = new FileInputStream(file); 
  
