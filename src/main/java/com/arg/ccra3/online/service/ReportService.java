@@ -230,7 +230,7 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
             continue;
         }
  
-        FileInputStream fis = new FileInputStream(file); //xxxx
+        FileInputStream fis = new FileInputStream(file); 
  
         BufferedInputStream bis = new BufferedInputStream(fis);
         String entryName = parent + file.getName();

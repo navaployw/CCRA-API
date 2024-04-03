@@ -51,7 +51,8 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         // We don't need CSRF for this example
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
+        // httpSecurity.csrf(AbstractHttpConfigurer::disable)
+        httpSecurity.csrf(csrf -> csrf.ignoringRequestMatchers("/**"))
         // don't authenticate this particular request
         .authorizeHttpRequests(authorize -> authorize                    
                     .requestMatchers("/get_ccra_report"
@@ -76,37 +77,20 @@ public class WebSecurityConfig {
                       
         )
         .sessionManagement(sessionManagementCustomizer -> sessionManagementCustomizer
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .csrf(AbstractHttpConfigurer::disable);
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        // Add a filter to validate the tokens with every request
-//        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        
-        httpSecurity.cors();
-
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-        corsConfiguration.setAllowedOrigins(List.of("*"));
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","OPTIONS", "PUT", "PATCH", "DELETE"));
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setExposedHeaders(List.of("Authorization"));
+        httpSecurity.cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.applyPermitDefaultValues();
+            configuration.setAllowedOrigins(Arrays.asList("*"));
+            configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+            configuration.setAllowedHeaders(Arrays.asList("Authorization", "lang", "Cache-Control", "Content-Type"));
+            configuration.setExposedHeaders(Arrays.asList("Authorization", "lang"));
+            return configuration;
+        }));
         
         return httpSecurity.build();
     }
     
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-
-	    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	    CorsConfiguration config = new CorsConfiguration();
-	    source.registerCorsConfiguration("/**", config.applyPermitDefaultValues());
-	    config.addAllowedMethod("PUT");
-	    // config.addAllowedMethod("POST");
-	    //allow Authorization to be exposed
-	    config.setExposedHeaders(Arrays.asList("Authorization"));
-
-	    return source;
-	}
-
 
 }
