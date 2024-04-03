@@ -38,6 +38,8 @@ public class HttpTraceFilterRepositoryManager extends OncePerRequestFilter {
     ExpenseAPIDAO expenseDAO;
     @Autowired
     ReportCreatorDAO reportCreatorDao;
+    @Autowired
+    SymmetricCipher smc;
     
     @Override
     protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request,
@@ -68,7 +70,7 @@ public class HttpTraceFilterRepositoryManager extends OncePerRequestFilter {
                         trnJsonObjResponse.setJsonResponse("");
                     } else {
                         if (ctrlValue.equals("Y")) {
-                            SymmetricCipher cy = SymmetricCipher.getInstance();
+                            SymmetricCipher cy = smc.builder();
                             trnJsonObjResponse.setJsonResponse(cy.encrypt(getResponseBody(wrappedResponse).toString()));
                         } else {
                             trnJsonObjResponse.setJsonResponse(getResponseBody(wrappedResponse).toString());

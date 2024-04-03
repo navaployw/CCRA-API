@@ -13,7 +13,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -23,7 +22,6 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Properties;
 
 import javax.crypto.BadPaddingException;
 
@@ -33,10 +31,17 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+@Component
 public final class SymmetricCipher
 {
 
-  private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    TokenizeTransformationProvider skp;
+    
     private static final int[] STREAM = {
         0x724f, 0x3041, 0x4258, 0x4e79, 0x4142, 0x3971, 0x5958, 0x5a68, 0x6543,
         0x356a, 0x636e, 0x6c77, 0x6447, 0x3875, 0x6333, 0x426c, 0x5979, 0x3554,
@@ -74,52 +79,57 @@ public final class SymmetricCipher
     });
 
     private static final String DEFAULT_CIPHER_ALGORITHM = DEFAULT_KEY_ALGORITHM;
-
     private static Key defaultKey = null;
-
     private static Cipher defaultCipher = null;
 
-    private static SymmetricCipher instance = null;
+    // private static SymmetricCipher instance = null;
 
     private Key key = null;
-
     private Cipher cipher = null;
-
     private String userKeyAlgor = null;
-
     private String userCipherAlgor = null;
-
-    private String userKey = null;
-    
+    private String user_key = null;    
     private  String infoLog  = "";
-    private SymmetricCipher() throws Exception
+
+    // private SymmetricCipher() throws Exception
+    // {
+        
+
+    //     // instance = this;
+    // }
+
+    public SymmetricCipher builder() throws Exception
     {
         defaultKey = decodeKey(DEFAULT_SECRET_KEY_TEXT);
         defaultCipher = Cipher.getInstance(DEFAULT_CIPHER_ALGORITHM);
+
         infoLog= String.format("defaultKey>>> %s", defaultKey);
         logger.info(infoLog);
+
         infoLog = String.format("defaultCipher>>> %s", defaultCipher);
         logger.info(infoLog);
+
         infoLog = String.format("DEFAULT_SECRET_KEY_TEXT>>> %s", DEFAULT_SECRET_KEY_TEXT);
         logger.info(infoLog);
+
         if(defaultKey.getEncoded() != null){
             infoLog = String.format("defaultKey>>> %s", new Base64().encodeAsString(defaultKey.getEncoded()));
-        logger.info(infoLog);
+            logger.info(infoLog);
         }
-
-        Properties props = new Properties();
-     
-
        
-            userKeyAlgor = TokenizeTransformationProvider.USER_KEY_ALGOR;
-            userCipherAlgor = TokenizeTransformationProvider.USER_CIPHER_ALGOR;
-            userKey = TokenizeTransformationProvider.USER_KEY;
-        
+        userKeyAlgor = skp.USER_KEY_ALGOR;
+        userCipherAlgor = skp.USER_CIPHER_ALGOR;
+        user_key = skp.USER_KEY;
+
+        logger.info("########## CONFIG SC ########");
+        logger.info(userKeyAlgor);
+        logger.info(userCipherAlgor);
+        logger.info(user_key);
 
         if ((null == userKeyAlgor) || (userKeyAlgor.length() == 0)
             || (null == userCipherAlgor) || (userCipherAlgor.length() == 0)
-            || (null == userKey) || (userKey.length() == 0)
-            || (null == (userKey = decrypt(defaultCipher, defaultKey, userKey))))
+            || (null == user_key) || (user_key.length() == 0)
+            || (null == (user_key = decrypt(defaultCipher, defaultKey, user_key))))
         {
             logger.info("Default secret key loaded.");
             key = defaultKey;
@@ -128,12 +138,12 @@ public final class SymmetricCipher
         else
         {
             logger.info("Enter else");
-            key = decodeKey(userKey);
+            key = decodeKey(user_key);
             cipher = Cipher.getInstance(userCipherAlgor);
             logger.info("User's Secret Key loaded.");
         }
 
-        instance = this;
+        return this;
     }
 
     public String encrypt(final String text) throws UnsupportedEncodingException
@@ -189,6 +199,7 @@ public final class SymmetricCipher
             final String text) throws UnsupportedEncodingException
     {
         infoLog = String.format("195::text:: %s", text);
+        logger.info("##### USER_KEY_ALGOR "+ skp.USER_KEY_ALGOR);
         logger.info(infoLog);
         return new String(decryptStream(cipher, key,
                 new Base64().decode(text.getBytes())),"UTF-8");
@@ -448,9 +459,9 @@ public final class SymmetricCipher
         return cipher;
     }
 
-    public static synchronized SymmetricCipher getInstance()
-            throws Exception
-    {
-        return ((null == instance) ? new SymmetricCipher() : instance);
-    }
+    // public static synchronized SymmetricCipher getInstance()
+    //         throws Exception
+    // {
+    //     return ((null == instance) ? new SymmetricCipher() : instance);
+    // }
 }
