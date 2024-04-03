@@ -9,6 +9,7 @@ import com.arg.cb2.inquiry.jdbc.util.SQLUtil;
 import com.arg.util.GenericException;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.Base64;
 
 import java.sql.ResultSet;
@@ -78,7 +79,7 @@ public class ReportRequestImpl
     }
 
     
-    public ReportData getReport(final Long expenseID, final int section)
+    public Serializable getReport(final Long expenseID, final int section)
         throws Exception
     {
 
@@ -99,14 +100,15 @@ public class ReportRequestImpl
             new Object[]{expenseID, section}
         );
         
-        ReportData decodedObj = null;
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(decoder.decode(streams.toString())));
 
-        try (ByteArrayInputStream in = new ByteArrayInputStream(decoder.decode(streams.toString()));
-                ObjectInputStream is = new ObjectInputStream(in)) {
-            decodedObj = (ReportData)is.readObject();
-        }
+        // try (ByteArrayInputStream in = new ByteArrayInputStream(decoder.decode(streams.toString()));
+        //         ObjectInputStream is = new ObjectInputStream(in)) 
+        // {
+        //     decodedObj = (Serializable)(new ObjectInputStream(in)).readObject();
+        // }
         
-        return decodedObj;
+        return (Serializable)ois.readObject();
 
 
         
