@@ -5,6 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import com.arg.cb2.inquiry.data.ReportCreatorData;
 import com.arg.ccra3.common.FileManagerUtil;
+import com.arg.ccra3.common.InquiryConstants.OBJECT_TYPE;
+import com.arg.ccra3.common.InquiryConstants.REQUESTTYPE;
+
 import org.springframework.stereotype.Service;
 import static com.arg.ccra3.common.InquiryConstants.*;
 import com.arg.ccra3.dao.AIOrderDAO;
@@ -230,6 +233,13 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
             continue;
         }
  
+        String targetDirPath = file.getCanonicalPath()+ File.separator;
+
+        if (!file.getCanonicalPath().startsWith(targetDirPath)) {
+            throw new Exception("expanding " + file.getName()
+                + " would create file outside of " + targetDirPath);
+        }
+
         FileInputStream fis = new FileInputStream(file); 
  
         BufferedInputStream bis = new BufferedInputStream(fis);
