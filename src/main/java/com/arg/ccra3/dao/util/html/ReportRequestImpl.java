@@ -1,7 +1,9 @@
 package com.arg.ccra3.dao.util.html;
 
 import com.arg.cb2.inquiry.ErrorMessages;
+import com.arg.cb2.inquiry.InquiryConstants;
 import com.arg.cb2.inquiry.PreferLanguage;
+import com.arg.cb2.inquiry.data.ReportData;
 import com.arg.cb2.inquiry.data.ReportHeaderData;
 import com.arg.cb2.inquiry.jdbc.util.SQLUtil;
 import com.arg.util.GenericException;
@@ -76,7 +78,7 @@ public class ReportRequestImpl
     }
 
     
-    public Object getReport(final Long expenseID, final int section)
+    public ReportData getReport(final Long expenseID, final int section)
         throws Exception
     {
 
@@ -97,12 +99,16 @@ public class ReportRequestImpl
             new Object[]{expenseID, section}
         );
         
-        Object decodedObj = null;
+        ReportData decodedObj = null;
+
         try (ByteArrayInputStream in = new ByteArrayInputStream(decoder.decode(streams.toString()));
                 ObjectInputStream is = new ObjectInputStream(in)) {
-            decodedObj = is.readObject();
+            decodedObj = (ReportData)is.readObject();
         }
         
         return decodedObj;
+
+
+        
     } 
 } 
