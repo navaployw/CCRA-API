@@ -100,7 +100,9 @@ public class ReportRequestImpl
             new Object[]{expenseID, section}
         );
         
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(decoder.decode(streams.toString())));
+        
+        java.io.InputStream op = new ByteArrayInputStream(decoder.decode(streams.toString()));
+        ObjectInputStream ois = new ObjectInputStream(op);
 
         // try (ByteArrayInputStream in = new ByteArrayInputStream(decoder.decode(streams.toString()));
         //         ObjectInputStream is = new ObjectInputStream(in)) 
