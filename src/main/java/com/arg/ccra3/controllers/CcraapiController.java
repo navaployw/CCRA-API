@@ -33,6 +33,7 @@ import com.arg.ccra3.online.service.ReportService;
 import com.arg.ccra3.online.service.TrnJsonService;
 import com.arg.ccra3.online.service.ViewApiUserService;
 import com.arg.ccra3.online.util.ResponseEntityFactory;
+import com.arg.ccra3.online.util.TokenizeTransformationProvider;
 import com.auth0.jwt.JWT;
 import org.json.JSONObject;
 import com.auth0.jwt.JWTVerifier;
@@ -69,6 +70,9 @@ public class CcraapiController {
     @Autowired
     @Lazy
     private ReportService reportService;
+
+    @Autowired
+    TokenizeTransformationProvider skp;
 
     @Autowired
     @Lazy
@@ -355,7 +359,7 @@ public class CcraapiController {
                             }
                             try {
                                 AesEcbEncryptDecrypt.setKey(userList.get(0).getSecretKey());
-                                userId = new AesEcbEncryptDecrypt().decrypt(userId);
+                                userId = new AesEcbEncryptDecrypt(this.skp.PROVIDER_SECRET_KEY).decrypt(userId);
                                 loggerText = String.format("userList: %s", userList.get(0));
                                 logger.info(loggerText);
 

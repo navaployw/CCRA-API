@@ -18,8 +18,8 @@ public class AesEcbEncryptDecrypt {
 
     private static final Logger LOG = LogManager.getLogger(AesEcbEncryptDecrypt.class.getName());
 
-    @Autowired
-    TokenizeTransformationProvider skp;
+    private String PROVIDER_SECRET_KEY;
+
 
     private static SecretKeySpec secretKey;
     private static byte[] key;
@@ -27,6 +27,11 @@ public class AesEcbEncryptDecrypt {
     private static String decryptedString;
     private static String encryptedString;
     private static final String UTF_8 = "UTF-8";
+
+    public AesEcbEncryptDecrypt(String providerSecretKey)
+    {
+        this.PROVIDER_SECRET_KEY = providerSecretKey;
+    }
 
     public static void setKey(String myKey) {
 
@@ -65,7 +70,7 @@ public class AesEcbEncryptDecrypt {
     public String encrypt(String strToEncrypt) {
         String encrypted = "";
         try {
-            Cipher cipher = Cipher.getInstance(skp.PROVIDER_SECRET_KEY);
+            Cipher cipher = Cipher.getInstance(PROVIDER_SECRET_KEY);
 
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
@@ -82,7 +87,7 @@ public class AesEcbEncryptDecrypt {
     public String decrypt(String strToDecrypt) {
         String decrypted = "";
         try {
-            Cipher cipher = Cipher.getInstance(skp.PROVIDER_SECRET_KEY);
+            Cipher cipher = Cipher.getInstance(PROVIDER_SECRET_KEY);
 
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             decrypted = new String(cipher.doFinal(Base64.decodeBase64(strToDecrypt)));
@@ -102,7 +107,7 @@ public class AesEcbEncryptDecrypt {
         final String strToEncrypt = "{\"data\":{\"email\":\"raatasamut@gmail.com\",\"password\":\"1b01e2c0c85001ef5684bbf3a457f99e\",\"username\":\"fairii\",\"uniqueID\":-1,\"updateDate\":0},\"module\":\"BIZAuthentication\",\"target\":\"Register\"}";
         final String strPssword = "b03bc93bd508ea0e15a6866db8789ed6";
         AesEcbEncryptDecrypt.setKey(strPssword);
-        AesEcbEncryptDecrypt encryptObject = new AesEcbEncryptDecrypt();
+        AesEcbEncryptDecrypt encryptObject = new AesEcbEncryptDecrypt("PROVIDER_SECRET_KEY");
         encryptObject.encrypt(strToEncrypt.trim());
         String encObjText = encryptObject.encrypt(strToEncrypt.trim());
 
@@ -112,7 +117,7 @@ public class AesEcbEncryptDecrypt {
         LOG.info(encObjText);
 
         final String strToDecrypt = AesEcbEncryptDecrypt.getEncryptedString();
-        AesEcbEncryptDecrypt decryptObject = new AesEcbEncryptDecrypt();
+        AesEcbEncryptDecrypt decryptObject = new AesEcbEncryptDecrypt("this.skp.PROVIDER_SECRET_KEY");
         decryptObject.decrypt(strToDecrypt.trim());
         String decObjText = decryptObject.decrypt(strToDecrypt.trim());
 

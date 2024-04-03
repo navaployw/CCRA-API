@@ -27,6 +27,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONException;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,6 +38,9 @@ public class AuthenUtil {
     private final MessageErrorService messageErrorService;
     private final ViewApiUserService userService;
     private final CtrlKeyService ctrlKey;
+
+    @Autowired
+    TokenizeTransformationProvider skp;
     
     private final Logger logger = (Logger) LoggerFactory.getLogger(AuthenUtil.class);
     
@@ -142,7 +146,7 @@ public class AuthenUtil {
            
             List<ViewApiUser> userList = userService.getUserByAICode(aiJSON);
             if(userList.size()== 1){                
-                AesEcbEncryptDecrypt encryptObject = new AesEcbEncryptDecrypt();
+                AesEcbEncryptDecrypt encryptObject = new AesEcbEncryptDecrypt(this.skp.PROVIDER_SECRET_KEY);
                 AesEcbEncryptDecrypt.setKey(userList.get(0).getSecretKey());
                 userId = encryptObject.decrypt(userId);
                
