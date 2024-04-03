@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.arg.ccra</groupId>
 	<artifactId>ccra3-wbs</artifactId>
-	<version>4.0.0</version>
+	<version>4.0.1</version>
 	<name>ccra3-wbs</name>
 	<description>CCRA3 API Inquiry</description>
 	<properties>
