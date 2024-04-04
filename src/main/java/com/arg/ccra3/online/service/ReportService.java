@@ -234,8 +234,8 @@ private void zipDirectory(File directory, ZipOutputStream zipStream, String pare
         }
  
         /*  Verify Path Travarsal CWE-23 */
-        String targetDirPath = file.getCanonicalPath()+ File.separator;
-
+        String targetDirPath = file.getCanonicalPath();
+        
         if (!file.getCanonicalPath().startsWith(targetDirPath)) {
             throw new Exception("expanding " + file.getName()
                 + " would create file outside of " + targetDirPath);
