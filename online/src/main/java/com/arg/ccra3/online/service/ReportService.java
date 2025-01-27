@@ -48,7 +48,10 @@ import com.arg.ccra3.online.form.ReportAPIRequest;
 import com.arg.util.GenericException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.time.LocalDateTime;
@@ -59,6 +62,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -152,25 +157,67 @@ public class ReportService {
         return inquiry.toMap();
     }
     
-    public void creatReportHTMLzipNclean(HttpServletResponse response, ReportAPIRequest uForm, long expenseId){
-        logger.info(">>>>creatReportHTML<<<<");
+//    public void creatReportHTMLzipNclean(HttpServletResponse response, ReportAPIRequest uForm, long expenseId){
+//        logger.info(">>>>creatReportHTML<<<<");
+//        try{
+//            String dirPath = env.getProperty("html_report_dir_path");
+//            FileManagerUtil.createDirIfNotExist(dirPath);
+//            User user = getUserForReport(uForm);
+//            File htmlFolder = htmlDao.getHtmlFolder(dirPath, expenseId, user);
+//                        
+//            zipToResponse(response, htmlFolder);
+//            
+//            FileManagerUtil.deleteDirectory(htmlFolder);
+//        }
+//        catch(Exception e){
+//            throw new IllegalArgumentException(e.getMessage());
+//        }
+//    }
+    public void generateReportHtml(HttpServletResponse response, ReportAPIRequest uForm, long expenseId){
+        logger.info(">>>>creatReportHTML 1<<<<");
         try{
             String dirPath = env.getProperty("html_report_dir_path");
+
             FileManagerUtil.createDirIfNotExist(dirPath);
             User user = getUserForReport(uForm);
+            logger.info(">>>>creatReportHTML 2<<<<");
             File htmlFolder = htmlDao.getHtmlFolder(dirPath, expenseId, user);
-                        
+            logger.info(">>>>creatReportHTML 3<<<<");  
+            
+            String urlPath = htmlFolder.getAbsolutePath();
+            urlPath = urlPath.replace("%2e", ".");
+            urlPath = urlPath.replace("%2f", "/");
+            urlPath = urlPath.replace("%5c", "/");
+
+            if(urlPath != null && urlPath.contains(".."))
+            {
+                throw new Exception("path file not support.");
+            }
+
             zipToResponse(response, htmlFolder);
             
             FileManagerUtil.deleteDirectory(htmlFolder);
         }
         catch(Exception e){
+            logger.error(e.getMessage(),e);
             throw new IllegalArgumentException(e.getMessage());
         }
     }
     public void zipErrorResponseNclean(HttpServletResponse response, ResponseModel error) throws Exception{
         String dirPath = env.getProperty("html_report_dir_path");        
         String errorDirPath = dirPath + File.separator + "error" + System.nanoTime();
+
+        String urlPath = errorDirPath;
+
+        urlPath = urlPath.replace("%2e", ".");
+        urlPath = urlPath.replace("%2f", "/");
+        urlPath = urlPath.replace("%5c", "/");
+
+        if(urlPath.contains(".."))
+        {
+            throw new Exception("Path not support.");
+        }
+
         File errorDir = FileManagerUtil.createDirIfNotExist(errorDirPath);
         
         String jsonPath = errorDir + File.separator + "response.json";
@@ -185,18 +232,70 @@ public class ReportService {
         
         FileManagerUtil.deleteDirectory(errorDir);
     }
-    private void zipToResponse(HttpServletResponse response, File dir) throws Exception{        
-        LocalDateTime ldt = LocalDateTime.now();
-        DateTimeFormatter formmat1 = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmssSSS", Locale.ENGLISH);
-        String zipName = formmat1.format(ldt) +".zip";
+//    private void zipToResponse(HttpServletResponse response, File dir) throws Exception{        
+//        LocalDateTime ldt = LocalDateTime.now();
+//        DateTimeFormatter formmat1 = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmssSSS", Locale.ENGLISH);
+//        String zipName = formmat1.format(ldt) +".zip";
+//        
+//        response.setContentType("application/zip");
+//        response.setHeader("Content-Disposition", "attachment; filename=" + zipName); 
+//        ZipUtil.pack(
+//            dir,
+//            response.getOutputStream()
+//        );
+//    }
+    
+    private void zipToResponse(HttpServletResponse response, File dir) throws Exception {
+    LocalDateTime ldt = LocalDateTime.now();
+    DateTimeFormatter formmat1 = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmssSSS", Locale.ENGLISH);
+    String zipName = formmat1.format(ldt) + ".zip";
+
+    response.setContentType("application/zip");
+    response.setHeader("Content-Disposition", "attachment; filename=" + zipName);
+
+    ZipOutputStream zipStream = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
+
+    
+
+    zipDirectory(dir, zipStream, "");
+    zipStream.close();
+}
+private void zipDirectory(File directory, ZipOutputStream zipStream, String parent) throws Exception {
+    byte[] buffer = new byte[1024];
+    for (File file : directory.listFiles()) {
+        if (file.isDirectory()) {
+            StringBuilder s = new StringBuilder();
+            s.append(parent);
+            s.append(file.getName());
+            s.append("/");
+            zipDirectory(file, zipStream, s.toString());
+            continue;
+        }
+ 
+        /*  Verify Path Travarsal CWE-23 */
+        String targetDirPath = file.getCanonicalPath();
         
-        response.setContentType("application/zip");
-        response.setHeader("Content-Disposition", "attachment; filename=" + zipName); 
-        ZipUtil.pack(
-            dir,
-            response.getOutputStream()
-        );
+        if (!file.getCanonicalPath().startsWith(targetDirPath)) {
+            throw new Exception("expanding " + file.getName()
+                + " would create file outside of " + targetDirPath);
+        }
+        /*  END Verify Path Travarsal CWE-23 */
+
+        FileInputStream fis = new FileInputStream(file); 
+ 
+        BufferedInputStream bis = new BufferedInputStream(fis);
+        String entryName = parent + file.getName();
+
+        ZipEntry entry = new ZipEntry(entryName);
+        zipStream.putNextEntry(entry);
+        int bytesRead;
+        while ((bytesRead = bis.read(buffer)) != -1) {
+            zipStream.write(buffer, 0, bytesRead);
+        }
+        bis.close();
+        fis.close();
     }
+}
     
     private User getUserForReport(ReportAPIRequest uForm){
         User user = userDAO.getUserFromUserID(uForm.getUserID());

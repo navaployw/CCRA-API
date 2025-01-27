@@ -674,7 +674,7 @@ public class CcraapiController {
                                                 trnJsonObjResponse.setuId(Long.parseLong(userList.get(0).getuID().toString()));
                                                 trnJsonObjResponse.setGroupId(Long.parseLong(userList.get(0).getGroupID()));
                                                 trnJson.saveJsonResponse(trnJsonObjResponse);
-                                                reportService.creatReportHTMLzipNclean(httpResponse, requestJson, expenseId);
+                                                reportService.generateReportHtml(httpResponse, requestJson, expenseId);
                                             }
                                         }
                                     } else {
