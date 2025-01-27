@@ -1,0 +1,54 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /ccraapiauth
+  tomcat:
+    max-threads: 2   
+spring:
+  #mvc.view.prefix: /templates/
+  #mvc.view.suffix: .html
+  jpa:
+    show-sql: true
+    #https://stackoverflow.com/questions/65488808/difference-between-spring-jpa-properties-hibernate-and-spring-jpa-hibernate
+    hibernate:
+      #https://stackoverflow.com/questions/438146/what-are-the-possible-values-of-the-hibernate-hbm2ddl-auto-configuration-and-wha
+      ddl-auto: none
+      #https://stackoverflow.com/questions/35874587/hibernate-keeps-dropping-creating-tables-when-entitymanagerfactory-is-created      
+      #'mvn clean install' always drop tables if ddl-auto = create-drop
+      #ddl-auto: create-drop
+      
+      dialect: org.hibernate.dialect.SQLServer2012Dialect
+  datasource:
+    #https://techcommunity.microsoft.com/t5/azure-database-support-blog/pkix-path-building-failed-unable-to-find-valid-certification/ba-p/2591304
+    url: jdbc:sqlserver://10.11.60.228:1433;databaseName=DBHK_API_TEST;TrustServerCertificate=True
+#    url: jdbc:sqlserver://10.11.60.228:1433;databaseName=DBHK_PROD;TrustServerCertificate=True
+    #url: jdbc:sqlserver://10.11.60.179:1433;databaseName=DBHK_PROD;TrustServerCertificate=True
+    #url: jdbc:jtds:sqlserver://10.11.60.228:1433/DBHK_PROD
+    #url: jdbc:jtds:sqlserver://10.11.60.179:1433/DBHK_PROD
+    username: sa
+    password: P@ssw0rd
+    #driverClassName: net.sourceforge.jtds.jdbc.Driver
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#    db:
+#        ccraapi:     
+#            driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#            url: jdbc:sqlserver://10.11.60.228:1433;databaseName=DBHK_API;TrustServerCertificate=True
+#            username: sa
+#            password: P@ssw0rd    
+#        ccraportal:
+#            driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#            url: jdbc:sqlserver://10.11.60.228:1433;databaseName=DBHK_PROD;TrustServerCertificate=True
+#            username: sa
+#            password: P@ssw0rd
+security:
+    oauth2:
+        resource:
+            userInfoUri: http://localhost:8080/ccraapiauth/validateUser
+logging:
+    level:
+        org:
+            springframework:
+                jdbc:
+                    core: TRACE
+                    
+html_report_dir_path: /share/fileattachment/stored/htmlReport

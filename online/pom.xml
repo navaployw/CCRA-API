@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.arg.ccra3</groupId>
+        <artifactId>ccra3</artifactId>
+        <version>3.0.2</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>ccra3-wbs</artifactId>
+    <packaging>jar</packaging>
+    <name>CCRA-3 Online Inquiry</name>
+    <description>CCRA-3 Online Inquiry</description>
+    
+    <properties>        
+        <swagger-api.version>2.1.10</swagger-api.version>
+        <swagger-ui.version>3.52.1</swagger-ui.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.arg.ccra3.model</groupId>
+            <artifactId>CCAR3-MODEL</artifactId>
+            <version>3.0.2</version>
+        </dependency>        
+        <dependency>
+            <groupId>com.arg.ccra3.dao</groupId>
+            <artifactId>CCAR3-DAO</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.arg.ccra3.common</groupId>
+            <artifactId>CCAR3-COMMON</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin> <!--junit-->
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M6</version>
+                <configuration>
+                    <excludedGroups>ctrl</excludedGroups>
+                </configuration>
+            </plugin>
+            
+            <!--fix [ERROR] Failed to execute goal org.apache.maven.plugins:maven-war-plugin:2.2:war (default-war) on project ccra3-wbs: Execution default-war of goal org.apache.maven.plugins:maven-war-plugin:2.2:war failed: Unable to load the mojo 'war' in the plugin 'org.apache.maven.plugins:maven-war-plugin:2.2' due to an API incompatibility: org.codehaus.plexus.component.repository.exception.ComponentLookupException: Cannot access defaults field of Properties-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${springboot-version}</version>
+                <configuration>    
+                    <mainClass>com.arg.ccra3.online.Main</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
